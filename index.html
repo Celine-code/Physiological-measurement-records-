@@ -136,19 +136,33 @@ body::after{
   border-top:1.5px dashed var(--pink-lt);padding-top:var(--sp-xs)}
 
 /* Start button */
-.home-bottom{padding:0 var(--sp-lg) max(clamp(20px,6vh,36px), env(safe-area-inset-bottom, 20px));position:relative;z-index:1}
-.btn-start{width:85%;margin:0 auto;padding:clamp(12px,3.5vw,16px);
-  border:2px solid rgba(242,160,184,0.6);
+.home-bottom{padding:0 var(--sp-lg) max(clamp(24px,7vh,44px), env(safe-area-inset-bottom, 24px));position:relative;z-index:1}
+.btn-start{width:88%;margin:0 auto;padding:clamp(18px,5vw,24px) clamp(24px,6vw,40px);
+  border:none;
   border-radius:var(--r-full);
-  background:rgba(255,255,255,0.82);
-  backdrop-filter:blur(10px);
-  color:var(--pink-dk);font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:var(--fs-lg);cursor:pointer;letter-spacing:.5px;
-  box-shadow:0 4px 18px rgba(242,160,184,0.25);
-  transition:transform .15s,box-shadow .15s;
-  display:flex;align-items:center;justify-content:center;gap:var(--sp-sm)}
-.btn-start:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(242,160,184,0.2)}
-.bs-zh{font-size:var(--fs-xs);opacity:.7;font-weight:500;
+  background:linear-gradient(160deg, #f9c0d4 0%, #f07098 45%, #d9507a 100%);
+  color:#fff;font-family:'Nunito',sans-serif;font-weight:900;
+  font-size:clamp(1.15rem,4.2vw,1.45rem);cursor:pointer;letter-spacing:.8px;
+  box-shadow:
+    0 2px 0 #a8305a,
+    0 6px 0 rgba(180,60,90,0.35),
+    0 10px 28px rgba(217,80,122,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+  transition:transform .14s, box-shadow .14s;
+  display:flex;align-items:center;justify-content:center;gap:var(--sp-sm);
+  text-shadow:0 1px 3px rgba(120,30,60,0.3);
+  position:relative;overflow:hidden}
+.btn-start::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,0.22) 0%,transparent 60%);
+  border-radius:inherit;pointer-events:none}
+.btn-start:active{
+  transform:translateY(4px);
+  box-shadow:
+    0 0px 0 #a8305a,
+    0 2px 0 rgba(180,60,90,0.25),
+    0 4px 12px rgba(217,80,122,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.25)}
+.bs-zh{font-size:var(--fs-xs);opacity:.85;font-weight:600;
   font-family:'Noto Sans TC',sans-serif}
 
 #admin-trigger{position:fixed;bottom:0;right:0;width:36px;height:36px;z-index:50;opacity:0}
@@ -573,7 +587,7 @@ body::after{
       <div class="home-sub-zh" id="greet-sub-zh"></div>
     </div>
 
-    <div id="weather-card"><div class="wx-load">⏳ Memuat cuaca… / 載入天氣…</div></div>
+    <div id="weather-card" ><div class="wx-load">⏳ Memuat cuaca… / 載入天氣…</div></div>
 
     <div class="quote-card">
       <div class="quote-tag">🌙 Hikmah Islam · 今日箴言</div>
@@ -754,9 +768,7 @@ body::after{
     <div class="ma-icon">⚠️</div>
     <div class="ma-title">Harap lengkapi semua! / 請完成所有欄位！</div>
     <div class="ma-list" id="missing-list"></div>
-    <button class="ma-btn" onclick="document.getElementById('missing-alert').classList.remove('show');const sb=document.getElementById('save-btn');if(sb){sb.disabled=false;sb.style.opacity='1';sb.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';}">
-      OK，回去填 / Kembali
-    </button>
+    <div id="missing-btns" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
 </div>
 
@@ -1214,62 +1226,67 @@ async function loadWeather(){
 // ══ NAVIGATION with History API ══
 // 讓手機返回鍵也能正確導航
 
-function goTo(id){
-  const p=document.getElementById(curPage), n=document.getElementById(id);
+// ══ PAGE STACK NAVIGATION ══
+// 用自己的 stack 管理，不依賴 history API 做切換
+const pageStack = ['page-home'];
+
+function _doSwitch(fromId, toId){
+  const p=document.getElementById(fromId), n=document.getElementById(toId);
+  if(!p||!n||fromId===toId) return;
   p.classList.remove('active'); p.classList.add('out');
   n.classList.add('active');
   setTimeout(()=>p.classList.remove('out'), 420);
-  curPage=id;
-  // 推入 history，讓返回鍵可用
-  history.pushState({page: id}, '', '');
+  curPage=toId;
+}
+
+function switchPage(id){
+  _doSwitch(curPage, id);
+}
+
+function goTo(id){
+  _doSwitch(curPage, id);
+  pageStack.push(id);
+  // 讓瀏覽器 history 一直有東西可 back（只需一個哨兵 entry）
+  history.pushState({sentinel:true}, '', '');
 }
 
 function goBack(){
   document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
-  // 觸發 history back，會被 popstate 攔截
-  history.back();
+  _goBackInternal();
 }
 
-// 攔截手機/瀏覽器返回鍵
-window.addEventListener('popstate', function(e){
-  // 關閉任何開啟的彈窗
-  document.getElementById('overlay-ok').classList.remove('show');
+function _goBackInternal(){
+  // 關閉彈窗
+  const ovEl=document.getElementById('overlay-ok');
+  if(ovEl.classList.contains('show')){ ovEl.classList.remove('show'); return; }
   document.getElementById('missing-alert').classList.remove('show');
   document.getElementById('confirm-dialog').classList.remove('show');
-  document.querySelectorAll('.hint-panel,.hint-bd').forEach(el=>el.remove());
 
   // 重置儲存按鈕
   const sb=document.getElementById('save-btn');
-  if(sb){
-    sb.disabled=false; sb.style.opacity='1';
-    sb.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';
-  }
+  if(sb){sb.disabled=false;sb.style.opacity='1';
+    sb.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';}
 
-  // 決定要去哪一頁
-  const from=curPage;
-  let target='page-home';
+  // Pop stack
+  if(pageStack.length>1) pageStack.pop();
+  const target=pageStack[pageStack.length-1];
+  _doSwitch(curPage, target);
+}
 
-  if(from==='page-input')  target='page-menu';
-  else if(from==='page-menu')  target='page-home';
-  else if(from==='page-admin') target='page-home';
-  else target='page-home';
-
-  // 切換頁面（不 pushState，避免無限循環）
-  const p=document.getElementById(from), n=document.getElementById(target);
-  if(p) { p.classList.remove('active'); p.classList.add('out'); setTimeout(()=>p.classList.remove('out'),420); }
-  if(n) n.classList.add('active');
-  curPage=target;
-
-  // 確保首頁永遠有一個 history entry（防止返回到上一個頁面）
-  if(target==='page-home'){
-    history.replaceState({page:'page-home'}, '', '');
+// 攔截手機返回鍵 — 每次 back 後補回一個 entry，讓返回鍵永遠有效
+window.addEventListener('popstate', function(){
+  _goBackInternal();
+  // 若還有頁面可返回，補回哨兵 entry
+  if(pageStack.length>1){
+    history.pushState({sentinel:true},'','');
   }
 });
 
-// 初始化：讓首頁有 history entry
+// 初始化
 window.addEventListener('DOMContentLoaded', ()=>{
-  history.replaceState({page:'page-home'}, '', '');
+  history.replaceState({sentinel:true},'','');
 });
+
 
 // ══ HIDDEN ADMIN ══
 function secretTap(){
@@ -1297,18 +1314,27 @@ function startSession(){
 
 // ══ GPS WITH ADDRESS ══
 async function getGPSAddr(){
-  // Step 1: get coords
+  // Step 1: GPS 座標，先快速低精度，再嘗試高精度
   const coords = await new Promise(res=>{
     if(!navigator.geolocation){res(null);return;}
     let done=false;
-    function attempt(highAcc){
-      navigator.geolocation.getCurrentPosition(
-        p=>{if(!done){done=true;res(p.coords);}},
-        ()=>{if(!done&&highAcc)setTimeout(()=>attempt(false),500);else if(!done){done=true;res(null);}},
-        {timeout:10000, maximumAge:highAcc?0:30000, enableHighAccuracy:highAcc}
-      );
-    }
-    attempt(true);
+    // 先用快速低精度（cached/network）
+    navigator.geolocation.getCurrentPosition(
+      p=>{if(!done){done=true;res(p.coords);}},
+      ()=>{
+        if(!done){
+          // 快速失敗再試高精度，timeout 縮短
+          navigator.geolocation.getCurrentPosition(
+            p2=>{if(!done){done=true;res(p2.coords);}},
+            ()=>{if(!done){done=true;res(null);}},
+            {timeout:5000, enableHighAccuracy:true}
+          );
+        }
+      },
+      {timeout:3000, maximumAge:60000, enableHighAccuracy:false}
+    );
+    // 6 秒總超時保險
+    setTimeout(()=>{if(!done){done=true;res(null);}}, 6000);
   });
 
   if(!coords) return {lat:'無法取得',lng:'',addr:'GPS無法取得'};
@@ -1321,7 +1347,7 @@ async function getGPSAddr(){
     async()=>{
       const r = await fetch(
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=jsonv2&accept-language=zh-TW&zoom=18&addressdetails=1`,
-        {signal:AbortSignal.timeout(7000), headers:{'User-Agent':'HealthApp/1.0'}}
+        {signal:AbortSignal.timeout(3000), headers:{'User-Agent':'HealthApp/1.0'}}
       );
       const d = await r.json();
       const a = d.address||{};
@@ -1341,7 +1367,7 @@ async function getGPSAddr(){
     async()=>{
       const r = await fetch(
         `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=zh`,
-        {signal:AbortSignal.timeout(6000)}
+        {signal:AbortSignal.timeout(3000)}
       );
       const d = await r.json();
       const parts = [d.locality, d.city, d.principalSubdivision, d.countryName].filter(Boolean);
@@ -1718,22 +1744,23 @@ function saveInput(){
 
     // ── 必填驗證：每個可見的 section 都要有選擇 ──
     if(cfg2.sections){
-      const missing=[];
+      const missing=[], missingKeys=[];
       for(const sec of cfg2.sections){
-        // 檢查 showIf：若依賴欄位沒選對應值，此欄位不需填
         if(sec.showIf){
           const depVal=vals[sec.showIf.key];
           const depMatch=Array.isArray(depVal)?depVal.includes(sec.showIf.val):depVal===sec.showIf.val;
-          if(!depMatch) continue; // 隱藏中，跳過
+          if(!depMatch) continue;
         }
         const v=vals[sec.key];
         const isEmpty=!v||(Array.isArray(v)&&v.length===0);
-        if(isEmpty) missing.push(sec.lbl_zh||sec.lbl_id);
+        if(isEmpty){
+          missing.push(sec.lbl_zh||sec.lbl_id);
+          missingKeys.push(sec.key);
+        }
       }
       if(missing.length>0){
-        // 顯示提示
-        showMissingAlert(missing);
-        return; // 停止儲存
+        showMissingAlert(missing, missingKeys);
+        return;
       }
     }
   } else {
@@ -1804,25 +1831,47 @@ function saveInput(){
     saveBtnEl.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';
   }
   const ov=document.getElementById('overlay-ok');ov.classList.add('show');
+  // 倒數提示
+  const okTimeEl=document.getElementById('ok-time');
+  let countdown=2;
+  const cdTimer=setInterval(()=>{
+    countdown--;
+    if(countdown<=0){
+      clearInterval(cdTimer);
+      if(okTimeEl) okTimeEl.setAttribute('data-cd','');
+    } else {
+      if(okTimeEl) okTimeEl.setAttribute('data-cd', countdown);
+    }
+  },1000);
 
-  // 背景取得GPS地址
-  getGPSAddr().then(gps=>{
-    const recs2=getRecords();
-    const i=recs2.findIndex(r=>r.id===tmpRecord.id);
-    if(i>=0){recs2[i].measureGPS=gps;localStorage.setItem('health_records',JSON.stringify(recs2));}
-  });
+  // ── GPS 完全背景作業，不阻擋任何流程 ──
+  // 用 setTimeout 0 確保 UI 先更新完才開始 GPS
+  setTimeout(()=>{
+    getGPSAddr().then(gps=>{
+      const recs2=getRecords();
+      const i=recs2.findIndex(r=>r.id===tmpRecord.id);
+      if(i>=0){
+        recs2[i].measureGPS=gps;
+        localStorage.setItem('health_records',JSON.stringify(recs2));
+      }
+    }).catch(()=>{}); // GPS 失敗也不影響任何東西
+  }, 0);
 
-  // 4秒後自動關閉（讓外勞有時間看統計）
+  // 2 秒後自動跳回（直接 pop stack，避免先關 overlay 再跳的雙跳問題）
   setTimeout(()=>{
     ov.classList.remove('show');
     document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
-    goTo('page-menu');
-  },4000);
+    document.getElementById('missing-alert').classList.remove('show');
+    document.getElementById('confirm-dialog').classList.remove('show');
+    if(pageStack.length>1) pageStack.pop();
+    const target=pageStack[pageStack.length-1];
+    _doSwitch(curPage, target);
+  }, 2000);
 }
 // ══ END SESSION ══
 function endSession(){
   showToast('✅ Selesai! Terima kasih / 測量結束，謝謝！');
-  setTimeout(()=>{ goTo('page-home'); }, 600);
+  setTimeout(()=>{ _goBackInternal(); }, 600);
 }
 
 // ══ ADMIN ══
@@ -1840,7 +1889,7 @@ function doLogout(){
   document.getElementById('adm-login').style.display='block';
   document.getElementById('adm-main').style.display='none';
   document.getElementById('pwd-input').value='';
-  goTo('page-home');
+  _goBackInternal();
 }
 
 // ══ FILTER STATE ══
@@ -1997,9 +2046,54 @@ function renderAdmin(){
   }).join('');
 }
 
-function showMissingAlert(missing){
+function resetSaveBtn(){
+  const sb=document.getElementById('save-btn');
+  if(sb){
+    sb.disabled=false; sb.style.opacity='1';
+    sb.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';
+  }
+}
+
+function scrollToSection(key){
+  // 關閉提示
+  document.getElementById('missing-alert').classList.remove('show');
+  resetSaveBtn();
+  // 找到對應的 choice-section（data-key）並捲動過去
+  // choice-section 沒有 data-key，用 lbl_id 找
+  const cfg=CFGS[curType];
+  if(!cfg||!cfg.sections) return;
+  const sec=cfg.sections.find(s=>s.key===key);
+  if(!sec) return;
+  // 找到畫面上對應的 .cs-lbl
+  const labels=document.querySelectorAll('#input-body .cs-lbl');
+  for(const lbl of labels){
+    if(lbl.textContent===sec.lbl_id){
+      const wrap=lbl.closest('.choice-section');
+      if(wrap){
+        // 閃爍高亮提示
+        wrap.style.transition='box-shadow .2s';
+        wrap.style.boxShadow='0 0 0 3px rgba(242,100,100,0.5)';
+        wrap.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(()=>{ wrap.style.boxShadow=''; },1500);
+      }
+      break;
+    }
+  }
+}
+
+function showMissingAlert(missing, missingKeys){
   const list=document.getElementById('missing-list');
-  list.innerHTML=missing.map(m=>`<div>• ${m}</div>`).join('');
+  list.innerHTML=missing.map(m=>`<div style="color:var(--pink-dk);font-weight:700">• ${m}</div>`).join('');
+  // 每個缺少欄位一個跳轉按鈕
+  const btns=document.getElementById('missing-btns');
+  btns.innerHTML='';
+  missingKeys.forEach((key,i)=>{
+    const btn=document.createElement('button');
+    btn.style.cssText=`padding:10px 16px;border:1.5px solid rgba(242,160,184,0.6);border-radius:30px;background:rgba(255,255,255,0.9);font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;color:var(--pink-dk);cursor:pointer;`;
+    btn.textContent=`➡ 跳去填：${missing[i]}`;
+    btn.onclick=()=>scrollToSection(key);
+    btns.appendChild(btn);
+  });
   document.getElementById('missing-alert').classList.add('show');
 }
 

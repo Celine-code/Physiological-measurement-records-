@@ -120,6 +120,22 @@ body::after{
 .wx-rain{font-size:var(--fs-xs);color:var(--blue);margin-top:2px;font-weight:600}
 .wx-load{font-size:var(--fs-sm);color:var(--ink-xlt);padding:var(--sp-sm) 0;text-align:center}
 
+/* Outfit suggestion card */
+.outfit-card{background:rgba(255,255,255,0.78);backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,255,255,0.9);
+  border-radius:var(--r-lg);
+  padding:var(--sp-sm) var(--sp-md);
+  box-shadow:0 4px 16px rgba(168,212,200,0.18)}
+.outfit-tag{font-family:'Nunito',sans-serif;font-size:var(--fs-xs);font-weight:800;
+  color:var(--mint-dk);letter-spacing:.5px;text-transform:uppercase;margin-bottom:var(--sp-xs)}
+.outfit-tag-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;margin-bottom:var(--sp-xs)}
+.outfit-items{display:flex;flex-wrap:wrap;gap:6px}
+.outfit-item{display:inline-flex;flex-direction:column;align-items:center;
+  background:var(--paper2);border-radius:12px;padding:6px 10px;min-width:56px}
+.outfit-item .oi-icon{font-size:1.3rem;line-height:1}
+.outfit-item .oi-id{font-size:0.62rem;font-weight:700;color:var(--ink);margin-top:2px;text-align:center;font-family:'Nunito',sans-serif}
+.outfit-item .oi-zh{font-size:0.55rem;color:var(--ink-xlt);font-weight:400;text-align:center}
+
 /* Quote card — notecard style */
 .quote-card{background:rgba(255,255,255,0.78);backdrop-filter:blur(8px);
   border:1.5px dashed rgba(242,160,184,0.5);
@@ -280,17 +296,38 @@ body::after{
 .roller-sep{font-family:'Nunito',sans-serif;font-size:var(--fs-xl);font-weight:400;
   color:var(--ink-xlt);padding-top:calc(156px/2 - 12px);flex-shrink:0}
 
-/* Hint bubbles */
-.hint-bubbles{display:flex;gap:var(--sp-sm);flex-wrap:wrap}
-.hbbl{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;
-  border-radius:var(--r-full);font-size:var(--fs-sm);font-weight:700;
-  cursor:pointer;font-family:'Nunito',sans-serif;
-  transition:transform .15s,box-shadow .15s;border:none}
-.hbbl:active{transform:scale(0.95)}
-.hbbl.warn-b{background:var(--peach-lt);color:#9a5030;
-  box-shadow:0 2px 8px rgba(240,192,152,0.3)}
-.hbbl.info-b{background:var(--blue-lt);color:var(--blue-dk);
-  box-shadow:0 2px 8px rgba(122,174,208,0.25)}
+/* Hint tooltip button */
+.hint-tooltip-btn{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;border:1.5px solid var(--blue-lt);
+  background:var(--blue-lt);color:var(--blue-dk);font-size:0.7rem;font-weight:900;
+  cursor:pointer;flex-shrink:0;font-family:'Nunito',sans-serif;line-height:1;
+  -webkit-tap-highlight-color:transparent}
+.hint-tooltip-btn:active{transform:scale(0.9)}
+
+/* Tooltip popup */
+.hint-tooltip-popup{position:fixed;z-index:8000;
+  background:#fff;border-radius:var(--r-md);
+  box-shadow:0 8px 32px rgba(74,58,74,0.18);
+  padding:var(--sp-sm) var(--sp-md);
+  width:min(88vw, 340px);
+  border:1.5px solid var(--pink-lt)}
+.htp-close{position:absolute;top:8px;right:10px;font-size:1rem;
+  cursor:pointer;color:var(--ink-xlt);background:none;border:none;line-height:1}
+.htp-section{margin-bottom:var(--sp-xs)}
+.htp-section:last-child{margin-bottom:0}
+.htp-head{font-family:'Nunito',sans-serif;font-size:var(--fs-xs);font-weight:800;
+  margin-bottom:4px}
+.htp-head.warn{color:#c0392b}
+.htp-head.info{color:var(--blue-dk)}
+.htp-row{font-size:var(--fs-xs);color:var(--ink);font-weight:600;
+  line-height:1.5;padding-left:8px}
+.htp-row-zh{font-size:0.65rem;color:var(--ink-xlt);font-weight:400;
+  line-height:1.4;padding-left:8px;margin-bottom:4px}
+.htp-divider{height:1px;background:var(--pink-lt);margin:var(--sp-xs) 0}
+
+/* Roller status bar */
+.roller-status-bar{margin-top:14px;padding:12px 16px;border-radius:14px;
+  text-align:center;display:none}
 
 /* Save button */
 .btn-save{width:80%;margin:0 auto;display:block;padding:clamp(11px,3vw,14px);
@@ -576,7 +613,8 @@ body::after{
       <div class="home-sub-zh" id="greet-sub-zh"></div>
     </div>
 
-    <div id="weather-card" ><div class="wx-load">⏳ Memuat cuaca… / 載入天氣…</div></div>
+    <div id="weather-card"><div class="wx-load">⏳ Memuat cuaca… / 載入天氣…</div></div>
+    <div id="outfit-card" style="display:none"></div>
 
     <div class="quote-card">
       <div class="quote-tag">🌙 Hikmah Islam · 今日箴言</div>
@@ -673,11 +711,19 @@ body::after{
 <div class="page" id="page-input">
   <div class="input-hdr">
     <button class="back-btn" onclick="goBack()">← Kembali / 返回</button>
-    <div class="ih-id" id="ih-id"></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px">
+      <div class="ih-id" id="ih-id"></div>
+      <button class="hint-tooltip-btn" id="hint-info-btn" onclick="showHintTooltip()" title="Info">ℹ</button>
+    </div>
     <div class="ih-zh" id="ih-zh"></div>
     <div class="ih-sub" id="ih-sub"></div>
   </div>
   <div class="input-body" id="input-body"></div>
+</div>
+<div id="hint-tooltip-overlay" style="display:none;position:fixed;inset:0;z-index:7999" onclick="closeHintTooltip()"></div>
+<div class="hint-tooltip-popup" id="hint-tooltip-popup" style="display:none">
+  <button class="htp-close" onclick="closeHintTooltip()">✕</button>
+  <div id="htp-content"></div>
 </div>
 
 <!-- ══ PAGE 4: ADMIN ══ -->
@@ -1208,14 +1254,116 @@ async function loadWeather(){
         <div class="wx-desc">${result.desc}</div>
         <div class="wx-rain">${result.rainTxt}</div>
       </div></div>`;
+    renderOutfit(result);
   } else {
     el.innerHTML='<div class="wx-card"><div class="wx-emoji">🌤️</div><div class="wx-body"><div class="wx-desc">Cuaca tidak tersedia / 天氣暫時無法顯示</div><div class="wx-rain" style="font-size:0.6rem;opacity:.5">（請確認手機網路連線）</div></div></div>';
   }
 }
 
 
+// ══ OUTFIT SUGGESTION ══
+function renderOutfit(wx){
+  const el = document.getElementById('outfit-card');
+  if(!el) return;
+
+  const temp = parseFloat(wx.temp);
+  const rain = parseInt((wx.rainTxt.match(/(\d+)%/) || [0,0])[1]);
+  const desc = wx.desc || '';
+  const isRainy = rain > 40 || /Hujan|Badai|Gerimis/i.test(desc);
+  const isStormy = rain > 70 || /Badai|Petir/i.test(desc);
+  const isFoggy = /Kabut/i.test(desc);
+  const isSunny = /Cerah/i.test(desc) && !isRainy;
+  const isPartlyCloudy = /Berawan/i.test(desc) && !isRainy;
+
+  // 建議項目：{icon, id(印尼), zh(中文)}
+  const items = [];
+
+  // ── 溫度相關 ──
+  if(temp <= 18){
+    items.push({icon:'🧥', id:'Jaket tebal', zh:'厚外套'});
+    items.push({icon:'🧣', id:'Syal', zh:'圍巾'});
+    items.push({icon:'🧤', id:'Sarung tangan', zh:'手套'});
+  } else if(temp <= 22){
+    items.push({icon:'🧥', id:'Jaket tipis', zh:'薄外套'});
+    items.push({icon:'🧣', id:'Syal tipis', zh:'薄圍巾'});
+  } else if(temp <= 26){
+    items.push({icon:'👕', id:'Baju panjang', zh:'長袖上衣'});
+  } else if(temp <= 30){
+    items.push({icon:'👕', id:'Baju tipis', zh:'輕薄上衣'});
+  } else {
+    items.push({icon:'👕', id:'Baju katun', zh:'棉質透氣衣'});
+    items.push({icon:'🩳', id:'Celana pendek', zh:'短褲'});
+  }
+
+  // ── 雨具 ──
+  if(isStormy){
+    items.push({icon:'☂️', id:'Payung besar', zh:'大雨傘'});
+    items.push({icon:'🧤', id:'Jas hujan', zh:'雨衣'});
+    items.push({icon:'👟', id:'Sepatu anti air', zh:'防水鞋'});
+  } else if(isRainy){
+    items.push({icon:'☂️', id:'Payung', zh:'雨傘'});
+    items.push({icon:'🥾', id:'Sepatu tertutup', zh:'包覆式鞋子'});
+  } else if(rain > 20){
+    items.push({icon:'🌂', id:'Payung lipat', zh:'折疊傘備用'});
+  }
+
+  // ── 防曬 ──
+  if(isSunny && temp >= 28){
+    items.push({icon:'🕶️', id:'Kacamata hitam', zh:'太陽眼鏡'});
+    items.push({icon:'🧴', id:'Tabir surya', zh:'防曬乳'});
+    items.push({icon:'🧢', id:'Topi', zh:'帽子'});
+  } else if(isSunny || (isPartlyCloudy && temp >= 26)){
+    items.push({icon:'🧢', id:'Topi', zh:'帽子'});
+    items.push({icon:'🕶️', id:'Kacamata hitam', zh:'太陽眼鏡'});
+  }
+
+  // ── 霧天 ──
+  if(isFoggy){
+    items.push({icon:'⚠️', id:'Hati-hati berkabut', zh:'注意霧況'});
+  }
+
+  // ── 通用 ──
+  items.push({icon:'💧', id:'Air minum', zh:'補充水分'});
+  if(temp >= 30) items.push({icon:'❄️', id:'Kipas/AC', zh:'注意散熱'});
+  if(temp <= 20) items.push({icon:'🍵', id:'Minuman hangat', zh:'熱飲暖身'});
+
+  // 建議總結語
+  let summary_id, summary_zh;
+  if(isStormy){
+    summary_id = 'Cuaca buruk, sebaiknya di dalam rumah saja.';
+    summary_zh = '天氣惡劣，建議今天待在家裡。';
+  } else if(isRainy){
+    summary_id = 'Bawa payung, jalan-jalan tetap bisa!';
+    summary_zh = '帶傘出門，散步還是可以的！';
+  } else if(isSunny && temp >= 30){
+    summary_id = 'Panas terik, hindari siang hari. Pagi/sore lebih baik.';
+    summary_zh = '天氣炎熱，避開中午，早晨或傍晚散步較適合。';
+  } else if(temp <= 18){
+    summary_id = 'Dingin, pakaian hangat wajib ya!';
+    summary_zh = '天氣涼冷，務必穿暖再出門！';
+  } else {
+    summary_id = 'Cuaca nyaman untuk jalan-jalan!';
+    summary_zh = '天氣舒適，適合外出散步！';
+  }
+
+  el.style.display = 'block';
+  el.innerHTML = `<div class="outfit-card">
+    <div class="outfit-tag">👔 Saran Berpakaian · 穿搭建議</div>
+    <div class="outfit-tag-zh" style="font-size:var(--fs-xs);color:var(--ink);font-weight:600;margin-bottom:var(--sp-xs)">
+      <span style="color:var(--mint-dk);font-weight:700">${summary_id}</span><br>
+      <span style="color:var(--ink-xlt);font-size:0.85em">${summary_zh}</span>
+    </div>
+    <div class="outfit-items">
+      ${items.map(it=>`<div class="outfit-item">
+        <span class="oi-icon">${it.icon}</span>
+        <span class="oi-id">${it.id}</span>
+        <span class="oi-zh">${it.zh}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
 // ══ NAVIGATION ══
-// ══ NAVIGATION with History API ══
 // 讓手機返回鍵也能正確導航
 
 // ══ PAGE STACK NAVIGATION ══
@@ -1438,9 +1586,9 @@ function openInput(type){
     });
 
   } else {
-    // ── Roller input (original) ──
+    // ── Roller input ──
     const rc=document.createElement('div');rc.className='roller-card';
-    const rid=document.createElement('div');rid.className='rl-id';rid.textContent='Pilih Nilai / 選擇數值';
+    const rid=document.createElement('div');rid.className='rl-id';rid.textContent='Pilih Nilai · 選擇數值';
     const rzh=document.createElement('div');rzh.className='rl-zh';rzh.textContent='上下滑動來選擇數值';
     rc.appendChild(rid);rc.appendChild(rzh);
     const row=document.createElement('div');row.className='rollers-row';
@@ -1456,41 +1604,38 @@ function openInput(type){
       row.appendChild(w);
     });
     rc.appendChild(row);
+
+    // 即時狀態列
+    const statusBar=document.createElement('div');
+    statusBar.id='roller-status';
+    statusBar.style.cssText='margin-top:14px;padding:10px 14px;border-radius:12px;text-align:center;transition:background .25s,color .25s;display:none;';
+    rc.appendChild(statusBar);
     body.appendChild(rc);
+
+    // 讓 drum 撥動時更新狀態列
+    function updateRollerStatus(){
+      const vals={};
+      document.querySelectorAll('#input-body .drum').forEach(d=>{vals[d.dataset.key]=parseFloat(d.dataset.selected);});
+      const s=getRollerStatus(curType,vals);
+      if(!s){statusBar.style.display='none';return;}
+      statusBar.style.display='block';
+      statusBar.style.background=s.bg;
+      statusBar.innerHTML=`<div style="font-size:1.4rem;margin-bottom:2px">${s.icon}</div>
+        <div style="font-weight:800;font-size:var(--fs-sm);color:${s.color}">${s.id}</div>
+        <div style="font-size:var(--fs-xs);color:${s.color};opacity:.8;margin-top:1px">${s.zh}</div>`;
+    }
+    // 讓每個 drum 的 dataset 變動時觸發
+    const obs=new MutationObserver(updateRollerStatus);
+    setTimeout(()=>{
+      document.querySelectorAll('#input-body .drum').forEach(d=>{
+        obs.observe(d,{attributes:true,attributeFilter:['data-selected']});
+      });
+      updateRollerStatus();
+    },100);
   }
 
-  // Build panels + bubbles
+  // ── 清理舊殘留，不再建 hint 泡泡和滑出面板 ──
   document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
-  const bd=document.createElement('div');bd.className='hint-bd';document.body.appendChild(bd);
-  const brow=document.createElement('div');brow.className='hint-bubbles';
-
-  cfg.hints.forEach((h,i)=>{
-    const pid='hp-'+i;const isW=h.type==='warn';
-    const panel=document.createElement('div');
-    panel.className='hint-panel '+(isW?'warn-p':'info-p');panel.id=pid;
-    const inn=document.createElement('div');inn.className='hp-inner';
-    const drag=document.createElement('div');drag.className='hp-drag';inn.appendChild(drag);
-    const ht=document.createElement('div');ht.className='hp-title '+(isW?'':'info-t');ht.textContent=h.title_id;inn.appendChild(ht);
-    h.rows.forEach(r=>{
-      const ri=document.createElement('div');ri.className='hp-row '+(isW?'':'info-r');ri.textContent='• '+r.id;inn.appendChild(ri);
-      const rz=document.createElement('div');rz.className='hp-zh '+(isW?'':'info-zh');rz.textContent='　'+r.zh;inn.appendChild(rz);
-    });
-    const cl=document.createElement('button');cl.className='hp-close';cl.textContent='Tutup / 關閉 ✕';
-    cl.onclick=()=>closeHP(pid);inn.appendChild(cl);
-    panel.appendChild(inn);document.body.appendChild(panel);
-    let sy=0;
-    panel.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;},{passive:true});
-    panel.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-sy>50)closeHP(pid);},{passive:true});
-
-    const bbl=document.createElement('button');
-    bbl.className='hbbl '+(isW?'warn-b':'info-b');
-    bbl.innerHTML=(isW?'⚠️ Bahaya / 危險':'ℹ️ Normal / 正常值');
-    bbl.onclick=()=>openHP(pid);
-    brow.appendChild(bbl);
-  });
-  body.appendChild(brow);
-
-  bd.onclick=()=>{document.querySelectorAll('.hint-panel.open').forEach(p=>p.classList.remove('open'));bd.classList.remove('show');};
 
   // Save button
   const btn=document.createElement('button');btn.className='btn-save';
@@ -1507,6 +1652,84 @@ function openInput(type){
   body.appendChild(btn);
 
   goTo('page-input');
+}
+
+// ══ HINT TOOLTIP ══
+function showHintTooltip(){
+  const cfg = CFGS[curType];
+  if(!cfg || !cfg.hints || !cfg.hints.length) return;
+  const content = document.getElementById('htp-content');
+  content.innerHTML = cfg.hints.map((h,i)=>{
+    const isWarn = h.type==='warn';
+    return `
+      ${i>0?'<div class="htp-divider"></div>':''}
+      <div class="htp-section">
+        <div class="htp-head ${isWarn?'warn':'info'}">${isWarn?'⚠️':'ℹ️'} ${h.title_id.replace(/⚠️ |ℹ️ /,'')}</div>
+        ${h.rows.map(r=>`
+          <div class="htp-row">• ${r.id}</div>
+          ${r.zh?`<div class="htp-row-zh">　${r.zh}</div>`:''}
+        `).join('')}
+      </div>`;
+  }).join('');
+
+  // 定位在 ℹ 按鈕附近
+  const btn = document.getElementById('hint-info-btn');
+  const popup = document.getElementById('hint-tooltip-popup');
+  popup.style.display = 'block';
+  document.getElementById('hint-tooltip-overlay').style.display = 'block';
+
+  const rect = btn.getBoundingClientRect();
+  const pw = Math.min(window.innerWidth * 0.88, 340);
+  let left = rect.left + rect.width/2 - pw/2;
+  left = Math.max(12, Math.min(left, window.innerWidth - pw - 12));
+  let top = rect.bottom + 8;
+  if(top + 300 > window.innerHeight) top = rect.top - 8 - popup.offsetHeight;
+  popup.style.left = left + 'px';
+  popup.style.top = top + 'px';
+  popup.style.width = pw + 'px';
+}
+
+function closeHintTooltip(){
+  document.getElementById('hint-tooltip-popup').style.display='none';
+  document.getElementById('hint-tooltip-overlay').style.display='none';
+}
+
+// ══ ROLLER STATUS (方案二：即時狀態) ══
+function getRollerStatus(type, vals){
+  if(type==='bp'){
+    const sys=vals.sys||0, dia=vals.dia||0;
+    if(sys>=180||dia>=120) return {icon:'🚨',id:'DARURAT! Tekanan sangat tinggi',zh:'緊急！血壓極高，立即通知家屬',bg:'#ffe0e0',color:'#c0392b'};
+    if(sys>=140||dia>=90)  return {icon:'⚠️',id:'Tekanan darah tinggi',zh:'血壓偏高，請通知家屬',bg:'#fff3e0',color:'#d35400'};
+    if(sys<90||dia<60)     return {icon:'⚠️',id:'Tekanan darah rendah',zh:'血壓偏低，請留意症狀',bg:'#fff3e0',color:'#d35400'};
+    return {icon:'✅',id:'Tekanan darah normal',zh:'血壓正常，很好！',bg:'#e8f8f0',color:'#27ae60'};
+  }
+  if(type==='spo2'){
+    const s=vals.spo2||0;
+    if(s<90)  return {icon:'🚨',id:'DARURAT! SpO₂ sangat rendah',zh:'緊急！血氧極低，立即就醫',bg:'#ffe0e0',color:'#c0392b'};
+    if(s<95)  return {icon:'⚠️',id:'SpO₂ rendah, awasi kondisi',zh:'血氧偏低，密切觀察',bg:'#fff3e0',color:'#d35400'};
+    return {icon:'✅',id:'SpO₂ normal',zh:'血氧正常，很好！',bg:'#e8f8f0',color:'#27ae60'};
+  }
+  if(type==='water'){
+    const w=vals.water||0;
+    if(w<800)  return {icon:'⚠️',id:'Kurang minum! Berikan air segera',zh:'飲水不足！請立即補充水分',bg:'#fff3e0',color:'#d35400'};
+    if(w>2500) return {icon:'⚠️',id:'Asupan air sangat banyak',zh:'飲水量偏多，若有腎臟問題請注意',bg:'#fff3e0',color:'#d35400'};
+    if(w>=1500)return {icon:'✅',id:'Asupan air cukup',zh:'飲水量充足，很棒！',bg:'#e8f8f0',color:'#27ae60'};
+    return {icon:'💧',id:'Asupan air kurang ideal',zh:'飲水量稍嫌不足，繼續加油',bg:'#e8f4fd',color:'#2980b9'};
+  }
+  if(type==='urine'){
+    const u=vals.urine||0;
+    if(u<400)  return {icon:'🚨',id:'Volume urin sangat sedikit!',zh:'排尿量極少，注意脫水或尿液滯留',bg:'#ffe0e0',color:'#c0392b'};
+    if(u>2500) return {icon:'⚠️',id:'Volume urin sangat banyak',zh:'排尿量偏多，可能為糖尿病或利尿劑',bg:'#fff3e0',color:'#d35400'};
+    return {icon:'✅',id:'Volume urin normal',zh:'排尿量正常',bg:'#e8f8f0',color:'#27ae60'};
+  }
+  if(type==='temp'){
+    const t=vals.temp||0;
+    if(t>=38.5) return {icon:'🚨',id:'Demam tinggi! Hubungi keluarga',zh:'高燒！請立即通知家屬',bg:'#ffe0e0',color:'#c0392b'};
+    if(t>=37.5) return {icon:'⚠️',id:'Demam ringan, pantau terus',zh:'輕微發燒，持續觀察',bg:'#fff3e0',color:'#d35400'};
+    if(t<35.5)  return {icon:'🚨',id:'Hipotermia! Cari bantuan segera',zh:'低體溫！請立即就醫',bg:'#ffe0e0',color:'#c0392b'};
+    return {icon:'✅',id:'Suhu tubuh normal',zh:'體溫正常',bg:'#e8f8f0',color:'#27ae60'};
+  }
+  return null;
 }
 
 function openHP(id){
@@ -1809,7 +2032,17 @@ function saveInput(){
       <div style="font-size:0.75em;color:var(--ink-lt)">${stats.stat_zh}</div>
     </div>`;
 
-  document.getElementById('ok-det').innerHTML=valLines+statHtml;
+  // 方案四：顏色狀態 badge
+  const statusObj = getRollerStatus(curType, vals);
+  const statusBadge = statusObj ? `
+    <div style="margin-bottom:12px;padding:12px 16px;border-radius:14px;
+      background:${statusObj.bg};text-align:center">
+      <div style="font-size:1.8rem;margin-bottom:2px">${statusObj.icon}</div>
+      <div style="font-weight:800;font-size:var(--fs-md);color:${statusObj.color}">${statusObj.id}</div>
+      <div style="font-size:var(--fs-xs);color:${statusObj.color};opacity:.8;margin-top:2px">${statusObj.zh}</div>
+    </div>` : '';
+
+  document.getElementById('ok-det').innerHTML=statusBadge+valLines+statHtml;
   document.getElementById('ok-time').textContent=`⏰ ${saveTime.toLocaleTimeString('zh-TW')} — ${saveTime.toLocaleDateString('zh-TW')}`;
   document.getElementById('ok-thx-id').textContent=thx.id;
   document.getElementById('ok-thx-zh').textContent=thx.zh;

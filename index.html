@@ -68,7 +68,7 @@ body::after{
 /* ══ PAGE SYSTEM ══ */
 .page{position:fixed;inset:0;height:100dvh;z-index:1;display:flex;flex-direction:column;
   transform:translateX(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
-  overflow:hidden;will-change:transform;z-index:1}
+  overflow:hidden;will-change:transform}
 .page.active{transform:translateX(0)}
 .page.out{transform:translateX(-100%)}
 
@@ -350,18 +350,16 @@ body::after{
    SUCCESS OVERLAY
 ══════════════════════════════════════ */
 #overlay-ok{position:fixed;inset:0;z-index:9990;background:rgba(74,58,74,0.4);
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .15s;backdrop-filter:blur(6px)}
-#overlay-ok.show{opacity:1;pointer-events:all}
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px)}
+#overlay-ok.show{display:flex}
 .ok-box{background:var(--wh);
   border:2.5px solid var(--pink-lt);
   border-radius:var(--r-lg);
   padding:clamp(22px,6vw,34px) clamp(20px,5vw,28px);
   text-align:center;width:88%;
-  box-shadow:0 16px 48px rgba(242,160,184,0.25);
-  transform:scale(0.88) translateY(10px);
-  transition:transform .18s cubic-bezier(.175,.885,.32,1.275)}
-#overlay-ok.show .ok-box{transform:scale(1) translateY(0)}
+  box-shadow:0 16px 48px rgba(242,160,184,0.25)}
+#overlay-ok.show .ok-box{}
 .ok-icon{font-size:clamp(2.4rem,8vw,3.2rem);display:block;margin-bottom:var(--sp-sm)}
 .ok-tid{font-family:'Nunito',sans-serif;font-size:var(--fs-xl);font-weight:900;
   color:var(--blue-dk);margin-bottom:2px;line-height:1.3}
@@ -373,6 +371,14 @@ body::after{
 .ok-thx-id{font-family:'Nunito',sans-serif;font-size:var(--fs-lg);font-weight:800;
   color:var(--pink-dk);margin-top:var(--sp-md);line-height:1.4}
 .ok-thx-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;margin-top:3px}
+.btn-ok-back{margin-top:var(--sp-md);width:100%;padding:clamp(13px,3.5vw,16px);
+  border:none;border-radius:var(--r-full);
+  background:linear-gradient(160deg,#f9c0d4 0%,#f07098 45%,#d9507a 100%);
+  color:#fff;font-family:'Nunito',sans-serif;font-weight:900;
+  font-size:var(--fs-md);cursor:pointer;letter-spacing:.5px;
+  box-shadow:0 4px 14px rgba(217,80,122,0.4),inset 0 1px 0 rgba(255,255,255,0.3);
+  transition:transform .14s,box-shadow .14s}
+.btn-ok-back:active{transform:scale(0.97);box-shadow:0 2px 6px rgba(217,80,122,0.3)}
 
 /* ══════════════════════════════════════
    PAGE 4 — ADMIN
@@ -489,14 +495,12 @@ body::after{
 .empty-i{font-size:clamp(2rem,7vw,2.8rem);margin-bottom:var(--sp-sm)}
 
 /* 確認對話框 */
-#confirm-dialog{position:fixed;inset:0;z-index:9995;display:flex;align-items:center;justify-content:center;
-  background:rgba(74,58,74,0.4);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
-#confirm-dialog.show{opacity:1;pointer-events:all}
+#confirm-dialog{position:fixed;inset:0;z-index:9995;display:none;align-items:center;justify-content:center;
+  background:rgba(74,58,74,0.4);backdrop-filter:blur(4px)}
+#confirm-dialog.show{display:flex}
 .confirm-box{background:#fff;border:2px solid var(--pink-lt);border-radius:var(--r-lg);
   padding:28px 24px;width:82%;text-align:center;
-  box-shadow:0 8px 32px rgba(242,160,184,0.25);
-  transform:scale(0.9);transition:transform .25s cubic-bezier(.175,.885,.32,1.275)}
-#confirm-dialog.show .confirm-box{transform:scale(1)}
+  box-shadow:0 8px 32px rgba(242,160,184,0.25)}
 .confirm-icon{font-size:2.2rem;margin-bottom:10px}
 .confirm-title{font-family:'Nunito',sans-serif;font-size:var(--fs-lg);font-weight:900;color:var(--ink);margin-bottom:6px}
 .confirm-sub{font-size:var(--fs-sm);color:var(--ink-lt);margin-bottom:20px;line-height:1.5}
@@ -508,18 +512,17 @@ body::after{
 .btn-ok-c{background:#f5d0d0;color:#9a3030}
 
 /* 必填提示彈窗 */
-#missing-alert{position:fixed;inset:0;z-index:9992;display:flex;align-items:center;justify-content:center;
-  background:rgba(74,58,74,0.35);backdrop-filter:blur(4px);
-  opacity:0;pointer-events:none;transition:opacity .2s}
-#missing-alert.show{opacity:1;pointer-events:all}
+#missing-alert{position:fixed;inset:0;z-index:9992;display:none;align-items:center;justify-content:center;
+  background:rgba(74,58,74,0.35);backdrop-filter:blur(4px)}
+#missing-alert.show{display:flex}
 .ma-box{background:#fff;border:2px solid var(--pink-lt);border-radius:var(--r-lg);
   padding:24px 22px;width:82%;text-align:center;
-  box-shadow:0 8px 28px rgba(242,160,184,0.28);
-  transform:scale(0.9);transition:transform .25s cubic-bezier(.175,.885,.32,1.275)}
-#missing-alert.show .ma-box{transform:scale(1)}
+  box-shadow:0 8px 28px rgba(242,160,184,0.28)}
 .ma-icon{font-size:2rem;margin-bottom:8px}
 .ma-title{font-family:'Nunito',sans-serif;font-size:var(--fs-lg);font-weight:900;
-  color:var(--ink);margin-bottom:6px}
+  color:var(--ink);margin-bottom:2px}
+.ma-title-zh{font-size:var(--fs-xs);color:var(--ink-lt);font-weight:400;
+  margin-bottom:var(--sp-sm)}
 .ma-list{font-size:var(--fs-sm);color:var(--pink-dk);font-weight:700;
   margin-bottom:16px;line-height:1.8}
 .ma-btn{padding:11px 32px;border:none;border-radius:var(--r-full);
@@ -692,8 +695,7 @@ body::after{
 <!-- ══ PAGE 4: ADMIN ══ -->
 <div class="page" id="page-admin">
   <div class="menu-header">
-    <div class="mh-title">📊 Panel Pengelola</div>
-    <div class="mh-zh">管理者後台</div>
+    <div class="mh-title">📊 管理者後台</div>
   </div>
   <div id="adm-login">
     <div class="al-wrap">
@@ -760,13 +762,15 @@ body::after{
     <div class="ok-time" id="ok-time"></div>
     <div class="ok-thx-id" id="ok-thx-id"></div>
     <div class="ok-thx-zh" id="ok-thx-zh"></div>
+    <button class="btn-ok-back" onclick="dismissOkAndGoBack()">✔ OK · 返回</button>
   </div>
 </div>
 <!-- 必填提示 -->
 <div id="missing-alert">
   <div class="ma-box">
     <div class="ma-icon">⚠️</div>
-    <div class="ma-title">Harap lengkapi semua! / 請完成所有欄位！</div>
+    <div class="ma-title">Harap lengkapi semua!</div>
+    <div class="ma-title-zh">請完成所有欄位！</div>
     <div class="ma-list" id="missing-list"></div>
     <div id="missing-btns" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
@@ -1019,10 +1023,10 @@ const CFGS = {
       {key:'bowel_count',lbl_id:'Berapa kali?',lbl_zh:'今天幾次？',cols:3,showIf:{key:'bowel_yn',val:'yes'},
         opts:[{v:'1',i:'1️⃣',id:'1次',zh:''},{v:'2',i:'2️⃣',id:'2次',zh:''},{v:'3',i:'3️⃣',id:'3次',zh:''},
               {v:'4',i:'4️⃣',id:'4次',zh:''},{v:'5+',i:'🔢',id:'5次以上',zh:''}]},
-      {key:'bowel_texture',lbl_id:'Konsistensi / 性狀',lbl_zh:'糞便性狀（可複選）',cols:2,multi:true,showIf:{key:'bowel_yn',val:'yes'},
+      {key:'bowel_texture',lbl_id:'Konsistensi',lbl_zh:'糞便性狀（可複選）',cols:2,multi:true,showIf:{key:'bowel_yn',val:'yes'},
         opts:[{v:'hard',i:'🪨',id:'Keras / 硬',zh:'乾硬費力'},{v:'normal',i:'🟤',id:'Normal / 正常',zh:'成形順暢'},
               {v:'soft',i:'💩',id:'Lembek / 軟',zh:'軟爛鬆散'},{v:'watery',i:'💧',id:'Cair / 稀',zh:'水狀糊狀'}]},
-      {key:'bowel_color',lbl_id:'Warna / 顏色',lbl_zh:'糞便顏色（可複選）',cols:3,multi:true,showIf:{key:'bowel_yn',val:'yes'},
+      {key:'bowel_color',lbl_id:'Warna',lbl_zh:'糞便顏色（可複選）',cols:3,multi:true,showIf:{key:'bowel_yn',val:'yes'},
         opts:[{v:'brown',i:'🟫',id:'Coklat/棕',zh:'正常'},{v:'black',i:'⬛',id:'Hitam/黑',zh:'注意出血'},
               {v:'red',i:'🔴',id:'Merah/紅',zh:'注意出血'},{v:'yellow',i:'🟡',id:'Kuning/黃',zh:''},
               {v:'white',i:'⚪',id:'Putih/白',zh:'注意肝膽'},{v:'green',i:'🟢',id:'Hijau/綠',zh:''}]},
@@ -1042,11 +1046,11 @@ const CFGS = {
     sub_id:'Pilih kondisi wajah Bapak hari ini',
     type:'choice',
     sections:[
-      {key:'face_color',lbl_id:'Warna Wajah / 臉色',lbl_zh:'觀察爸爸的臉色',cols:2,
+      {key:'face_color',lbl_id:'Warna Wajah',lbl_zh:'觀察爸爸的臉色',cols:2,
         opts:[{v:'normal',i:'😊',id:'Normal / 正常紅潤',zh:'氣色好'},{v:'pale',i:'😶',id:'Pucat / 蒼白',zh:'無血色'},
               {v:'yellow',i:'😟',id:'Kuning / 偏黃',zh:'皮膚眼白黃'},{v:'flush',i:'🥵',id:'Merah / 潮紅',zh:'臉紅發熱感'},
               {v:'dark',i:'😔',id:'Gelap / 暗沉',zh:'臉色暗無光'},{v:'blue',i:'😨',id:'Kebiruan / 發紺',zh:'嘴唇藍紫色'}]},
-      {key:'face_eye',lbl_id:'Kondisi Mata / 眼睛狀況',lbl_zh:'',cols:2,
+      {key:'face_eye',lbl_id:'Kondisi Mata',lbl_zh:'眼睛狀況',cols:2,
         opts:[{v:'clear',i:'👁️',id:'Jernih / 清亮',zh:'眼神清晰'},{v:'dull',i:'😑',id:'Sayu / 無神',zh:'眼神無光'},
               {v:'yellow',i:'🟡',id:'Kuning / 黃眼白',zh:'黃疸警示'},{v:'red',i:'🔴',id:'Merah / 紅眼',zh:'充血或感染'}]},
     ],
@@ -1227,65 +1231,59 @@ async function loadWeather(){
 // 讓手機返回鍵也能正確導航
 
 // ══ PAGE STACK NAVIGATION ══
-// 用自己的 stack 管理，不依賴 history API 做切換
+// 純 stack 管理，完全不碰 History API，零雙跳風險
 const pageStack = ['page-home'];
 
-function _doSwitch(fromId, toId){
+function _doSwitch(fromId, toId, isBack){
   const p=document.getElementById(fromId), n=document.getElementById(toId);
   if(!p||!n||fromId===toId) return;
-  p.classList.remove('active'); p.classList.add('out');
+
+  // 目標頁瞬間定位到起始位（不帶 transition）
+  n.style.transition='none';
+  n.style.transform = isBack ? 'translateX(-100%)' : 'translateX(100%)';
+  n.classList.remove('active','out');
+  n.getBoundingClientRect(); // force reflow
+
+  // 返回時：當前頁往右滑出（不往左），目標頁從左滑入 → 單方向
+  // 前進時：當前頁往左滑出，目標頁從右滑入 → 單方向
+  n.style.transition='';
+  n.style.transform='';
+
+  if(isBack){
+    // 當前頁往右飛走
+    p.style.transition='transform .38s cubic-bezier(.4,0,.2,1)';
+    p.style.transform='translateX(100%)';
+  } else {
+    p.classList.remove('active');
+    p.classList.add('out');
+  }
   n.classList.add('active');
-  setTimeout(()=>p.classList.remove('out'), 420);
+
+  setTimeout(()=>{
+    p.classList.remove('active','out');
+    p.style.transition='';
+    p.style.transform='';
+  }, 420);
+
   curPage=toId;
 }
 
-function switchPage(id){
-  _doSwitch(curPage, id);
-}
-
 function goTo(id){
-  _doSwitch(curPage, id);
+  _doSwitch(curPage, id, false);
   pageStack.push(id);
-  // 讓瀏覽器 history 一直有東西可 back（只需一個哨兵 entry）
-  history.pushState({sentinel:true}, '', '');
 }
 
 function goBack(){
   document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
-  _goBackInternal();
-}
-
-function _goBackInternal(){
-  // 關閉彈窗
-  const ovEl=document.getElementById('overlay-ok');
-  if(ovEl.classList.contains('show')){ ovEl.classList.remove('show'); return; }
+  document.getElementById('overlay-ok')?.classList.remove('show');
   document.getElementById('missing-alert').classList.remove('show');
   document.getElementById('confirm-dialog').classList.remove('show');
-
-  // 重置儲存按鈕
   const sb=document.getElementById('save-btn');
   if(sb){sb.disabled=false;sb.style.opacity='1';
     sb.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';}
-
-  // Pop stack
   if(pageStack.length>1) pageStack.pop();
-  const target=pageStack[pageStack.length-1];
-  _doSwitch(curPage, target);
+  _doSwitch(curPage, pageStack[pageStack.length-1], true);
 }
-
-// 攔截手機返回鍵 — 每次 back 後補回一個 entry，讓返回鍵永遠有效
-window.addEventListener('popstate', function(){
-  _goBackInternal();
-  // 若還有頁面可返回，補回哨兵 entry
-  if(pageStack.length>1){
-    history.pushState({sentinel:true},'','');
-  }
-});
-
-// 初始化
-window.addEventListener('DOMContentLoaded', ()=>{
-  history.replaceState({sentinel:true},'','');
-});
 
 
 // ══ HIDDEN ADMIN ══
@@ -1744,7 +1742,7 @@ function saveInput(){
 
     // ── 必填驗證：每個可見的 section 都要有選擇 ──
     if(cfg2.sections){
-      const missing=[], missingKeys=[];
+      const missing_id=[], missing_zh=[], missingKeys=[];
       for(const sec of cfg2.sections){
         if(sec.showIf){
           const depVal=vals[sec.showIf.key];
@@ -1754,12 +1752,13 @@ function saveInput(){
         const v=vals[sec.key];
         const isEmpty=!v||(Array.isArray(v)&&v.length===0);
         if(isEmpty){
-          missing.push(sec.lbl_zh||sec.lbl_id);
+          missing_id.push(sec.lbl_id||sec.lbl_zh);
+          missing_zh.push(sec.lbl_zh||sec.lbl_id);
           missingKeys.push(sec.key);
         }
       }
-      if(missing.length>0){
-        showMissingAlert(missing, missingKeys);
+      if(missing_id.length>0){
+        showMissingAlert(missing_id, missing_zh, missingKeys);
         return;
       }
     }
@@ -1781,42 +1780,45 @@ function saveInput(){
   // 成功畫面
   const thx=THANKS[Math.floor(Math.random()*THANKS.length)];
   document.getElementById('ok-tid').textContent=cfg.title_id+' — Berhasil Disimpan!';
-  document.getElementById('ok-tzh').textContent=cfg.title_zh+' 記錄完成';
+  document.getElementById('ok-tzh').textContent=cfg.title_zh+' — 儲存成功！';
 
   // 數值行
   let valLines='';
   if(cfg.type==='choice'){
-    // choice 類型：顯示每個選擇結果
-    const CHOICE_LABELS = {
-      bowel_yn:{yes:'有排便',no:'沒有排便'},
-      bowel_count:{},bowel_texture:{hard:'硬',normal:'正常',soft:'軟',watery:'稀'},
-      bowel_color:{brown:'棕色',black:'黑色',red:'紅色',yellow:'黃色',white:'白色',green:'綠色'},
-      face_color:{normal:'正常紅潤',pale:'蒼白',yellow:'偏黃',flush:'潮紅',dark:'暗沉',blue:'發紺'},
-      face_eye:{clear:'清亮',dull:'無神',yellow:'黃眼白',red:'充血'},
-      walk:{yes:'有去散步',no:'沒有散步'},
-      cough:{none:'沒有咳嗽',mild:'輕微咳嗽',often:'頻繁咳嗽',severe:'嚴重咳嗽'},
-      phlegm:{none:'沒有痰',clear:'透明痰',white:'白色痰',yellow:'黃色痰',green:'綠色痰',blood:'帶血痰'},
-      energy:{good:'有力氣',ok:'普通',weak:'沒力氣',vweak:'非常虛弱'},
+    const CHOICE_LABELS_ID = {
+      bowel_yn:{yes:'Ada BAB',no:'Tidak ada BAB'},
+      bowel_texture:{hard:'Keras / 硬',normal:'Normal / 正常',soft:'Lunak / 軟',watery:'Cair / 稀'},
+      bowel_color:{brown:'Coklat / 棕色',black:'Hitam / 黑色',red:'Merah / 紅色',yellow:'Kuning / 黃色',white:'Putih / 白色',green:'Hijau / 綠色'},
+      face_color:{normal:'Normal / 正常紅潤',pale:'Pucat / 蒼白',yellow:'Kuning / 偏黃',flush:'Merah / 潮紅',dark:'Gelap / 暗沉',blue:'Kebiruan / 發紺'},
+      face_eye:{clear:'Jernih / 清亮',dull:'Sayu / 無神',yellow:'Kuning / 黃眼白',red:'Merah / 充血'},
+      walk:{yes:'Sudah jalan / 有去散步',no:'Belum jalan / 沒有散步'},
+      cough:{none:'Tidak batuk / 沒有咳嗽',mild:'Sedikit / 輕微咳嗽',often:'Sering / 頻繁咳嗽',severe:'Parah / 嚴重咳嗽'},
+      phlegm:{none:'Tidak ada / 沒有痰',clear:'Bening / 透明痰',white:'Putih / 白色痰',yellow:'Kuning / 黃色痰',green:'Hijau / 綠色痰',blood:'Berdarah / 帶血痰'},
+      energy:{good:'Baik / 有力氣',ok:'Biasa / 普通',weak:'Lemah / 沒力氣',vweak:'Sangat lemah / 非常虛弱'},
     };
     cfg.sections.forEach(sec=>{
       const v=vals[sec.key];
       if(!v||(Array.isArray(v)&&v.length===0)) return;
       const display=Array.isArray(v)
-        ? v.map(x=>(CHOICE_LABELS[sec.key]?.[x]||x)).join('、')
-        : (CHOICE_LABELS[sec.key]?.[v]||v);
-      valLines+=`<div style="margin-bottom:4px"><span style="color:var(--ink-lt);font-size:0.85em">${sec.lbl_zh||sec.lbl_id}：</span><span style="font-weight:700;color:var(--ink)">${display}</span></div>`;
+        ? v.map(x=>(CHOICE_LABELS_ID[sec.key]?.[x]||x)).join('、')
+        : (CHOICE_LABELS_ID[sec.key]?.[v]||v);
+      valLines+=`<div style="margin-bottom:4px">
+        <div style="color:var(--ink-lt);font-size:0.85em;font-weight:600">${sec.lbl_id}</div>
+        <div style="color:var(--ink-xlt);font-size:0.75em;margin-bottom:2px">${sec.lbl_zh}</div>
+        <div style="font-weight:700;color:var(--ink)">${display}</div>
+      </div>`;
     });
   } else if(cfg.rollers){
-    cfg.rollers.forEach(r=>{valLines+=`<div style="font-weight:700;color:var(--ink)">${r.name_id} (${r.name_zh})：${vals[r.key]} ${r.unit}</div>`;});
+    cfg.rollers.forEach(r=>{valLines+=`<div style="font-weight:700;color:var(--ink)">${r.name_id}<br><span style="font-size:0.8em;color:var(--ink-lt);font-weight:400">${r.name_zh}</span> ： ${vals[r.key]} ${r.unit}</div>`;});
   }
 
   // 統計行
   const statHtml=`
     <div style="margin-top:10px;padding:10px 14px;background:var(--mint-lt);border-radius:12px;text-align:left;line-height:1.8">
-      <div style="font-size:0.78em;color:var(--mint-dk);font-weight:700">📊 ${stats.count_id}</div>
-      <div style="font-size:0.72em;color:var(--ink-lt)">${stats.count_zh}</div>
+      <div style="font-size:0.85em;color:var(--mint-dk);font-weight:700">📊 ${stats.count_id}</div>
+      <div style="font-size:0.75em;color:var(--ink-lt)">${stats.count_zh}</div>
       <div style="font-size:0.85em;color:var(--pink-dk);font-weight:800;margin-top:4px">${stats.stat_id}</div>
-      <div style="font-size:0.72em;color:var(--ink-lt)">${stats.stat_zh}</div>
+      <div style="font-size:0.75em;color:var(--ink-lt)">${stats.stat_zh}</div>
     </div>`;
 
   document.getElementById('ok-det').innerHTML=valLines+statHtml;
@@ -1831,21 +1833,8 @@ function saveInput(){
     saveBtnEl.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';
   }
   const ov=document.getElementById('overlay-ok');ov.classList.add('show');
-  // 倒數提示
-  const okTimeEl=document.getElementById('ok-time');
-  let countdown=2;
-  const cdTimer=setInterval(()=>{
-    countdown--;
-    if(countdown<=0){
-      clearInterval(cdTimer);
-      if(okTimeEl) okTimeEl.setAttribute('data-cd','');
-    } else {
-      if(okTimeEl) okTimeEl.setAttribute('data-cd', countdown);
-    }
-  },1000);
 
   // ── GPS 完全背景作業，不阻擋任何流程 ──
-  // 用 setTimeout 0 確保 UI 先更新完才開始 GPS
   setTimeout(()=>{
     getGPSAddr().then(gps=>{
       const recs2=getRecords();
@@ -1854,24 +1843,22 @@ function saveInput(){
         recs2[i].measureGPS=gps;
         localStorage.setItem('health_records',JSON.stringify(recs2));
       }
-    }).catch(()=>{}); // GPS 失敗也不影響任何東西
+    }).catch(()=>{});
   }, 0);
-
-  // 2 秒後自動跳回（直接 pop stack，避免先關 overlay 再跳的雙跳問題）
-  setTimeout(()=>{
-    ov.classList.remove('show');
-    document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
-    document.getElementById('missing-alert').classList.remove('show');
-    document.getElementById('confirm-dialog').classList.remove('show');
-    if(pageStack.length>1) pageStack.pop();
-    const target=pageStack[pageStack.length-1];
-    _doSwitch(curPage, target);
-  }, 2000);
+  // 等使用者按 OK 才跳回（不自動跳）
 }
+
+function dismissOkAndGoBack(){
+  document.getElementById('overlay-ok').classList.remove('show');
+  document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
+  if(pageStack.length>1) pageStack.pop();
+  _doSwitch(curPage, pageStack[pageStack.length-1], true);
+}
+
 // ══ END SESSION ══
 function endSession(){
-  showToast('✅ Selesai! Terima kasih / 測量結束，謝謝！');
-  setTimeout(()=>{ _goBackInternal(); }, 600);
+  showToast('✅ 測量結束，謝謝！');
+  goBack();
 }
 
 // ══ ADMIN ══
@@ -1889,7 +1876,7 @@ function doLogout(){
   document.getElementById('adm-login').style.display='block';
   document.getElementById('adm-main').style.display='none';
   document.getElementById('pwd-input').value='';
-  _goBackInternal();
+  goBack();
 }
 
 // ══ FILTER STATE ══
@@ -2081,16 +2068,19 @@ function scrollToSection(key){
   }
 }
 
-function showMissingAlert(missing, missingKeys){
+function showMissingAlert(missing_id, missing_zh, missingKeys){
   const list=document.getElementById('missing-list');
-  list.innerHTML=missing.map(m=>`<div style="color:var(--pink-dk);font-weight:700">• ${m}</div>`).join('');
-  // 每個缺少欄位一個跳轉按鈕
+  list.innerHTML=missing_id.map((m,i)=>`
+    <div style="margin-bottom:6px">
+      <div style="color:var(--pink-dk);font-weight:700;font-size:var(--fs-sm)">• ${m}</div>
+      <div style="color:var(--ink-xlt);font-size:var(--fs-xs);padding-left:12px">${missing_zh[i]}</div>
+    </div>`).join('');
   const btns=document.getElementById('missing-btns');
   btns.innerHTML='';
   missingKeys.forEach((key,i)=>{
     const btn=document.createElement('button');
-    btn.style.cssText=`padding:10px 16px;border:1.5px solid rgba(242,160,184,0.6);border-radius:30px;background:rgba(255,255,255,0.9);font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;color:var(--pink-dk);cursor:pointer;`;
-    btn.textContent=`➡ 跳去填：${missing[i]}`;
+    btn.style.cssText=`padding:10px 16px;border:1.5px solid rgba(242,160,184,0.6);border-radius:30px;background:rgba(255,255,255,0.9);font-family:'Nunito',sans-serif;cursor:pointer;text-align:left;width:100%;`;
+    btn.innerHTML=`<div style="font-size:var(--fs-sm);font-weight:800;color:var(--pink-dk)">➡ Isi: ${missing_id[i]}</div><div style="font-size:var(--fs-xs);color:var(--ink-lt);font-weight:400;margin-top:1px">${missing_zh[i]}</div>`;
     btn.onclick=()=>scrollToSection(key);
     btns.appendChild(btn);
   });

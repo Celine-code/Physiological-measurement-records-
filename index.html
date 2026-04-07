@@ -137,7 +137,7 @@ body::after{
 
 /* Start button */
 .home-bottom{padding:0 var(--sp-lg) max(clamp(20px,6vh,36px), env(safe-area-inset-bottom, 20px));position:relative;z-index:1}
-.btn-start{width:100%;padding:clamp(15px,4.5vw,22px);
+.btn-start{width:85%;margin:0 auto;padding:clamp(12px,3.5vw,16px);
   border:2px solid rgba(242,160,184,0.6);
   border-radius:var(--r-full);
   background:rgba(255,255,255,0.82);
@@ -151,7 +151,7 @@ body::after{
 .bs-zh{font-size:var(--fs-xs);opacity:.7;font-weight:500;
   font-family:'Noto Sans TC',sans-serif}
 
-#admin-trigger{position:fixed;bottom:0;right:0;width:64px;height:64px;z-index:50;opacity:0}
+#admin-trigger{position:fixed;bottom:0;right:0;width:36px;height:36px;z-index:50;opacity:0}
 
 /* ══════════════════════════════════════
    PAGE 2 — MENU
@@ -213,7 +213,7 @@ body::after{
 .mc-zh{font-size:var(--fs-xs);color:var(--ink-lt);font-weight:500}
 
 /* End button — dashed like the image */
-.btn-end{width:100%;padding:clamp(15px,4.5vw,20px);
+.btn-end{width:80%;margin:0 auto;display:block;padding:clamp(11px,3vw,14px);
   border:2px solid rgba(242,160,184,0.6);border-radius:var(--r-full);
   background:rgba(255,255,255,0.82);backdrop-filter:blur(10px);
   color:var(--pink-dk);font-family:'Nunito',sans-serif;font-weight:900;
@@ -290,7 +290,7 @@ body::after{
   box-shadow:0 2px 8px rgba(122,174,208,0.25)}
 
 /* Save button */
-.btn-save{width:100%;padding:clamp(15px,4.5vw,20px);
+.btn-save{width:80%;margin:0 auto;display:block;padding:clamp(11px,3vw,14px);
   border:2px solid rgba(242,160,184,0.6);border-radius:var(--r-full);
   background:rgba(255,255,255,0.82);
   backdrop-filter:blur(10px);
@@ -337,7 +337,7 @@ body::after{
 ══════════════════════════════════════ */
 #overlay-ok{position:fixed;inset:0;z-index:9990;background:rgba(74,58,74,0.4);
   display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(6px)}
+  opacity:0;pointer-events:none;transition:opacity .15s;backdrop-filter:blur(6px)}
 #overlay-ok.show{opacity:1;pointer-events:all}
 .ok-box{background:var(--wh);
   border:2.5px solid var(--pink-lt);
@@ -346,7 +346,7 @@ body::after{
   text-align:center;width:88%;
   box-shadow:0 16px 48px rgba(242,160,184,0.25);
   transform:scale(0.88) translateY(10px);
-  transition:transform .3s cubic-bezier(.175,.885,.32,1.275)}
+  transition:transform .18s cubic-bezier(.175,.885,.32,1.275)}
 #overlay-ok.show .ok-box{transform:scale(1) translateY(0)}
 .ok-icon{font-size:clamp(2.4rem,8vw,3.2rem);display:block;margin-bottom:var(--sp-sm)}
 .ok-tid{font-family:'Nunito',sans-serif;font-size:var(--fs-xl);font-weight:900;
@@ -492,6 +492,30 @@ body::after{
 .confirm-btns button:active{transform:scale(0.97)}
 .btn-cancel-c{background:var(--paper2);color:var(--ink-lt)}
 .btn-ok-c{background:#f5d0d0;color:#9a3030}
+
+/* 必填提示彈窗 */
+#missing-alert{position:fixed;inset:0;z-index:9992;display:flex;align-items:center;justify-content:center;
+  background:rgba(74,58,74,0.35);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .2s}
+#missing-alert.show{opacity:1;pointer-events:all}
+.ma-box{background:#fff;border:2px solid var(--pink-lt);border-radius:var(--r-lg);
+  padding:24px 22px;width:82%;text-align:center;
+  box-shadow:0 8px 28px rgba(242,160,184,0.28);
+  transform:scale(0.9);transition:transform .25s cubic-bezier(.175,.885,.32,1.275)}
+#missing-alert.show .ma-box{transform:scale(1)}
+.ma-icon{font-size:2rem;margin-bottom:8px}
+.ma-title{font-family:'Nunito',sans-serif;font-size:var(--fs-lg);font-weight:900;
+  color:var(--ink);margin-bottom:6px}
+.ma-list{font-size:var(--fs-sm);color:var(--pink-dk);font-weight:700;
+  margin-bottom:16px;line-height:1.8}
+.ma-btn{padding:11px 32px;border:none;border-radius:var(--r-full);
+  background:rgba(255,255,255,0.9);border:1.5px solid rgba(242,160,184,0.6);
+  color:var(--pink-dk);font-family:'Nunito',sans-serif;font-size:var(--fs-md);
+  font-weight:800;cursor:pointer}
+
+/* 儲存旋轉動畫 */
+@keyframes spin{0%{display:inline-block;transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.save-spin{display:inline-block;animation:spin 1s linear infinite}
 
 /* TOAST */
 #toast{position:fixed;bottom:max(clamp(18px,5vw,28px), env(safe-area-inset-bottom, 18px));left:50%;
@@ -724,6 +748,18 @@ body::after{
     <div class="ok-thx-zh" id="ok-thx-zh"></div>
   </div>
 </div>
+<!-- 必填提示 -->
+<div id="missing-alert">
+  <div class="ma-box">
+    <div class="ma-icon">⚠️</div>
+    <div class="ma-title">Harap lengkapi semua! / 請完成所有欄位！</div>
+    <div class="ma-list" id="missing-list"></div>
+    <button class="ma-btn" onclick="document.getElementById('missing-alert').classList.remove('show');const sb=document.getElementById('save-btn');if(sb){sb.disabled=false;sb.style.opacity='1';sb.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';}">
+      OK，回去填 / Kembali
+    </button>
+  </div>
+</div>
+
 <!-- 確認對話框 -->
 <div id="confirm-dialog">
   <div class="confirm-box">
@@ -1175,19 +1211,65 @@ async function loadWeather(){
 
 
 // ══ NAVIGATION ══
+// ══ NAVIGATION with History API ══
+// 讓手機返回鍵也能正確導航
+
 function goTo(id){
-  const p=document.getElementById(curPage),n=document.getElementById(id);
-  p.classList.remove('active');p.classList.add('out');
+  const p=document.getElementById(curPage), n=document.getElementById(id);
+  p.classList.remove('active'); p.classList.add('out');
   n.classList.add('active');
-  setTimeout(()=>p.classList.remove('out'),420);
+  setTimeout(()=>p.classList.remove('out'), 420);
   curPage=id;
+  // 推入 history，讓返回鍵可用
+  history.pushState({page: id}, '', '');
 }
+
 function goBack(){
   document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
-  document.getElementById(curPage).classList.remove('active');
-  document.getElementById('page-menu').classList.add('active');
-  curPage='page-menu';
+  // 觸發 history back，會被 popstate 攔截
+  history.back();
 }
+
+// 攔截手機/瀏覽器返回鍵
+window.addEventListener('popstate', function(e){
+  // 關閉任何開啟的彈窗
+  document.getElementById('overlay-ok').classList.remove('show');
+  document.getElementById('missing-alert').classList.remove('show');
+  document.getElementById('confirm-dialog').classList.remove('show');
+  document.querySelectorAll('.hint-panel,.hint-bd').forEach(el=>el.remove());
+
+  // 重置儲存按鈕
+  const sb=document.getElementById('save-btn');
+  if(sb){
+    sb.disabled=false; sb.style.opacity='1';
+    sb.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';
+  }
+
+  // 決定要去哪一頁
+  const from=curPage;
+  let target='page-home';
+
+  if(from==='page-input')  target='page-menu';
+  else if(from==='page-menu')  target='page-home';
+  else if(from==='page-admin') target='page-home';
+  else target='page-home';
+
+  // 切換頁面（不 pushState，避免無限循環）
+  const p=document.getElementById(from), n=document.getElementById(target);
+  if(p) { p.classList.remove('active'); p.classList.add('out'); setTimeout(()=>p.classList.remove('out'),420); }
+  if(n) n.classList.add('active');
+  curPage=target;
+
+  // 確保首頁永遠有一個 history entry（防止返回到上一個頁面）
+  if(target==='page-home'){
+    history.replaceState({page:'page-home'}, '', '');
+  }
+});
+
+// 初始化：讓首頁有 history entry
+window.addEventListener('DOMContentLoaded', ()=>{
+  history.replaceState({page:'page-home'}, '', '');
+});
 
 // ══ HIDDEN ADMIN ══
 function secretTap(){
@@ -1400,8 +1482,16 @@ function openInput(type){
 
   // Save button
   const btn=document.createElement('button');btn.className='btn-save';
+  btn.id='save-btn';
   btn.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';
-  btn.onclick=saveInput;
+  btn.onclick=()=>{
+    // 立即按鈕回饋
+    btn.disabled=true;
+    btn.innerHTML='<span class="btn-save-id" style="display:flex;align-items:center;justify-content:center;gap:8px"><span class="save-spin">⏳</span> Menyimpan…</span><span class="btn-save-zh">儲存中，請稍候…</span>';
+    btn.style.opacity='0.75';
+    // 短暫延遲讓畫面先更新，再執行儲存
+    requestAnimationFrame(()=>requestAnimationFrame(()=>saveInput()));
+  };
   body.appendChild(btn);
 
   goTo('page-input');
@@ -1624,8 +1714,28 @@ function saveInput(){
   const cfg2=CFGS[curType];
   const vals={};
   if(cfg2.type==='choice'){
-    // 從 choiceVals 取值
     Object.assign(vals, choiceVals);
+
+    // ── 必填驗證：每個可見的 section 都要有選擇 ──
+    if(cfg2.sections){
+      const missing=[];
+      for(const sec of cfg2.sections){
+        // 檢查 showIf：若依賴欄位沒選對應值，此欄位不需填
+        if(sec.showIf){
+          const depVal=vals[sec.showIf.key];
+          const depMatch=Array.isArray(depVal)?depVal.includes(sec.showIf.val):depVal===sec.showIf.val;
+          if(!depMatch) continue; // 隱藏中，跳過
+        }
+        const v=vals[sec.key];
+        const isEmpty=!v||(Array.isArray(v)&&v.length===0);
+        if(isEmpty) missing.push(sec.lbl_zh||sec.lbl_id);
+      }
+      if(missing.length>0){
+        // 顯示提示
+        showMissingAlert(missing);
+        return; // 停止儲存
+      }
+    }
   } else {
     document.querySelectorAll('#input-body .drum').forEach(d=>{vals[d.dataset.key]=d.dataset.selected;});
   }
@@ -1686,6 +1796,13 @@ function saveInput(){
   document.getElementById('ok-time').textContent=`⏰ ${saveTime.toLocaleTimeString('zh-TW')} — ${saveTime.toLocaleDateString('zh-TW')}`;
   document.getElementById('ok-thx-id').textContent=thx.id;
   document.getElementById('ok-thx-zh').textContent=thx.zh;
+  // 重置儲存按鈕
+  const saveBtnEl=document.getElementById('save-btn');
+  if(saveBtnEl){
+    saveBtnEl.disabled=false;
+    saveBtnEl.style.opacity='1';
+    saveBtnEl.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';
+  }
   const ov=document.getElementById('overlay-ok');ov.classList.add('show');
 
   // 背景取得GPS地址
@@ -1698,27 +1815,19 @@ function saveInput(){
   // 4秒後自動關閉（讓外勞有時間看統計）
   setTimeout(()=>{
     ov.classList.remove('show');
-    document.getElementById(curPage).classList.remove('active');
-    document.getElementById('page-menu').classList.add('active');
-    curPage='page-menu';
     document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
+    goTo('page-menu');
   },4000);
 }
 // ══ END SESSION ══
 function endSession(){
   showToast('✅ Selesai! Terima kasih / 測量結束，謝謝！');
-  setTimeout(()=>{
-    document.getElementById(curPage).classList.remove('active');
-    document.getElementById('page-home').classList.add('active');
-    curPage='page-home';
-  },600);
+  setTimeout(()=>{ goTo('page-home'); }, 600);
 }
 
 // ══ ADMIN ══
 function openAdmin(){
-  document.getElementById(curPage).classList.remove('active');
-  document.getElementById('page-admin').classList.add('active');
-  curPage='page-admin';
+  goTo('page-admin');
 }
 function doLogin(){
   if(document.getElementById('pwd-input').value===ADMIN_PWD){
@@ -1731,9 +1840,7 @@ function doLogout(){
   document.getElementById('adm-login').style.display='block';
   document.getElementById('adm-main').style.display='none';
   document.getElementById('pwd-input').value='';
-  document.getElementById('page-admin').classList.remove('active');
-  document.getElementById('page-home').classList.add('active');
-  curPage='page-home';
+  goTo('page-home');
 }
 
 // ══ FILTER STATE ══
@@ -1888,6 +1995,12 @@ function renderAdmin(){
       <div class="rc-grid">${vh}</div>
     </div>`;
   }).join('');
+}
+
+function showMissingAlert(missing){
+  const list=document.getElementById('missing-list');
+  list.innerHTML=missing.map(m=>`<div>• ${m}</div>`).join('');
+  document.getElementById('missing-alert').classList.add('show');
 }
 
 function clearAll(){

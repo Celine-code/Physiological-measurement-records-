@@ -233,14 +233,15 @@ body::after{
 #page-input{background:var(--paper);display:flex;flex-direction:column}
 
 .input-hdr{background:var(--wh);border-bottom:1.5px solid var(--pink-lt);
-  padding:clamp(36px,9vw,46px) var(--sp-md) var(--sp-sm);flex-shrink:0}
-.back-btn{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-sm);
-  color:var(--ink-lt);cursor:pointer;margin-bottom:var(--sp-sm);
-  background:none;border:none;font-family:inherit;font-weight:600}
+  padding:clamp(28px,7vw,38px) var(--sp-md) var(--sp-xs);flex-shrink:0;text-align:center;position:relative}
+.back-btn{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-xs);
+  color:var(--ink-lt);cursor:pointer;margin-bottom:var(--sp-xs);
+  background:none;border:none;font-family:inherit;font-weight:600;
+  position:absolute;left:var(--sp-md);top:clamp(10px,3vw,14px)}
 .ih-id{font-family:'Nunito',sans-serif;font-size:var(--fs-xl);font-weight:900;
   color:var(--blue-dk);line-height:1.2}
-.ih-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;margin-top:2px}
-.ih-sub{font-size:var(--fs-sm);color:var(--ink-lt);margin-top:var(--sp-xs);font-weight:500}
+.ih-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;margin-top:1px}
+.ih-sub{font-size:var(--fs-sm);color:var(--ink-lt);margin-top:1px;font-weight:500}
 
 .input-body{flex:1;overflow-y:auto;padding:var(--sp-md) var(--sp-md) max(var(--sp-md), env(safe-area-inset-bottom, 16px));
   display:flex;flex-direction:column;gap:var(--sp-sm);-webkit-overflow-scrolling:touch}
@@ -431,18 +432,19 @@ body::after{
 /* ── Choice Input ── */
 .choice-section{background:var(--wh);border:1.5px solid var(--pink-lt);border-radius:var(--r-md);
   padding:var(--sp-md);box-shadow:0 3px 12px rgba(242,160,184,0.1)}
-.cs-lbl{font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:800;color:var(--ink);margin-bottom:2px}
+.cs-lbl{font-family:'Nunito',sans-serif;font-size:var(--fs-md);font-weight:800;color:var(--ink);margin-bottom:2px}
 .cs-sub{font-size:var(--fs-xs);color:var(--ink-xlt);margin-bottom:var(--sp-sm)}
 .choice-grid{display:grid;gap:8px;margin-bottom:0}
 .choice-grid.g2{grid-template-columns:1fr 1fr}
 .choice-grid.g3{grid-template-columns:1fr 1fr 1fr}
-.cb{padding:10px 6px;border:1.5px solid var(--pink-lt);border-radius:14px;
+.cb{padding:clamp(10px,3vw,16px) 6px;border:1.5px solid var(--pink-lt);border-radius:14px;
   background:var(--paper);font-family:'Nunito',sans-serif;
   cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
 .cb:active{transform:scale(0.95)}
 .cb.sel{background:var(--pink-lt);border-color:var(--pink);box-shadow:0 2px 8px rgba(242,160,184,0.3)}
-.cb .ci{font-size:1.5rem;display:block;margin-bottom:3px;line-height:1.2}
-.cb .cid{display:block;font-size:var(--fs-xs);font-weight:700;color:var(--ink);line-height:1.3}
+.cb .ci{font-size:clamp(1.6rem,5vw,2rem);display:block;margin-bottom:4px;line-height:1.2}
+.cb .cid{display:block;font-size:var(--fs-sm);font-weight:800;color:var(--ink);line-height:1.3}
+.cb .czh{display:block;font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;margin-top:2px}
 .cb .czh{display:block;font-size:0.62rem;color:var(--ink-xlt);font-weight:400;margin-top:1px}
 
 /* 新卡片顏色條 */
@@ -1005,17 +1007,17 @@ const CFGS = {
     type:'choice',
     sections:[
       {key:'bowel_yn',lbl_id:'Ada BAB hari ini?',lbl_zh:'今天有排便嗎？',cols:2,
-        opts:[{v:'yes',i:'✅',id:'Ada / 有',zh:''},{v:'no',i:'❌',id:'Tidak Ada / 沒有',zh:''}]},
+        opts:[{v:'yes',i:'✅',id:'Ada',zh:'有排便'},{v:'no',i:'❌',id:'Tidak Ada',zh:'沒有排便'}]},
       {key:'bowel_count',lbl_id:'Berapa kali?',lbl_zh:'今天幾次？',cols:3,showIf:{key:'bowel_yn',val:'yes'},
-        opts:[{v:'1',i:'1️⃣',id:'1次',zh:''},{v:'2',i:'2️⃣',id:'2次',zh:''},{v:'3',i:'3️⃣',id:'3次',zh:''},
-              {v:'4',i:'4️⃣',id:'4次',zh:''},{v:'5+',i:'🔢',id:'5次以上',zh:''}]},
+        opts:[{v:'1',i:'1️⃣',id:'1x',zh:'1次'},{v:'2',i:'2️⃣',id:'2x',zh:'2次'},{v:'3',i:'3️⃣',id:'3x',zh:'3次'},
+              {v:'4',i:'4️⃣',id:'4x',zh:'4次'},{v:'5+',i:'🔢',id:'5x+',zh:'5次以上'}]},
       {key:'bowel_texture',lbl_id:'Konsistensi',lbl_zh:'糞便性狀（可複選）',cols:2,multi:true,showIf:{key:'bowel_yn',val:'yes'},
-        opts:[{v:'hard',i:'🪨',id:'Keras / 硬',zh:'乾硬費力'},{v:'normal',i:'🟤',id:'Normal / 正常',zh:'成形順暢'},
-              {v:'soft',i:'💩',id:'Lembek / 軟',zh:'軟爛鬆散'},{v:'watery',i:'💧',id:'Cair / 稀',zh:'水狀糊狀'}]},
+        opts:[{v:'hard',i:'🪨',id:'Keras',zh:'硬 · 乾硬費力'},{v:'normal',i:'🟤',id:'Normal',zh:'正常 · 成形順暢'},
+              {v:'soft',i:'💩',id:'Lembek',zh:'軟 · 軟爛鬆散'},{v:'watery',i:'💧',id:'Cair',zh:'稀 · 水狀糊狀'}]},
       {key:'bowel_color',lbl_id:'Warna',lbl_zh:'糞便顏色（可複選）',cols:3,multi:true,showIf:{key:'bowel_yn',val:'yes'},
-        opts:[{v:'brown',i:'🟫',id:'Coklat/棕',zh:'正常'},{v:'black',i:'⬛',id:'Hitam/黑',zh:'注意出血'},
-              {v:'red',i:'🔴',id:'Merah/紅',zh:'注意出血'},{v:'yellow',i:'🟡',id:'Kuning/黃',zh:''},
-              {v:'white',i:'⚪',id:'Putih/白',zh:'注意肝膽'},{v:'green',i:'🟢',id:'Hijau/綠',zh:''}]},
+        opts:[{v:'brown',i:'🟫',id:'Coklat',zh:'棕色'},{v:'black',i:'⬛',id:'Hitam',zh:'黑色⚠'},
+              {v:'red',i:'🔴',id:'Merah',zh:'紅色⚠'},{v:'yellow',i:'🟡',id:'Kuning',zh:'黃色'},
+              {v:'white',i:'⚪',id:'Putih',zh:'白色⚠'},{v:'green',i:'🟢',id:'Hijau',zh:'綠色'}]},
     ],
     hints:[
       {type:'warn',title_id:'⚠️ Perhatikan / 注意',rows:[
@@ -1033,12 +1035,12 @@ const CFGS = {
     type:'choice',
     sections:[
       {key:'face_color',lbl_id:'Warna Wajah',lbl_zh:'觀察爸爸的臉色',cols:2,
-        opts:[{v:'normal',i:'😊',id:'Normal / 正常紅潤',zh:'氣色好'},{v:'pale',i:'😶',id:'Pucat / 蒼白',zh:'無血色'},
-              {v:'yellow',i:'😟',id:'Kuning / 偏黃',zh:'皮膚眼白黃'},{v:'flush',i:'🥵',id:'Merah / 潮紅',zh:'臉紅發熱感'},
-              {v:'dark',i:'😔',id:'Gelap / 暗沉',zh:'臉色暗無光'},{v:'blue',i:'😨',id:'Kebiruan / 發紺',zh:'嘴唇藍紫色'}]},
+        opts:[{v:'normal',i:'😊',id:'Normal',zh:'正常紅潤'},{v:'pale',i:'😶',id:'Pucat',zh:'蒼白'},
+              {v:'yellow',i:'😟',id:'Kuning',zh:'偏黃'},{v:'flush',i:'🥵',id:'Merah',zh:'潮紅'},
+              {v:'dark',i:'😔',id:'Gelap',zh:'暗沉'},{v:'blue',i:'😨',id:'Kebiruan',zh:'發紺⚠'}]},
       {key:'face_eye',lbl_id:'Kondisi Mata',lbl_zh:'眼睛狀況',cols:2,
-        opts:[{v:'clear',i:'👁️',id:'Jernih / 清亮',zh:'眼神清晰'},{v:'dull',i:'😑',id:'Sayu / 無神',zh:'眼神無光'},
-              {v:'yellow',i:'🟡',id:'Kuning / 黃眼白',zh:'黃疸警示'},{v:'red',i:'🔴',id:'Merah / 紅眼',zh:'充血或感染'}]},
+        opts:[{v:'clear',i:'👁️',id:'Jernih',zh:'清亮'},{v:'dull',i:'😑',id:'Sayu',zh:'無神'},
+              {v:'yellow',i:'🟡',id:'Kuning',zh:'黃眼白⚠'},{v:'red',i:'🔴',id:'Merah',zh:'紅眼⚠'}]},
     ],
     hints:[
       {type:'warn',title_id:'⚠️ Perhatikan / 注意',rows:[
@@ -1055,17 +1057,17 @@ const CFGS = {
     type:'choice',
     sections:[
       {key:'walk',lbl_id:'Jalan-jalan hari ini?',lbl_zh:'今天有去散步嗎？',cols:2,
-        opts:[{v:'yes',i:'🚶',id:'Sudah / 有',zh:'有去散步'},{v:'no',i:'🛋️',id:'Belum / 沒有',zh:'沒有散步'}]},
+        opts:[{v:'yes',i:'🚶',id:'Sudah',zh:'有去散步'},{v:'no',i:'🛋️',id:'Belum',zh:'沒有散步'}]},
       {key:'cough',lbl_id:'Ada batuk?',lbl_zh:'有沒有咳嗽？',cols:2,
-        opts:[{v:'none',i:'✅',id:'Tidak Ada / 沒有',zh:''},{v:'mild',i:'😤',id:'Sedikit / 輕微',zh:'偶爾咳'},
-              {v:'often',i:'😮‍💨',id:'Sering / 頻繁',zh:'常常咳'},{v:'severe',i:'🤧',id:'Parah / 嚴重',zh:'劇烈咳嗽'}]},
+        opts:[{v:'none',i:'✅',id:'Tidak Ada',zh:'沒有'},{v:'mild',i:'😤',id:'Sedikit',zh:'輕微 · 偶爾咳'},
+              {v:'often',i:'😮‍💨',id:'Sering',zh:'頻繁 · 常常咳'},{v:'severe',i:'🤧',id:'Parah',zh:'嚴重 · 劇烈咳'}]},
       {key:'phlegm',lbl_id:'Ada dahak?',lbl_zh:'有沒有痰？',cols:3,
-        opts:[{v:'none',i:'✅',id:'Tidak / 沒有',zh:''},{v:'clear',i:'💧',id:'Bening / 透明',zh:'清澈痰'},
-              {v:'white',i:'⚪',id:'Putih / 白色',zh:''},{v:'yellow',i:'🟡',id:'Kuning / 黃色',zh:'注意感染'},
-              {v:'green',i:'🟢',id:'Hijau / 綠色',zh:'感染警示'},{v:'blood',i:'🔴',id:'Berdarah / 帶血',zh:'立即就醫'}]},
+        opts:[{v:'none',i:'✅',id:'Tidak',zh:'沒有'},{v:'clear',i:'💧',id:'Bening',zh:'透明'},
+              {v:'white',i:'⚪',id:'Putih',zh:'白色'},{v:'yellow',i:'🟡',id:'Kuning',zh:'黃色⚠'},
+              {v:'green',i:'🟢',id:'Hijau',zh:'綠色⚠'},{v:'blood',i:'🔴',id:'Berdarah',zh:'帶血⚠'}]},
       {key:'energy',lbl_id:'Tenaga hari ini?',lbl_zh:'身體有沒有力氣？',cols:3,
-        opts:[{v:'good',i:'💪',id:'Baik / 有力氣',zh:'活動正常'},{v:'ok',i:'🙂',id:'Biasa / 普通',zh:'還可以'},
-              {v:'weak',i:'😞',id:'Lemah / 沒力',zh:'感覺虛弱'},{v:'vweak',i:'🥺',id:'Sangat Lemah / 很虛',zh:'非常無力'}]},
+        opts:[{v:'good',i:'💪',id:'Baik',zh:'有力氣'},{v:'ok',i:'🙂',id:'Biasa',zh:'普通'},
+              {v:'weak',i:'😞',id:'Lemah',zh:'沒力氣'},{v:'vweak',i:'🥺',id:'Sangat Lemah',zh:'非常虛弱⚠'}]},
     ],
     hints:[
       {type:'warn',title_id:'⚠️ Perhatikan / 注意',rows:[

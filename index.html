@@ -237,17 +237,32 @@ body::after{
   color:var(--ink);line-height:1.2}
 .mc-zh{font-size:clamp(0.58rem,1.7vw,0.72rem);color:var(--ink-lt);font-weight:500}
 
-.btn-end{width:100%;display:block;padding:clamp(9px,2.2vw,12px);
-  border:2px solid rgba(242,160,184,0.6);border-radius:var(--r-full);
-  background:rgba(255,255,255,0.82);backdrop-filter:blur(10px);
-  color:var(--pink-dk);font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:var(--fs-md);cursor:pointer;
-  box-shadow:0 4px 18px rgba(242,160,184,0.25);
-  transition:transform .15s,box-shadow .15s;flex-shrink:0}
-.btn-end:active{transform:scale(0.97)}
-.e-id{display:block}
+.btn-end{width:100%;display:block;
+  padding:clamp(16px,4.5vw,22px) clamp(20px,5vw,32px);
+  border:none;border-radius:var(--r-full);
+  background:linear-gradient(160deg,#a8e6cf 0%,#56c596 45%,#38a87a 100%);
+  color:#fff;font-family:'Nunito',sans-serif;font-weight:900;
+  font-size:clamp(1.05rem,3.8vw,1.3rem);cursor:pointer;letter-spacing:.5px;
+  box-shadow:
+    0 2px 0 #2a7a5a,
+    0 5px 0 rgba(40,120,90,0.3),
+    0 8px 22px rgba(56,168,122,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+  transition:transform .14s,box-shadow .14s;flex-shrink:0;
+  text-shadow:0 1px 3px rgba(20,80,50,0.25);position:relative;overflow:hidden}
+.btn-end::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,0.2) 0%,transparent 55%);
+  border-radius:inherit;pointer-events:none}
+.btn-end:active{
+  transform:translateY(4px);
+  box-shadow:
+    0 0px 0 #2a7a5a,
+    0 2px 0 rgba(40,120,90,0.2),
+    0 3px 10px rgba(56,168,122,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.2)}
+.e-id{display:block;font-size:clamp(1.0rem,3.5vw,1.25rem)}
 .e-zh{font-family:'Noto Sans TC',sans-serif;font-size:var(--fs-xs);
-  color:var(--ink-xlt);font-weight:400;display:block;margin-top:1px}
+  opacity:.85;font-weight:600;display:block;margin-top:2px}
 
 /* ══════════════════════════════════════
    PAGE 3 — INPUT
@@ -406,6 +421,9 @@ body::after{
 .ok-box-scroll::-webkit-scrollbar{display:none}
 .ok-box-foot{padding:var(--sp-sm) clamp(16px,4vw,24px) max(clamp(14px,3vw,20px), env(safe-area-inset-bottom,14px));
   border-top:1.5px solid var(--pink-lt);flex-shrink:0;background:var(--wh)}
+.btn-ok-back-hidden{opacity:0;transform:translateY(20px);pointer-events:none;
+  transition:opacity .35s, transform .35s cubic-bezier(.175,.885,.32,1.275)}
+.btn-ok-back-visible{opacity:1;transform:translateY(0);pointer-events:all}
 .ok-icon{font-size:clamp(2.4rem,8vw,3.2rem);display:block;margin-bottom:var(--sp-sm)}
 .ok-tid{font-family:'Nunito',sans-serif;font-size:var(--fs-xl);font-weight:900;
   color:var(--blue-dk);margin-bottom:2px;line-height:1.3}
@@ -505,7 +523,40 @@ body::after{
 .cb .czh{display:block;font-size:0.62rem;color:var(--ink-xlt);font-weight:400;margin-top:1px}
 
 /* 新卡片顏色條 */
-.btn-aa{flex:1;padding:clamp(8px,2.3vw,11px);border-radius:var(--r-full);
+/* Admin Tabs */
+.adm-tabs{display:flex;gap:0;flex-shrink:0;border-bottom:2px solid var(--pink-lt);background:var(--wh)}
+.adm-tab{flex:1;padding:clamp(10px,2.5vw,13px) var(--sp-sm);border:none;background:transparent;
+  font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:700;
+  color:var(--ink-lt);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;
+  transition:color .15s,border-color .15s}
+.adm-tab.active{color:var(--pink-dk);border-bottom-color:var(--pink-dk);background:var(--paper2)}
+
+/* GPS filter tags */
+.gps-ftag{display:inline-flex;align-items:center;padding:5px 12px;border-radius:var(--r-full);
+  font-family:'Nunito',sans-serif;font-size:var(--fs-xs);font-weight:700;cursor:pointer;
+  border:1.5px solid var(--mint);background:var(--paper);color:var(--mint-dk);
+  transition:all .15s;white-space:nowrap}
+.gps-ftag.active{background:var(--mint-lt);color:var(--mint-dk);border-color:var(--mint-dk)}
+.gps-ftag:active{transform:scale(0.95)}
+
+/* GPS log cards */
+.gps-card{background:var(--wh);border:2px solid var(--pink-lt);border-radius:var(--r-md);
+  padding:clamp(10px,3vw,14px) clamp(12px,3.5vw,16px);margin-bottom:var(--sp-sm);
+  box-shadow:0 3px 12px rgba(242,160,184,0.1)}
+.gps-card.stay{border-left:5px solid var(--mint-dk)}
+.gps-card.move{border-left:5px solid var(--ink-xlt);opacity:.7}
+.gps-type{display:inline-flex;align-items:center;gap:5px;
+  font-family:'Nunito',sans-serif;font-size:var(--fs-xs);font-weight:800;
+  padding:2px 10px;border-radius:var(--r-full);margin-bottom:4px}
+.gps-type.stay-badge{background:var(--mint-lt);color:var(--mint-dk)}
+.gps-type.move-badge{background:var(--paper2);color:var(--ink-lt)}
+.gps-addr{font-size:var(--fs-sm);color:var(--ink);font-weight:700;
+  margin-bottom:3px;line-height:1.4}
+.gps-time-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+.gps-time{font-family:'DM Mono',monospace;font-size:var(--fs-xs);color:var(--ink-lt)}
+.gps-dur{font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:800;
+  color:var(--mint-dk)}
+.gps-coord{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--ink-xlt);margin-top:3px}
   font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:800;
   cursor:pointer;border:none;transition:transform .15s;
   box-shadow:0 2px 8px rgba(0,0,0,0.08)}
@@ -586,13 +637,55 @@ body::after{
   box-shadow:0 4px 16px rgba(74,128,170,0.3);
   z-index:9999;white-space:nowrap;
   transition:transform .35s cubic-bezier(.175,.885,.32,1.275)}
+/* ══ SPLASH SCREEN ══ */
+#page-splash{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:
+    radial-gradient(ellipse 80% 60% at 30% 20%, rgba(255,182,200,0.6) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 80% 15%, rgba(255,210,225,0.45) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 55% at 10% 75%, rgba(168,212,200,0.4) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 45% at 70% 85%, rgba(122,174,208,0.3) 0%, transparent 60%),
+    #fef0f4;
+  transition:opacity .6s ease, transform .6s ease;
+  gap:0}
+#page-splash.fade-out{opacity:0;transform:scale(1.04);pointer-events:none}
+.sp-icon{font-size:clamp(4.5rem,18vw,7rem);margin-bottom:clamp(12px,4vw,20px);
+  filter:drop-shadow(0 8px 24px rgba(217,80,122,0.25));
+  animation:sp-pulse 2s ease-in-out infinite}
+@keyframes sp-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.sp-title{font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,6vw,2.2rem);
+  font-weight:900;color:var(--pink-dk);letter-spacing:.5px;margin-bottom:4px}
+.sp-sub{font-size:var(--fs-sm);color:var(--ink-lt);font-weight:500;margin-bottom:4px}
+.sp-version{font-family:'DM Mono',monospace;font-size:var(--fs-xs);
+  color:var(--ink-xlt);letter-spacing:1px;margin-bottom:clamp(28px,8vw,48px)}
+.sp-loading{display:flex;flex-direction:column;align-items:center;gap:10px}
+.sp-bar-wrap{width:clamp(160px,55vw,240px);height:6px;
+  background:rgba(242,160,184,0.2);border-radius:99px;overflow:hidden}
+.sp-bar{height:100%;width:0%;background:linear-gradient(90deg,#f9c0d4,#f07098);
+  border-radius:99px;transition:width .4s ease}
+.sp-status{font-size:var(--fs-xs);color:var(--ink-lt);font-weight:500;
+  min-height:1.2em;text-align:center}
+
 #toast.show{transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 
+<!-- ══ SPLASH SCREEN ══ -->
+<div id="page-splash">
+  <div class="sp-icon">🏥</div>
+  <div class="sp-title">CatatKesehatan</div>
+  <div class="sp-sub">Catatan Kesehatan Bapak · 爸爸健康記錄</div>
+  <div class="sp-version">v2.0</div>
+  <div class="sp-loading">
+    <div class="sp-bar-wrap"><div class="sp-bar" id="sp-bar"></div></div>
+    <div class="sp-status" id="sp-status">Memuat… / 載入中…</div>
+  </div>
+</div>
+
 <!-- ══ PAGE 1: HOME ══ -->
-<div class="page active" id="page-home">
+<div class="page" id="page-home">
   <!-- Doodle background illustrations -->
   <div class="home-doodle" aria-hidden="true">
     <svg width="100%" height="100%" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
@@ -761,7 +854,14 @@ body::after{
     </div>
   </div>
   <div class="admin-main" id="adm-main" style="display:none">
-    <div class="admin-body">
+    <!-- 分頁 Tab -->
+    <div class="adm-tabs">
+      <button class="adm-tab active" id="tab-health" onclick="switchAdminTab('health')">📋 健康記錄</button>
+      <button class="adm-tab" id="tab-gps" onclick="switchAdminTab('gps')">📍 GPS 軌跡</button>
+    </div>
+
+    <!-- 健康記錄 tab -->
+    <div class="admin-body" id="adm-panel-health">
       <div class="adm-acts">
         <button class="btn-aa btn-export" onclick="exportCSV()">📤 匯出</button>
         <button class="btn-aa btn-clear"  onclick="clearAll()">🗑 清除</button>
@@ -771,14 +871,12 @@ body::after{
       <!-- 篩選器 -->
       <div class="filter-bar">
         <div class="filter-title">🔍 篩選條件</div>
-
-        <!-- 時間快捷 -->
         <div class="filter-label">📅 時間範圍</div>
         <div class="filter-row">
-          <div class="ftag active" data-period="all"  onclick="setPeriod('all')">全部</div>
-          <div class="ftag"        data-period="today" onclick="setPeriod('today')">今天</div>
-          <div class="ftag"        data-period="7"     onclick="setPeriod('7')">近7天</div>
-          <div class="ftag"        data-period="30"    onclick="setPeriod('30')">近30天</div>
+          <div class="ftag active" data-period="all"    onclick="setPeriod('all')">全部</div>
+          <div class="ftag"        data-period="today"  onclick="setPeriod('today')">今天</div>
+          <div class="ftag"        data-period="7"      onclick="setPeriod('7')">近7天</div>
+          <div class="ftag"        data-period="30"     onclick="setPeriod('30')">近30天</div>
           <div class="ftag"        data-period="custom" onclick="setPeriod('custom')">自訂</div>
         </div>
         <div id="custom-date-row" class="filter-date-row" style="display:none;margin-top:6px">
@@ -786,8 +884,6 @@ body::after{
           <span class="filter-date-sep">→</span>
           <input type="date" id="date-to"   class="filter-date-input" onchange="renderAdmin()">
         </div>
-
-        <!-- 類型 -->
         <div class="filter-label" style="margin-top:10px">📋 測量類型</div>
         <div class="filter-row">
           <div class="ftag active" data-type="all"   onclick="setTypeFilter('all')">全部</div>
@@ -797,11 +893,33 @@ body::after{
           <div class="ftag"        data-type="urine" onclick="setTypeFilter('urine')">🫑 排尿</div>
         </div>
       </div>
+      <div class="summary-bar" id="summary-bar" style="display:none"></div>
+      <div id="records-list"></div>
+    </div>
+
+    <!-- GPS 軌跡 tab -->
+    <div class="admin-body" id="adm-panel-gps" style="display:none">
+      <div class="adm-acts">
+        <button class="btn-aa btn-export" onclick="exportGPS()">📤 匯出GPS</button>
+        <button class="btn-aa btn-clear"  onclick="clearGPS()">🗑 清除</button>
+        <button class="btn-aa btn-logout" onclick="doLogout()">登出</button>
+      </div>
+
+      <!-- GPS 篩選 -->
+      <div class="filter-bar">
+        <div class="filter-title">📅 時間範圍</div>
+        <div class="filter-row">
+          <div class="gps-ftag active" data-gperiod="today" onclick="setGPSPeriod('today')">今天</div>
+          <div class="gps-ftag"        data-gperiod="7"     onclick="setGPSPeriod('7')">近7天</div>
+          <div class="gps-ftag"        data-gperiod="all"   onclick="setGPSPeriod('all')">全部</div>
+        </div>
+      </div>
 
       <!-- 統計摘要 -->
-      <div class="summary-bar" id="summary-bar" style="display:none"></div>
+      <div id="gps-summary" style="display:none;margin-bottom:var(--sp-sm);padding:var(--sp-sm) var(--sp-md);background:var(--mint-lt);border-radius:var(--r-md)"></div>
 
-      <div id="records-list"></div>
+      <!-- 停留記錄列表 -->
+      <div id="gps-list"></div>
     </div>
   </div>
 </div>
@@ -1176,6 +1294,7 @@ function dailyPick(key, arr) {
 
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded',()=>{
+  // 初始化首頁文字（背景先跑）
   const now=new Date();
   document.getElementById('home-date').textContent=
     now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
@@ -1186,7 +1305,41 @@ window.addEventListener('DOMContentLoaded',()=>{
   const q=dailyPick('quote_data',QUOTES);
   document.getElementById('q-id').textContent=q.id;
   document.getElementById('q-zh').textContent='（'+q.zh+'）';
-  loadWeather();
+
+  // ── Splash 流程 ──
+  const bar=document.getElementById('sp-bar');
+  const status=document.getElementById('sp-status');
+  const splash=document.getElementById('page-splash');
+
+  function setProgress(pct, msg){
+    bar.style.width=pct+'%';
+    status.textContent=msg;
+  }
+
+  setProgress(10,'Mempersiapkan… / 準備中…');
+
+  // 最少顯示 1.5 秒
+  const minWait=new Promise(r=>setTimeout(r,1500));
+
+  // 背景預載天氣
+  const weatherPromise=(async()=>{
+    setProgress(30,'Mendapatkan lokasi… / 取得位置…');
+    const wxResult=await loadWeatherData();
+    setProgress(85,'Memuat cuaca… / 載入天氣…');
+    return wxResult;
+  })();
+
+  Promise.all([minWait, weatherPromise]).then(([,wxResult])=>{
+    setProgress(100,'Siap! / 完成！');
+    // 渲染天氣
+    renderWeatherResult(wxResult);
+    setTimeout(()=>{
+      splash.classList.add('fade-out');
+      // 顯示首頁
+      document.getElementById('page-home').classList.add('active');
+      setTimeout(()=>{ splash.style.display='none'; }, 650);
+    }, 300);
+  });
 });
 
 // ══ WEATHER ══
@@ -1198,11 +1351,8 @@ const WX_DESC={113:'Cerah / 晴天',116:'Berawan Sebagian / 多雲',119:'Berawan
   263:'Gerimis / 毛毛雨',293:'Hujan Ringan / 小雨',296:'Hujan / 雨',299:'Hujan Sedang / 中雨',
   302:'Hujan Lebat / 大雨',353:'Hujan Lokal / 陣雨',386:'Hujan Badai / 雷雨'};
 
-async function loadWeather(){
-  const el=document.getElementById('weather-card');
-  // Try APIs one by one
+async function loadWeatherData(){
   const apis = [
-    // 1. Open-Meteo (free, no key, very reliable)
     async (lat, lng) => {
       const url = lat
         ? `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weathercode,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=1`
@@ -1210,68 +1360,52 @@ async function loadWeather(){
       const r = await fetch(url, {signal: AbortSignal.timeout(8000)});
       if (!r.ok) throw new Error('open-meteo fail');
       const d = await r.json();
-      const cur = d.current;
-      const tod = d.daily;
+      const cur = d.current; const tod = d.daily;
       const WC = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',
-        61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'🌧️',
-        95:'⛈️',96:'⛈️',99:'⛈️'};
+        61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'🌧️',95:'⛈️',96:'⛈️',99:'⛈️'};
       const WD = {0:'Cerah / 晴天',1:'Cerah Berawan / 大致晴',2:'Berawan / 多雲',3:'Mendung / 陰天',
         45:'Berkabut / 霧',48:'Berkabut / 霧',51:'Gerimis / 毛毛雨',53:'Gerimis / 毛毛雨',55:'Hujan Ringan / 細雨',
         61:'Hujan / 小雨',63:'Hujan Sedang / 中雨',65:'Hujan Lebat / 大雨',
-        80:'Hujan Lokal / 陣雨',81:'Hujan / 陣雨',82:'Hujan Deras / 豪雨',
-        95:'Hujan Badai / 雷雨',96:'Hujan Badai / 雷雨'};
-      const temp = Math.round(cur.temperature_2m);
-      const icon = WC[cur.weathercode] || '🌡️';
-      const desc = WD[cur.weathercode] || '—';
-      const max = Math.round(tod.temperature_2m_max[0]);
-      const min2 = Math.round(tod.temperature_2m_min[0]);
-      const rain = tod.precipitation_probability_max[0] || 0;
-      const rainTxt = rain > 20
-        ? `🌧️ Kemungkinan hujan ${rain}% / 降雨機率 ${rain}%`
-        : `☀️ Kemungkinan hujan rendah / 降雨機率低`;
-      return {temp, icon, desc, max, min:min2, rainTxt};
+        80:'Hujan Lokal / 陣雨',81:'Hujan / 陣雨',82:'Hujan Deras / 豪雨',95:'Hujan Badai / 雷雨',96:'Hujan Badai / 雷雨'};
+      const temp=Math.round(cur.temperature_2m), rain=tod.precipitation_probability_max[0]||0;
+      return {temp, icon:WC[cur.weathercode]||'🌡️', desc:WD[cur.weathercode]||'—',
+        max:Math.round(tod.temperature_2m_max[0]), min:Math.round(tod.temperature_2m_min[0]),
+        rainTxt:rain>20?`🌧️ Kemungkinan hujan ${rain}% / 降雨機率 ${rain}%`:`☀️ Kemungkinan hujan rendah / 降雨機率低`};
     },
-    // 2. wttr.in fallback
     async (lat, lng) => {
       const loc = lat ? `${lat},${lng}` : 'Taipei';
       const r = await fetch(`https://wttr.in/${loc}?format=j1`, {signal: AbortSignal.timeout(8000)});
       if (!r.ok) throw new Error('wttr fail');
       const d = await r.json();
-      const cur = d.current_condition[0];
-      const tod = d.weather[0];
-      const WCI = {113:'☀️',116:'⛅',119:'☁️',122:'☁️',176:'🌦️',200:'⛈️',263:'🌦️',293:'🌧️',302:'🌧️',386:'⛈️'};
-      const WDI = {113:'Cerah / 晴天',116:'Berawan / 多雲',119:'Mendung / 陰天',176:'Hujan Lokal / 陣雨',200:'Badai / 雷雨',263:'Gerimis / 毛毛雨',293:'Hujan / 小雨',302:'Hujan Lebat / 大雨',386:'Hujan Badai / 雷雨'};
-      const code = parseInt(cur.weatherCode);
-      const rain2 = Math.round(tod.hourly.reduce((s,h)=>s+parseInt(h.chanceofrain||0),0)/tod.hourly.length);
-      return {
-        temp: cur.temp_C,
-        icon: WCI[code]||'🌡️',
-        desc: WDI[code]||cur.weatherDesc[0]?.value||'—',
-        max: tod.maxtempC, min: tod.mintempC,
-        rainTxt: rain2>20 ? `🌧️ Kemungkinan hujan ${rain2}% / 降雨機率 ${rain2}%` : `☀️ Kemungkinan hujan rendah / 降雨機率低`
-      };
+      const cur=d.current_condition[0], tod=d.weather[0];
+      const WCI={113:'☀️',116:'⛅',119:'☁️',122:'☁️',176:'🌦️',200:'⛈️',263:'🌦️',293:'🌧️',302:'🌧️',386:'⛈️'};
+      const WDI={113:'Cerah / 晴天',116:'Berawan / 多雲',119:'Mendung / 陰天',176:'Hujan Lokal / 陣雨',200:'Badai / 雷雨',263:'Gerimis / 毛毛雨',293:'Hujan / 小雨',302:'Hujan Lebat / 大雨',386:'Hujan Badai / 雷雨'};
+      const code=parseInt(cur.weatherCode);
+      const rain2=Math.round(tod.hourly.reduce((s,h)=>s+parseInt(h.chanceofrain||0),0)/tod.hourly.length);
+      return {temp:cur.temp_C, icon:WCI[code]||'🌡️', desc:WDI[code]||'—',
+        max:tod.maxtempC, min:tod.mintempC,
+        rainTxt:rain2>20?`🌧️ Kemungkinan hujan ${rain2}% / 降雨機率 ${rain2}%`:`☀️ Kemungkinan hujan rendah / 降雨機率低`};
     }
   ];
 
-  // Get GPS coords (optional, for accuracy)
   let lat=null, lng=null;
-  try {
-    const coords = await new Promise((res,rej) => {
-      if (!navigator.geolocation) {rej(); return;}
-      navigator.geolocation.getCurrentPosition(p=>res(p.coords), ()=>rej(), {timeout:5000, maximumAge:120000});
+  try{
+    const coords=await new Promise((res,rej)=>{
+      if(!navigator.geolocation){rej();return;}
+      navigator.geolocation.getCurrentPosition(p=>res(p.coords),()=>rej(),{timeout:5000,maximumAge:120000});
     });
-    lat = coords.latitude.toFixed(4);
-    lng = coords.longitude.toFixed(4);
-  } catch(e) {}
+    lat=coords.latitude.toFixed(4); lng=coords.longitude.toFixed(4);
+  }catch(e){}
 
-  // Try each API
-  let result = null;
-  for (const api of apis) {
-    try { result = await api(lat, lng); if(result) break; } catch(e) {}
-  }
+  let result=null;
+  for(const api of apis){try{result=await api(lat,lng);if(result)break;}catch(e){}}
+  return result;
+}
 
-  if (result) {
-    el.innerHTML = `<div class="wx-card">
+function renderWeatherResult(result){
+  const el=document.getElementById('weather-card');
+  if(result){
+    el.innerHTML=`<div class="wx-card">
       <div class="wx-emoji">${result.icon}</div>
       <div class="wx-body">
         <div class="wx-temp">${result.temp}°C <small>${result.min}°–${result.max}° Hari ini / 今日</small></div>
@@ -1280,9 +1414,12 @@ async function loadWeather(){
       </div></div>`;
     renderOutfit(result);
   } else {
-    el.innerHTML='<div class="wx-card"><div class="wx-emoji">🌤️</div><div class="wx-body"><div class="wx-desc">Cuaca tidak tersedia / 天氣暫時無法顯示</div><div class="wx-rain" style="font-size:0.6rem;opacity:.5">（請確認手機網路連線）</div></div></div>';
+    el.innerHTML='<div class="wx-card"><div class="wx-emoji">🌤️</div><div class="wx-body"><div class="wx-desc">Cuaca tidak tersedia / 天氣暫時無法顯示</div></div></div>';
   }
 }
+
+// 舊函數保留相容性
+async function loadWeather(){ renderWeatherResult(await loadWeatherData()); }
 
 
 // ══ OUTFIT SUGGESTION ══
@@ -1426,7 +1563,31 @@ function playOkSound(){
   }catch(e){}
 }
 
-// ══ NAVIGATION ══
+function playEndSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const t=ctx.currentTime;
+    // 鼓勵完成：do mi sol do'（上揚完整和弦），最後一個音拉長
+    const notes=[
+      {f:523.25,s:0,    dur:0.2,  vol:0.15},
+      {f:659.25,s:0.13, dur:0.2,  vol:0.15},
+      {f:783.99,s:0.26, dur:0.2,  vol:0.15},
+      {f:1046.5, s:0.39, dur:0.55, vol:0.18},
+    ];
+    notes.forEach(n=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.type='sine';
+      osc.frequency.setValueAtTime(n.f, t+n.s);
+      gain.gain.setValueAtTime(0, t+n.s);
+      gain.gain.linearRampToValueAtTime(n.vol, t+n.s+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t+n.s+n.dur);
+      osc.start(t+n.s);
+      osc.stop(t+n.s+n.dur+0.05);
+    });
+  }catch(e){}
+}
 // 讓手機返回鍵也能正確導航
 
 // ══ PAGE STACK NAVIGATION ══
@@ -2407,6 +2568,31 @@ function saveInput(){
   }
   const ov=document.getElementById('overlay-ok');ov.classList.add('show');
   playSuccessSound();
+  // 強制捲回最頂端，隱藏 OK 按鈕，滑到底才顯示
+  const okBtn=document.querySelector('.btn-ok-back');
+  const scroll=document.querySelector('.ok-box-scroll');
+  if(scroll) scroll.scrollTop=0;
+  if(okBtn){
+    okBtn.classList.add('btn-ok-back-hidden');
+    okBtn.classList.remove('btn-ok-back-visible');
+    if(scroll){
+      setTimeout(()=>{
+        const checkBottom=()=>{
+          if(scroll.scrollHeight-scroll.scrollTop-scroll.clientHeight < 40){
+            okBtn.classList.remove('btn-ok-back-hidden');
+            okBtn.classList.add('btn-ok-back-visible');
+            scroll.removeEventListener('scroll',checkBottom);
+          }
+        };
+        if(scroll.scrollHeight<=scroll.clientHeight+10){
+          okBtn.classList.remove('btn-ok-back-hidden');
+          okBtn.classList.add('btn-ok-back-visible');
+        } else {
+          scroll.addEventListener('scroll',checkBottom,{passive:true});
+        }
+      },150);
+    }
+  }
 
   // ── GPS 完全背景作業，不阻擋任何流程 ──
   setTimeout(()=>{
@@ -2432,6 +2618,7 @@ function dismissOkAndGoBack(){
 
 // ══ END SESSION ══
 function endSession(){
+  playEndSound();
   showToast('✅ 測量結束，謝謝！');
   goBack();
 }
@@ -2447,6 +2634,199 @@ function doLogin(){
     renderAdmin();
   }else{showToast('❌ 密碼錯誤');document.getElementById('pwd-input').value='';}
 }
+// ══ ADMIN TAB SWITCH ══
+function switchAdminTab(tab){
+  document.getElementById('adm-panel-health').style.display = tab==='health' ? 'block' : 'none';
+  document.getElementById('adm-panel-gps').style.display    = tab==='gps'    ? 'block' : 'none';
+  document.getElementById('tab-health').classList.toggle('active', tab==='health');
+  document.getElementById('tab-gps').classList.toggle('active',    tab==='gps');
+  if(tab==='gps') renderGPS();
+}
+
+// ══ GPS LOG ══
+let gpsFilterPeriod = 'today';
+
+function getGPSLogs(){
+  try{ return JSON.parse(localStorage.getItem('gps_logs')||'[]'); }catch{ return []; }
+}
+function saveGPSLogs(logs){
+  localStorage.setItem('gps_logs', JSON.stringify(logs));
+}
+
+// 記錄一筆 GPS raw point（每5分鐘由追蹤器呼叫）
+function logGPSPoint(lat, lng, addr){
+  const logs = getGPSLogs();
+  logs.push({t: Date.now(), lat, lng, addr: addr||''});
+  // 只保留最近 30 天
+  const cutoff = Date.now() - 30*86400000;
+  const trimmed = logs.filter(l=>l.t>cutoff);
+  saveGPSLogs(trimmed);
+  // 同時嘗試計算停留
+  computeStays();
+}
+
+// 停留判斷：位移 < 100m 且持續 >= 10 分鐘才算停留
+function distMeters(la1,lo1,la2,lo2){
+  const R=6371000, p=Math.PI/180;
+  const dLat=(la2-la1)*p, dLon=(lo2-lo1)*p;
+  const a=Math.sin(dLat/2)**2+Math.cos(la1*p)*Math.cos(la2*p)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function computeStays(){
+  const raw = getGPSLogs();
+  if(raw.length < 2) return [];
+
+  const stays = [];
+  let segStart = 0;
+
+  for(let i=1; i<=raw.length; i++){
+    const prev = raw[i-1];
+    const curr = raw[i];
+    const moved = curr ? distMeters(
+      parseFloat(prev.lat), parseFloat(prev.lng),
+      parseFloat(curr.lat), parseFloat(curr.lng)
+    ) : Infinity;
+
+    if(moved > 100 || i === raw.length){
+      // 這一段結束
+      const seg = raw.slice(segStart, i);
+      const duration = (seg[seg.length-1].t - seg[0].t) / 60000; // 分鐘
+      if(duration >= 10){
+        // 停留：用最常出現的地址
+        const addrCounts = {};
+        seg.forEach(p=>{ if(p.addr) addrCounts[p.addr]=(addrCounts[p.addr]||0)+1; });
+        const bestAddr = Object.entries(addrCounts).sort((a,b)=>b[1]-a[1])[0]?.[0]
+          || `${seg[0].lat}, ${seg[0].lng}`;
+        stays.push({
+          type:'stay',
+          start: seg[0].t, end: seg[seg.length-1].t,
+          duration: Math.round(duration),
+          addr: bestAddr,
+          lat: seg[0].lat, lng: seg[0].lng
+        });
+      } else if(segStart > 0){
+        // 移動段
+        stays.push({
+          type:'move',
+          start: raw[segStart].t,
+          end: prev.t,
+          duration: Math.round((prev.t - raw[segStart].t)/60000)
+        });
+      }
+      segStart = i;
+    }
+  }
+  localStorage.setItem('gps_stays', JSON.stringify(stays));
+  return stays;
+}
+
+function setGPSPeriod(p){
+  gpsFilterPeriod = p;
+  document.querySelectorAll('.gps-ftag').forEach(el=>
+    el.classList.toggle('active', el.dataset.gperiod===p));
+  renderGPS();
+}
+
+function formatDur(min){
+  if(min < 60) return `${min} 分鐘`;
+  const h=Math.floor(min/60), m=min%60;
+  return m>0 ? `${h} 小時 ${m} 分` : `${h} 小時`;
+}
+
+function renderGPS(){
+  let stays;
+  try{ stays=JSON.parse(localStorage.getItem('gps_stays')||'[]'); }catch{ stays=[]; }
+  if(!stays.length) stays = computeStays();
+
+  // 篩選
+  const now=Date.now();
+  let filtered = stays;
+  if(gpsFilterPeriod==='today'){
+    const d=new Date(); d.setHours(0,0,0,0);
+    filtered=stays.filter(s=>s.start>=d.getTime());
+  } else if(gpsFilterPeriod==='7'){
+    filtered=stays.filter(s=>s.start>=now-7*86400000);
+  }
+
+  const list=document.getElementById('gps-list');
+  const summary=document.getElementById('gps-summary');
+
+  if(!filtered.length){
+    list.innerHTML='<div class="no-result">📍 尚無 GPS 軌跡記錄</div>';
+    summary.style.display='none';
+    return;
+  }
+
+  // 統計
+  const stayOnly=filtered.filter(s=>s.type==='stay');
+  const totalStay=stayOnly.reduce((s,r)=>s+r.duration,0);
+  summary.style.display='block';
+  summary.innerHTML=`
+    <div style="display:flex;gap:var(--sp-md);flex-wrap:wrap">
+      <div><div style="font-family:'DM Mono',monospace;font-size:var(--fs-lg);font-weight:800;color:var(--mint-dk)">${stayOnly.length}</div><div style="font-size:var(--fs-xs);color:var(--ink-lt);font-weight:600">停留點</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:var(--fs-lg);font-weight:800;color:var(--mint-dk)">${formatDur(totalStay)}</div><div style="font-size:var(--fs-xs);color:var(--ink-lt);font-weight:600">總停留</div></div>
+    </div>`;
+
+  // 渲染
+  list.innerHTML = filtered.map(s=>{
+    const start=new Date(s.start);
+    const end=new Date(s.end||s.start);
+    const ds=start.toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'});
+    const ts=start.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+    const te=end.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+
+    if(s.type==='stay') return `
+      <div class="gps-card stay">
+        <div class="gps-type stay-badge">📍 停留</div>
+        <div class="gps-addr">${s.addr||'位置未知'}</div>
+        <div class="gps-time-row">
+          <div class="gps-time">📅 ${ds} &nbsp; ${ts} – ${te}</div>
+          <div class="gps-dur">${formatDur(s.duration)}</div>
+        </div>
+        ${s.lat?`<div class="gps-coord">${s.lat}, ${s.lng}</div>`:''}
+      </div>`;
+    return `
+      <div class="gps-card move">
+        <div class="gps-type move-badge">🚗 移動中</div>
+        <div class="gps-time-row">
+          <div class="gps-time">${ts} – ${te}</div>
+          <div class="gps-dur" style="color:var(--ink-lt)">${formatDur(s.duration)}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function clearGPS(){
+  if(!confirm('確定清除所有 GPS 記錄？')) return;
+  localStorage.removeItem('gps_logs');
+  localStorage.removeItem('gps_stays');
+  renderGPS();
+  showToast('🗑 GPS 記錄已清除');
+}
+
+function exportGPS(){
+  const stays = JSON.parse(localStorage.getItem('gps_stays')||'[]');
+  if(!stays.length){ showToast('沒有 GPS 記錄可匯出'); return; }
+  let csv='類型,日期,開始時間,結束時間,停留分鐘,地址,緯度,經度\n';
+  stays.forEach(s=>{
+    const st=new Date(s.start), en=new Date(s.end||s.start);
+    csv+=[
+      s.type==='stay'?'停留':'移動',
+      st.toLocaleDateString('zh-TW'),
+      st.toLocaleTimeString('zh-TW'),
+      en.toLocaleTimeString('zh-TW'),
+      s.duration||0,
+      '"'+(s.addr||'')+'"',
+      s.lat||'', s.lng||''
+    ].join(',')+'\n';
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`GPS記錄_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`;
+  a.click(); showToast('📤 GPS 記錄匯出成功！');
+}
+
 function doLogout(){
   document.getElementById('adm-login').style.display='block';
   document.getElementById('adm-main').style.display='none';

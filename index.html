@@ -1,1 +1,980 @@
-<!DOCTYPE html> <html lang="zh-TW"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <title>Catatan Kesehatan / 健康記錄</title> <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"> <style> :root { --gd: #1a3c34; --gm: #2d6a4f; --gl: #52b788; --gp: #d8f3dc; --cream: #f8f5f0; --warm: #f4a261; --text: #1b2631; --muted: #7a8c8e; --white: #fff; } *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent} html,body{width:100%;height:100%;overflow:hidden;font-family:'Noto Sans','Noto Sans TC',sans-serif;background:var(--gd);color:var(--text)} /* ── PAGE SYSTEM ── */ .page{position:fixed;inset:0;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);overflow:hidden} .page.active{transform:translateX(0)} .page.exit-left{transform:translateX(-100%)} /* ── PAGE 1: HOME ── */ #page-home{background:linear-gradient(160deg,#1a3c34 0%,#2d6a4f 55%,#40916c 100%);align-items:center;justify-content:space-between;padding:0 24px 40px} #page-home::before{content:'';position:absolute;width:260px;height:260px;background:rgba(82,183,136,0.13);border-radius:50%;top:-70px;right:-70px;pointer-events:none} #page-home::after{content:'';position:absolute;width:180px;height:180px;background:rgba(244,162,97,0.10);border-radius:50%;bottom:100px;left:-50px;pointer-events:none} .home-top{width:100%;padding-top:56px;position:relative;z-index:1} .home-date{font-size:0.68rem;letter-spacing:2px;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:6px;font-family:'DM Mono',monospace} .home-greeting{font-size:1.9rem;font-weight:900;color:#fff;line-height:1.2;margin-bottom:2px} .home-greeting .wave{display:inline-block;animation:wave 2.5s infinite} @keyframes wave{0%,100%{transform:rotate(0)}25%{transform:rotate(20deg)}75%{transform:rotate(-10deg)}} .home-sub-id{font-size:0.88rem;color:rgba(255,255,255,0.8);margin-top:4px;font-weight:500} .home-sub-zh{font-size:0.65rem;color:rgba(255,255,255,0.35);margin-top:2px;font-weight:300} .home-weather{width:100%;position:relative;z-index:1;margin:8px 0} .weather-inner{background:rgba(255,255,255,0.11);border:1px solid rgba(255,255,255,0.18);border-radius:16px;padding:12px 16px;backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px} .weather-icon{font-size:2.2rem;flex-shrink:0} .weather-info{flex:1} .weather-temp{font-size:1.45rem;font-weight:900;color:#fff;line-height:1} .weather-temp small{font-size:0.7rem;font-weight:400;opacity:.65} .weather-desc{font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:2px} .weather-rain{font-size:0.68rem;color:rgba(180,230,255,0.9);margin-top:3px} .weather-load{color:rgba(255,255,255,0.45);font-size:0.78rem;text-align:center;padding:10px} .home-bottom{width:100%;position:relative;z-index:1} .quote-card{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.16);border-radius:16px;padding:14px 18px;margin-bottom:20px;backdrop-filter:blur(8px)} .quote-tag{font-size:0.62rem;letter-spacing:1.5px;color:var(--gl);text-transform:uppercase;margin-bottom:8px;font-family:'DM Mono',monospace} .quote-id{font-size:0.88rem;color:rgba(255,255,255,0.92);line-height:1.65;font-weight:500;margin-bottom:5px;transition:opacity .5s} .quote-zh{font-size:0.6rem;color:rgba(255,255,255,0.32);line-height:1.5;font-weight:300;font-style:italic;transition:opacity .5s} .q-dots{display:flex;gap:5px;justify-content:center;margin-top:8px} .q-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.2);transition:background .3s} .q-dot.on{background:var(--gl)} .btn-start{width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,var(--gl),#40916c);color:#fff;font-family:inherit;font-size:1rem;font-weight:800;letter-spacing:1px;cursor:pointer;box-shadow:0 8px 24px rgba(52,183,136,0.4);transition:transform .15s;display:flex;align-items:center;justify-content:center;gap:10px} .btn-start:active{transform:scale(0.97)} .btn-start .id{font-size:1rem} .btn-start .zh{font-size:0.68rem;opacity:.65;font-weight:400;letter-spacing:0} /* Hidden admin trigger area */ #admin-trigger{position:fixed;bottom:0;right:0;width:60px;height:60px;z-index:50;opacity:0} /* ── PAGE 2: MENU ── */ #page-menu{background:var(--cream)} .page-header{background:linear-gradient(135deg,var(--gd),var(--gm));padding:48px 24px 22px;color:white;flex-shrink:0} .ph-title-id{font-size:1.2rem;font-weight:800;letter-spacing:.5px} .ph-title-zh{font-size:0.7rem;color:rgba(255,255,255,0.45);font-weight:300;margin-top:2px} .ph-sub-id{font-size:0.78rem;color:rgba(255,255,255,0.65);margin-top:6px} .ph-sub-zh{font-size:0.6rem;color:rgba(255,255,255,0.35);margin-top:1px;font-weight:300} .session-badge{margin-top:12px;background:rgba(255,255,255,0.1);border-radius:10px;padding:8px 12px;font-size:0.7rem;color:rgba(255,255,255,0.7);font-family:'DM Mono',monospace} .menu-body{flex:1;overflow-y:auto;padding:20px 18px} .menu-sec-id{font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;padding-left:3px} .menu-sec-zh{font-size:0.6rem;color:#b0bec5;font-weight:300;margin-bottom:12px;padding-left:3px} .measure-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px} .measure-card{background:var(--white);border-radius:20px;padding:20px 14px 16px;text-align:center;box-shadow:0 4px 16px rgba(26,60,52,0.08);cursor:pointer;transition:transform .15s;border:2px solid transparent;position:relative;overflow:hidden} .measure-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px} .measure-card.bp::before{background:linear-gradient(90deg,#e63946,#f4a261)} .measure-card.spo2::before{background:linear-gradient(90deg,#4361ee,#7209b7)} .measure-card.water::before{background:linear-gradient(90deg,#4cc9f0,#48cae4)} .measure-card.urine::before{background:linear-gradient(90deg,#f9c74f,#f8961e)} .measure-card:active{transform:scale(0.96)} .measure-card.done{border-color:var(--gl)} .mc-done{display:none;position:absolute;top:8px;right:8px;width:20px;height:20px;background:var(--gl);color:#fff;border-radius:50%;font-size:0.6rem;font-weight:800;align-items:center;justify-content:center} .measure-card.done .mc-done{display:flex} .mc-icon{font-size:2rem;margin-bottom:8px} .mc-name-id{font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:1px} .mc-name-zh{font-size:0.6rem;color:var(--muted);font-weight:300} .btn-end{width:100%;padding:16px;border:2px solid var(--gm);border-radius:14px;background:transparent;font-family:inherit;cursor:pointer;transition:all .15s} .btn-end:active{background:var(--gp)} .btn-end .e-id{font-size:0.9rem;font-weight:700;color:var(--gm);display:block} .btn-end .e-zh{font-size:0.62rem;color:#a0b0a8;font-weight:300;display:block;margin-top:2px} /* ── PAGE 3: INPUT ── */ #page-input{background:var(--cream)} .input-header{background:linear-gradient(135deg,var(--gd),var(--gm));padding:48px 24px 22px;color:white;flex-shrink:0} .back-btn{display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;color:rgba(255,255,255,0.65);cursor:pointer;margin-bottom:10px;background:none;border:none;font-family:inherit} .ih-title-id{font-size:1.3rem;font-weight:800} .ih-title-zh{font-size:0.68rem;color:rgba(255,255,255,0.4);font-weight:300;margin-top:2px} .ih-sub-id{font-size:0.75rem;color:rgba(255,255,255,0.6);margin-top:6px} .input-body{flex:1;overflow-y:auto;padding:22px 18px;display:flex;flex-direction:column;gap:16px} .roller-group{background:var(--white);border-radius:20px;padding:18px;box-shadow:0 4px 16px rgba(26,60,52,0.07)} .roller-lbl-id{font-size:0.78rem;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px} .roller-lbl-zh{font-size:0.6rem;color:#b0c4be;font-weight:300;margin-bottom:14px} .rollers-row{display:flex;gap:10px;align-items:flex-start;justify-content:center} .roller-wrap{flex:1;text-align:center;max-width:160px} .roller-name-id{font-size:0.65rem;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.3px} .roller-name-zh{font-size:0.55rem;color:#c0ccc8;font-weight:300;margin-bottom:6px} .roller-unit{font-size:0.62rem;color:var(--muted);margin-top:5px} .drum{position:relative;height:176px;overflow:hidden;border-radius:14px;background:#f0f4f2;cursor:grab;user-select:none;touch-action:none} .drum-list{display:flex;flex-direction:column;will-change:transform} .drum-item{height:36px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:600;font-family:'DM Mono',monospace;color:rgba(0,0,0,0.2);flex-shrink:0} .drum-item.sel{color:var(--gd);font-size:1.45rem;font-weight:800} .drum::before,.drum::after{content:'';position:absolute;left:0;right:0;height:70px;pointer-events:none;z-index:2} .drum::before{top:0;background:linear-gradient(to bottom,#f0f4f2,transparent)} .drum::after{bottom:0;background:linear-gradient(to top,#f0f4f2,transparent)} .drum-hl{position:absolute;top:50%;left:6px;right:6px;height:36px;transform:translateY(-50%);background:rgba(82,183,136,0.14);border-radius:8px;border-top:1.5px solid rgba(82,183,136,0.38);border-bottom:1.5px solid rgba(82,183,136,0.38);pointer-events:none;z-index:1} .roller-sep{font-size:1.7rem;font-weight:300;color:var(--muted);padding-top:76px;flex-shrink:0} /* Hint card */ .hint-card{border-radius:16px;padding:14px 16px;border-left:4px solid #f4a261} .hint-card.warn{background:#fff8f0;border-color:#f4a261} .hint-card.info{background:#f0f8ff;border-color:#4cc9f0} .hint-title{font-size:0.72rem;font-weight:700;color:#b5632a;margin-bottom:6px} .hint-title.info-t{color:#1a6fa8} .hint-row{font-size:0.72rem;color:#6b5040;line-height:1.7;margin-bottom:2px} .hint-row.info-r{color:#1a4a6b} .hint-zh{font-size:0.6rem;color:#b0a090;font-weight:300;margin-top:1px} .hint-zh.info-zh{color:#90aabb} .btn-save{width:100%;padding:17px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--gl),var(--gm));color:white;font-family:inherit;cursor:pointer;box-shadow:0 6px 20px rgba(45,106,79,0.28);transition:transform .15s;margin-top:2px} .btn-save:active{transform:scale(0.98)} .btn-save .s-id{font-size:0.95rem;font-weight:800;letter-spacing:1px;display:block} .btn-save .s-zh{font-size:0.62rem;opacity:.65;font-weight:300;display:block;margin-top:2px} /* ── SUCCESS OVERLAY ── */ #overlay-ok{position:fixed;inset:0;z-index:999;background:rgba(26,60,52,0.85);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)} #overlay-ok.show{opacity:1;pointer-events:all} .ok-box{background:var(--white);border-radius:24px;padding:32px 26px;text-align:center;width:86%;transform:scale(0.86);transition:transform .3s cubic-bezier(.175,.885,.32,1.275)} #overlay-ok.show .ok-box{transform:scale(1)} .ok-icon{font-size:3.2rem;margin-bottom:10px;display:block} .ok-title-id{font-size:1.1rem;font-weight:800;color:var(--gd);margin-bottom:2px} .ok-title-zh{font-size:0.65rem;color:var(--muted);font-weight:300;margin-bottom:10px} .ok-detail{font-size:0.78rem;color:var(--muted);line-height:1.85;white-space:pre-line} .ok-time{font-family:'DM Mono',monospace;color:var(--gm);font-size:0.72rem;margin-top:10px} .ok-thanks-id{font-size:0.82rem;font-weight:600;color:var(--gl);margin-top:12px} .ok-thanks-zh{font-size:0.6rem;color:#c0d0c8;font-weight:300;margin-top:2px} /* ── PAGE 4: ADMIN ── */ #page-admin{background:var(--cream)} .admin-login{padding:28px 24px;flex:1;display:flex;flex-direction:column;justify-content:center} .al-icon{font-size:2.8rem;text-align:center;margin-bottom:8px} .al-title{font-size:1.05rem;font-weight:800;text-align:center;color:var(--gd);margin-bottom:4px} .al-sub{font-size:0.75rem;text-align:center;color:var(--muted);margin-bottom:24px} .admin-login input{width:100%;padding:14px 16px;border:2px solid #dde;border-radius:14px;font-size:1rem;font-family:inherit;margin-bottom:14px;background:var(--white)} .admin-login input:focus{outline:none;border-color:var(--gl)} .btn-login{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--gl),var(--gm));color:white;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer} .admin-body{flex:1;overflow-y:auto;padding:18px} .admin-actions{display:flex;gap:8px;margin-bottom:18px} .btn-aa{flex:1;padding:11px;border-radius:12px;font-family:inherit;font-size:0.75rem;font-weight:700;cursor:pointer;border:none;transition:all .15s} .btn-export{background:var(--gp);color:var(--gd)} .btn-clear{background:#fde8d8;color:#b5432a} .btn-logout{background:#eee;color:#666} .rc{background:var(--white);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(26,60,52,0.07);border-left:4px solid var(--gl)} .rc-type{font-size:0.68rem;font-weight:700;color:var(--muted);margin-bottom:4px} .rc-time{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);margin-bottom:3px} .rc-addr{font-size:0.68rem;color:#8a9e9a;margin-bottom:8px;line-height:1.4} .rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px} .rc-item .rl{font-size:0.65rem;color:var(--muted)} .rc-item .rv{font-size:0.95rem;font-weight:700;font-family:'DM Mono',monospace;color:var(--gd)} .rc-item .ru{font-size:0.6rem;color:var(--muted)} .bw{display:inline-block;background:#fde8d8;color:#b5432a;font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:4px} .bo{display:inline-block;background:#d8f3dc;color:#1b4332;font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:4px} .empty{text-align:center;padding:44px 20px;color:var(--muted);font-size:0.82rem} .empty .ei{font-size:2.4rem;margin-bottom:8px} /* TOAST */ #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gd);color:white;padding:11px 22px;border-radius:30px;font-size:0.8rem;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.22);z-index:9999;white-space:nowrap;transition:transform .35s cubic-bezier(.175,.885,.32,1.275)} #toast.show{transform:translateX(-50%) translateY(0)} </style> </head> <body> <!-- ══ PAGE 1: HOME ══ --> <div class="page active" id="page-home"> <div class="home-top"> <div class="home-date" id="home-date"></div> <div class="home-greeting"><span class="wave">👋</span> <span id="greet-id">Selamat pagi!</span></div> <div class="home-sub-id" id="greet-sub-id"></div> <div class="home-sub-zh" id="greet-sub-zh"></div> </div> <div class="home-weather" id="weather-card"> <div class="weather-load">⏳ Memuat cuaca… / 載入天氣中…</div> </div> <div class="home-bottom"> <div class="quote-card"> <div class="quote-tag">🌙 Hikmah Islam Hari Ini · 今日伊斯蘭箴言</div> <div class="quote-id" id="q-id"></div> <div class="quote-zh" id="q-zh"></div> <div class="q-dots" id="q-dots"></div> </div> <button class="btn-start" onclick="startSession()"> <span>▶</span> <span><span class="id">Mulai Pencatatan</span><span class="zh">開始記錄</span></span> </button> </div> </div> <!-- Hidden admin trigger (bottom-right corner, tap 5×) --> <div id="admin-trigger" onclick="secretTap()"></div> <!-- ══ PAGE 2: MENU ══ --> <div class="page" id="page-menu"> <div class="page-header"> <div class="ph-title-id">📋 Pilih Item Pengukuran</div> <div class="ph-title-zh">選擇測量項目</div> <div class="ph-sub-id">Ketuk item di bawah untuk mulai memasukkan data</div> <div class="ph-sub-zh">點選下方項目開始輸入數值</div> <div class="session-badge" id="session-badge">⏰ —</div> </div> <div class="menu-body"> <div class="menu-sec-id">Item Pengukuran</div> <div class="menu-sec-zh">測量項目</div> <div class="measure-grid"> <div class="measure-card bp" id="card-bp" onclick="openInput('bp')"> <div class="mc-done">✓</div> <div class="mc-icon">🩸</div> <div class="mc-name-id">Tekanan Darah</div> <div class="mc-name-zh">血壓</div> </div> <div class="measure-card spo2" id="card-spo2" onclick="openInput('spo2')"> <div class="mc-done">✓</div> <div class="mc-icon">🫁</div> <div class="mc-name-id">Saturasi Oksigen</div> <div class="mc-name-zh">血氧</div> </div> <div class="measure-card water" id="card-water" onclick="openInput('water')"> <div class="mc-done">✓</div> <div class="mc-icon">💧</div> <div class="mc-name-id">Asupan Air</div> <div class="mc-name-zh">飲水量</div> </div> <div class="measure-card urine" id="card-urine" onclick="openInput('urine')"> <div class="mc-done">✓</div> <div class="mc-icon">🚿</div> <div class="mc-name-id">Volume Urin</div> <div class="mc-name-zh">排尿量</div> </div> </div> <button class="btn-end" onclick="endSession()"> <span class="e-id">✅ Selesai Pengukuran</span> <span class="e-zh">結束測量，回首頁</span> </button> </div> </div> <!-- ══ PAGE 3: INPUT ══ --> <div class="page" id="page-input"> <div class="input-header"> <button class="back-btn" onclick="goBack()">← Kembali / 返回</button> <div class="ih-title-id" id="ih-id"></div> <div class="ih-title-zh" id="ih-zh"></div> <div class="ih-sub-id" id="ih-sub"></div> </div> <div class="input-body" id="input-body"></div> </div> <!-- ══ PAGE 4: ADMIN ══ --> <div class="page" id="page-admin"> <div class="page-header"> <div class="ph-title-id">📊 Panel Pengelola</div> <div class="ph-title-zh">管理者後台</div> </div> <div id="admin-login-wrap"> <div class="admin-login"> <div class="al-icon">🔐</div> <div class="al-title">管理者登入</div> <div class="al-sub">請輸入密碼以進入後台</div> <input type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"> <button class="btn-login" onclick="doLogin()">登 入</button> </div> </div> <div id="admin-main" style="display:none;flex:1;overflow:hidden;flex-direction:column"> <div class="admin-body"> <div class="admin-actions"> <button class="btn-aa btn-export" onclick="exportCSV()">📤 匯出 CSV</button> <button class="btn-aa btn-clear" onclick="clearAll()">🗑 清除記錄</button> <button class="btn-aa btn-logout" onclick="doLogout()">登出</button> </div> <div id="records-list"></div> </div> </div> </div> <!-- ══ SUCCESS OVERLAY ══ --> <div id="overlay-ok"> <div class="ok-box"> <span class="ok-icon">✅</span> <div class="ok-title-id" id="ok-tid"></div> <div class="ok-title-zh" id="ok-tzh"></div> <div class="ok-detail" id="ok-det"></div> <div class="ok-time" id="ok-time"></div> <div class="ok-thanks-id" id="ok-thx-id"></div> <div class="ok-thanks-zh" id="ok-thx-zh"></div> </div> </div> <div id="toast"></div> <script> // ════════════════════════════════════ // CONFIG // ════════════════════════════════════ const ADMIN_PWD = '721126'; // ── 招呼語 10句（7天隨機不重複）── const GREETINGS = [ { id:'Selamat pagi! Semoga hari ini membawa keberkahan.', zh:'早安！願今天充滿祝福。', sub_id:'Terima kasih atas dedikasi Anda merawat Bapak.', sub_zh:'感謝您用心照顧爸爸。' }, { id:'Halo! Semoga Allah memberikan kekuatan hari ini.', zh:'您好！願真主賜予您今日力量。', sub_id:'Setiap catatan Anda adalah bentuk kasih sayang.', sub_zh:'每一筆記錄都是您愛心的體現。' }, { id:'Selamat siang! Jaga kesehatan diri Anda juga ya.', zh:'午安！也請您好好照顧自己的健康。', sub_id:'Orang yang merawat orang lain juga butuh istirahat.', sub_zh:'照顧別人的人，自己也需要休息。' }, { id:'Assalamu\'alaikum! Semoga hari ini penuh kebaikan.', zh:'平安！願今天充滿善意。', sub_id:'Pekerjaan Anda sangat berarti bagi keluarga ini.', sub_zh:'您的付出對這個家庭意義重大。' }, { id:'Selamat datang! Mari kita mulai dengan penuh semangat.', zh:'歡迎！讓我們充滿活力地開始吧。', sub_id:'Ketelitian Anda sangat kami hargai.', sub_zh:'您的細心讓我們非常感激。' }, { id:'Halo! Hari baru, semangat baru.', zh:'您好！新的一天，新的活力。', sub_id:'Bapak beruntung memiliki perawat sebaik Anda.', sub_zh:'爸爸有您這樣好的照護者真幸運。' }, { id:'Selamat bekerja! Semoga Allah memudahkan urusan Anda.', zh:'工作順利！願真主讓您的事情順暢。', sub_id:'Setiap langkah kecil membuat perbedaan besar.', sub_zh:'每一個小步驟都帶來巨大的改變。' }, { id:'Bismillah, mari kita mulai pencatatan hari ini.', zh:'奉真主之名，讓我們開始今天的記錄。', sub_id:'Konsistensi Anda sangat membantu pemantauan kesehatan.', sub_zh:'您的持續記錄非常有助於健康追蹤。' }, { id:'Halo! Terima kasih sudah hadir dan peduli.', zh:'您好！感謝您的出現與關心。', sub_id:'Perhatian kecil Anda berdampak besar.', sub_zh:'您小小的關心帶來深遠的影響。' }, { id:'Selamat! Anda adalah pahlawan kesehatan keluarga ini.', zh:'您好！您是這個家庭的健康守護者。', sub_id:'Semua usaha Anda tidak akan sia-sia, insya Allah.', sub_zh:'您所有的努力都不會白費，以真主之名。' }, ]; // ── 伊斯蘭箴言 100則 ── const QURAN_QUOTES = [ {id:"Sesungguhnya Allah mencintai orang-orang yang berbuat baik. (QS. Al-Baqarah: 195)",zh:"真主愛行善的人。"}, {id:"Kebersihan adalah sebagian dari iman. (HR. Muslim)",zh:"清潔是信仰的一部分。"}, {id:"Barang siapa meringankan kesulitan saudaranya, Allah akan meringankan kesulitannya. (HR. Muslim)",zh:"凡減輕兄弟困難者，真主將減輕他的困難。"}, {id:"Sebaik-baik manusia adalah yang paling bermanfaat bagi orang lain. (HR. Ahmad)",zh:"最好的人，是對他人最有益的人。"}, {id:"Dan bersabarlah, sesungguhnya Allah beserta orang-orang yang sabar. (QS. Al-Anfal: 46)",zh:"要忍耐，真主與忍耐者同在。"}, {id:"Mukmin yang kuat lebih baik daripada mukmin yang lemah. (HR. Muslim)",zh:"強壯的信徒勝於軟弱的信徒。"}, {id:"Tidak ada penyakit kecuali Allah telah menurunkan obatnya. (HR. Bukhari)",zh:"沒有疾病，真主不給予其藥方。"}, {id:"Jagalah kesehatanmu sebelum datang sakitmu. (HR. Bukhari)",zh:"在生病之前，好好守護你的健康。"}, {id:"Sesungguhnya dalam dirimu ada hak yang harus kamu penuhi. (HR. Bukhari)",zh:"你的身體對你有應盡的權利。"}, {id:"Allah tidak membebani seseorang melainkan sesuai kesanggupannya. (QS. Al-Baqarah: 286)",zh:"真主不使一個人負擔超出他的能力。"}, {id:"Sesungguhnya Allah Maha Lembut dan menyukai kelembutan. (HR. Bukhari)",zh:"真主是溫和的，且喜愛溫和。"}, {id:"Senyum kepada saudaramu adalah sedekah. (HR. Tirmidzi)",zh:"對兄弟微笑是一種施捨。"}, {id:"Barang siapa yang bersyukur, niscaya Aku akan menambah nikmatnya. (QS. Ibrahim: 7)",zh:"凡感恩者，我必增加其恩賜。"}, {id:"Sesungguhnya Allah tidak menyia-nyiakan pahala orang yang berbuat baik. (QS. At-Taubah: 120)",zh:"真主不會辜負行善者的回報。"}, {id:"Barang siapa melepaskan kesusahan seorang mukmin, Allah melepaskan kesusahannya. (HR. Muslim)",zh:"凡解除信士憂愁者，真主解除其憂愁。"}, {id:"Makan dan minumlah, tapi jangan berlebihan. (QS. Al-A'raf: 31)",zh:"吃喝，但不要過度。"}, {id:"Sesungguhnya tubuhmu mempunyai hak atasmu. (HR. Bukhari)",zh:"你的身體確實對你有權利。"}, {id:"Orang beriman itu seperti cermin bagi saudaranya. (HR. Abu Dawud)",zh:"信士對兄弟如同一面鏡子。"}, {id:"Berkahilah kami dalam apa yang Engkau rezekikan kepada kami. (Doa Nabi)",zh:"求真主在你賜予我們的一切中降賜祝福。"}, {id:"Sesungguhnya Allah suka jika kamu melakukan sesuatu dengan sempurna. (HR. Baihaqi)",zh:"真主喜愛你把每件事做得盡善盡美。"}, {id:"Berikanlah kemudahan dan janganlah kamu mempersulit. (HR. Bukhari)",zh:"給予便利，不要製造困難。"}, {id:"Setiap kebaikan adalah sedekah. (HR. Muslim)",zh:"每一件善事都是施捨。"}, {id:"Cintailah sesama manusia seperti mencintai dirimu sendiri. (HR. Bukhari & Muslim)",zh:"愛護他人，如同愛護自己。"}, {id:"Sesungguhnya amal itu tergantung niatnya. (HR. Bukhari)",zh:"行為的價值取決於其意圖。"}, {id:"Allah tidak melihat rupa dan hartamu, tetapi melihat hati dan amalmu. (HR. Muslim)",zh:"真主不看你的外貌和財富，而看你的心和行為。"}, {id:"Orang yang paling sempurna imannya adalah yang paling baik akhlaknya. (HR. Tirmidzi)",zh:"信仰最完整的人，是品德最好的人。"}, {id:"Jika kamu bersyukur, pasti Kami tambah nikmat untukmu. (QS. Ibrahim: 7)",zh:"若你感恩，我必增加你的恩賜。"}, {id:"Dan tolong-menolonglah kamu dalam kebaikan dan ketakwaan. (QS. Al-Maidah: 2)",zh:"要在善事和敬畏方面互相幫助。"}, {id:"Sesungguhnya sesudah kesulitan itu ada kemudahan. (QS. Al-Insyirah: 6)",zh:"困難之後，必有容易。"}, {id:"Barang siapa bertawakkal kepada Allah, maka Allah cukup baginya. (QS. At-Talaq: 3)",zh:"凡依靠真主者，真主即足以滿足他。"}, {id:"Berdoalah kepada-Ku, niscaya akan Aku perkenankan bagimu. (QS. Ghafir: 60)",zh:"求告我，我必回應你。"}, {id:"Sesungguhnya Allah beserta orang-orang yang bertakwa. (QS. An-Nahl: 128)",zh:"真主與敬畏者同在。"}, {id:"Janganlah kamu berputus asa dari rahmat Allah. (QS. Az-Zumar: 53)",zh:"不要對真主的慈憫感到絕望。"}, {id:"Dan hanya kepada Allah-lah kamu bertawakkal. (QS. Al-Maidah: 23)",zh:"只依靠真主。"}, {id:"Orang yang memuliakan tamu, memuliakan Allah. (HR. Bukhari)",zh:"尊重客人者，即尊重真主。"}, {id:"Sebaik-baik kalian adalah yang mempelajari Al-Qur'an dan mengajarkannya. (HR. Bukhari)",zh:"你們中最好的人，是學習可蘭經並教導它的人。"}, {id:"Sesungguhnya Allah tidak mengubah keadaan suatu kaum kecuali mereka mengubah diri sendiri. (QS. Ar-Ra'd: 11)",zh:"真主不改變一個民族的狀況，除非他們自己改變。"}, {id:"Ridha Allah tergantung ridha orang tua. (HR. Tirmidzi)",zh:"真主的喜悅在於父母的喜悅。"}, {id:"Surga itu di bawah telapak kaki ibu. (HR. Ahmad)",zh:"天堂在母親的腳下。"}, {id:"Bertakwalah kepada Allah di mana saja kamu berada. (HR. Tirmidzi)",zh:"無論身在何處，都要敬畏真主。"}, {id:"Sesungguhnya kesabaran itu bersama ujian. (HR. Ahmad)",zh:"忍耐與考驗相伴。"}, {id:"Barang siapa menutup aib saudaranya, Allah tutup aibnya di hari kiamat. (HR. Muslim)",zh:"凡遮掩兄弟過失者，真主在末日遮掩其過失。"}, {id:"Saling bercintalah dan jangan saling membenci. (HR. Muslim)",zh:"要相愛，不要相恨。"}, {id:"Sesungguhnya Allah Maha Pengampun lagi Maha Penyayang. (QS. Al-Baqarah: 173)",zh:"真主是至恕至慈的。"}, {id:"Mudahkanlah dan jangan mempersulit, gembirakanlah dan jangan menakut-nakuti. (HR. Bukhari)",zh:"給予便利不要阻礙，給予喜悅不要驚嚇。"}, {id:"Dan Allah selalu menjaga orang-orang yang beriman. (QS. Yusuf: 64)",zh:"真主守護信士們。"}, {id:"Sesungguhnya rahmat Allah sangat dekat kepada orang yang berbuat baik. (QS. Al-A'raf: 56)",zh:"真主的慈憫對行善者非常接近。"}, {id:"Siapa yang tidak bersyukur kepada manusia, ia tidak bersyukur kepada Allah. (HR. Abu Dawud)",zh:"不感謝人的人，也就不感謝真主。"}, {id:"Kebajikan tidak akan pernah lenyap dan dosa tidak akan pernah terlupakan. (HR. Tirmidzi)",zh:"善行永不消失，罪行永不遺忘。"}, {id:"Sesungguhnya orang mukmin itu bersaudara. (QS. Al-Hujurat: 10)",zh:"信士們確實是兄弟。"}, {id:"Wahai jiwa yang tenang, kembalilah kepada Tuhanmu dengan ridha dan diridhai. (QS. Al-Fajr: 27-28)",zh:"安寧的靈魂啊，以喜悅和被喜悅的狀態回歸你的主。"}, {id:"Hendaklah kamu berlaku adil, karena keadilan itu lebih dekat kepada takwa. (QS. Al-Maidah: 8)",zh:"要公正，因為公正更接近敬畏。"}, {id:"Allah tidak membiarkan pahala orang yang berbuat baik sia-sia. (QS. At-Taubah: 120)",zh:"真主不會讓行善者的回報落空。"}, {id:"Maka nikmat Tuhanmu yang manakah yang kamu dustakan? (QS. Ar-Rahman: 13)",zh:"那麼，你們還否認你們主的哪些恩典？"}, {id:"Ingatlah, hanya dengan mengingat Allah hati menjadi tentram. (QS. Ar-Ra'd: 28)",zh:"謹記，只有念及真主，心才得安寧。"}, {id:"Dan Kami turunkan dari Al-Quran sesuatu yang menjadi penawar dan rahmat. (QS. Al-Isra: 82)",zh:"我從可蘭經降下的，是治癒與慈憫。"}, {id:"Beribadahlah kepada Allah seakan kamu melihat-Nya. (HR. Bukhari)",zh:"敬拜真主，如同你能看見祂。"}, {id:"Tidak ada yang lebih berat dalam timbangan daripada akhlak yang baik. (HR. Abu Dawud)",zh:"在天平上，沒有比良好品德更重的東西。"}, {id:"Allah itu Indah dan mencintai keindahan. (HR. Muslim)",zh:"真主是美麗的，且喜愛美麗。"}, {id:"Sesungguhnya kemudahan itu bersama kesulitan. (QS. Al-Insyirah: 5)",zh:"困難與容易同在。"}, {id:"Tidaklah seorang muslim tertimpa kelelahan kecuali Allah hapuskan dosanya. (HR. Bukhari)",zh:"穆斯林所受的疲勞，真主必消除其罪過。"}, {id:"Barang siapa berjalan untuk menuntut ilmu, Allah mudahkan jalannya ke surga. (HR. Muslim)",zh:"凡為求知而行走者，真主為其開通通往天堂之路。"}, {id:"Janganlah kamu menzalimi dirimu sendiri. (QS. Al-Baqarah: 231)",zh:"不要虧待自己。"}, {id:"Dan Dia bersama kamu di mana saja kamu berada. (QS. Al-Hadid: 4)",zh:"無論你身在何處，祂都與你同在。"}, {id:"Sesungguhnya pertolongan Allah sangat dekat. (QS. Al-Baqarah: 214)",zh:"真主的援助確實近在咫尺。"}, {id:"Allah tidak membebani seseorang di luar kemampuannya. (QS. Al-Baqarah: 286)",zh:"真主不使人承受超越其能力的負擔。"}, {id:"Barang siapa bertakwa kepada Allah, niscaya Dia akan mengadakan jalan keluar baginya. (QS. At-Talaq: 2)",zh:"凡敬畏真主者，真主為其開闢出路。"}, {id:"Sesungguhnya Allah Maha Mendengar dan Maha Melihat. (QS. Al-Hajj: 61)",zh:"真主是全聽的、全見的。"}, {id:"Katakanlah kebenaran walaupun itu pahit. (HR. Ibnu Hibban)",zh:"說真話，即使它苦澀。"}, {id:"Cukuplah Allah sebagai pelindung. (QS. An-Nisa: 45)",zh:"真主作為守護者已足夠。"}, {id:"Sesungguhnya Allah tidak menzalimi manusia sedikitpun. (QS. Yunus: 44)",zh:"真主絕不虧待人類絲毫。"}, {id:"Wahai orang-orang yang beriman, bersabarlah dan kuatkanlah kesabaranmu. (QS. Ali Imran: 200)",zh:"信士們！要忍耐，要加強你們的忍耐。"}, {id:"Dan bagi Allah-lah segala urusan sebelum dan sesudahnya. (QS. Ar-Rum: 4)",zh:"一切事在始末皆歸於真主。"}, {id:"Sesungguhnya Kami menciptakan manusia dalam bentuk yang sebaik-baiknya. (QS. At-Tin: 4)",zh:"我確實以最美好的形態創造了人類。"}, {id:"Jangan bersedih, sesungguhnya Allah bersama kita. (QS. At-Taubah: 40)",zh:"不要悲傷，真主確實與我們同在。"}, {id:"Dan Dia selalu mengawasi segala sesuatu. (QS. Al-Ahzab: 52)",zh:"祂對一切都在監察。"}, {id:"Sesungguhnya orang yang paling mulia adalah yang paling bertakwa. (QS. Al-Hujurat: 13)",zh:"你們中最尊貴的，是最敬畏真主的。"}, {id:"Tangan di atas lebih baik daripada tangan di bawah. (HR. Bukhari)",zh:"施予的手勝於接受的手。"}, {id:"Setiap yang menyakitkan orang mukmin, Allah catat sebagai kebaikan. (HR. Muslim)",zh:"每一個令信士痛苦之事，真主記錄為善功。"}, {id:"Berbuat baiklah sebagaimana Allah berbuat baik kepadamu. (QS. Al-Qasas: 77)",zh:"行善，正如真主對你行善一樣。"}, {id:"Janganlah kamu saling mendengki dan saling membenci. (HR. Muslim)",zh:"不要互相嫉妒，不要互相仇恨。"}, {id:"Dan sesungguhnya akhirat itu lebih baik bagimu daripada yang permulaan (dunia). (QS. Ad-Duha: 4)",zh:"後世對你確實比今世更好。"}, {id:"Barang siapa yang menolong saudaranya, Allah menolong dia. (HR. Muslim)",zh:"凡幫助兄弟者，真主幫助他。"}, {id:"Dan Tuhanmu tidak pernah lupa. (QS. Maryam: 64)",zh:"你的主從不遺忘。"}, {id:"Sesungguhnya Allah menyukai orang yang bertobat dan menyukai orang yang menyucikan diri. (QS. Al-Baqarah: 222)",zh:"真主喜愛悔過者和自我潔淨者。"}, {id:"Berilah kabar gembira kepada orang-orang yang sabar. (QS. Al-Baqarah: 155)",zh:"向忍耐者報喜。"}, {id:"Sesungguhnya kebaikan itu jalan menuju surga. (HR. Bukhari & Muslim)",zh:"善行確實是通往天堂之路。"}, {id:"Setiap jiwa akan merasakan mati. (QS. Ali Imran: 185)",zh:"每個靈魂都會嚐到死亡的滋味。"}, {id:"Cukuplah kematian sebagai peringatan. (HR. Tirmidzi)",zh:"死亡足以作為警示。"}, {id:"Sesungguhnya setelah kesulitan pasti ada kemudahan. (QS. Al-Insyirah: 5-6)",zh:"困難之後必有容易。"}, {id:"Dan Kami jadikan dari air segala sesuatu yang hidup. (QS. Al-Anbiya: 30)",zh:"我以水創造一切生命。"}, {id:"Makanlah dari rezeki yang baik-baik. (QS. Al-Mu'minun: 51)",zh:"從美好的賜予中飲食。"}, {id:"Sesungguhnya Allah adalah sumber kedamaian. (QS. Al-Hasyr: 23)",zh:"真主是和平的源泉。"}, {id:"Janganlah kamu boros, sesungguhnya Allah tidak menyukai orang yang boros. (QS. Al-A'raf: 31)",zh:"不要浪費，真主不喜愛浪費者。"}, {id:"Dan bertasbihlah kepada-Nya pagi dan sore. (QS. Al-Ahzab: 42)",zh:"早晚讚頌祂的榮耀。"}, {id:"Sesungguhnya Allah itu Maha Perkasa lagi Maha Bijaksana. (QS. Al-Baqarah: 228)",zh:"真主是全能的、至睿的。"}, {id:"Barang siapa bersabar, Allah berikan yang lebih baik. (HR. Ahmad)",zh:"凡忍耐者，真主賜予更好的。"}, {id:"Sesungguhnya Allah Maha Pengasih lagi Maha Penyayang. (QS. Al-Baqarah: 163)",zh:"真主是至仁的、至慈的。"}, {id:"Dan bertawakkallah kepada Allah, cukuplah Allah sebagai pelindung. (QS. Al-Ahzab: 3)",zh:"依靠真主，真主作為守護者已足夠。"}, {id:"Tidak ada daya dan kekuatan kecuali dari Allah. (HR. Bukhari)",zh:"除真主之外，別無能力與力量。"}, {id:"Sesungguhnya bersama kesabaran ada kemenangan. (HR. Tirmidzi)",zh:"忍耐之中有勝利。"}, {id:"Dan Allah Maha Mengetahui apa yang ada dalam hati. (QS. Al-Maidah: 7)",zh:"真主對心中所有的一切全知。"}, ]; // ════════════════════════════════════ // STATE // ════════════════════════════════════ let currentPage = 'page-home'; let sessionGPS = null, sessionTime = null; let currentType = null; let secretTaps = 0, secretTimer = null; // ── Greeting rotation (7-day non-repeat) ── function getTodayGreeting() { const today = new Date().toDateString(); let data = JSON.parse(localStorage.getItem('greet_data')||'{}'); if (data.date !== today) { // Pick 7 unique for the week pool, or just pick today's let used = data.used || []; // Reset if all used if (used.length >= GREETINGS.length) used = []; // Pick one not in used let avail = GREETINGS.map((_,i)=>i).filter(i=>!used.includes(i)); const pick = avail[Math.floor(Math.random()*avail.length)]; used.push(pick); data = {date:today, pick, used}; localStorage.setItem('greet_data', JSON.stringify(data)); } return GREETINGS[data.pick]; } // ── Quote rotation (daily non-repeat) ── function getTodayQuote() { const today = new Date().toDateString(); let data = JSON.parse(localStorage.getItem('quote_data')||'{}'); if (data.date !== today) { let used = data.used || []; if (used.length >= QURAN_QUOTES.length) used = []; let avail = QURAN_QUOTES.map((_,i)=>i).filter(i=>!used.includes(i)); const pick = avail[Math.floor(Math.random()*avail.length)]; used.push(pick); data = {date:today, pick, used}; localStorage.setItem('quote_data', JSON.stringify(data)); } return QURAN_QUOTES[data.pick]; } // ════════════════════════════════════ // INIT // ════════════════════════════════════ window.addEventListener('DOMContentLoaded', () => { // Date const now = new Date(); document.getElementById('home-date').textContent = now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'}); // Greeting const g = getTodayGreeting(); document.getElementById('greet-id').textContent = g.id; document.getElementById('greet-sub-id').textContent = g.sub_id; document.getElementById('greet-sub-zh').textContent = g.sub_zh; // Quote (single daily, shown static — no carousel needed, one per day) const q = getTodayQuote(); document.getElementById('q-id').textContent = q.id; document.getElementById('q-zh').textContent = '（' + q.zh + '）'; // No dots needed for single quote document.getElementById('q-dots').style.display = 'none'; // Weather loadWeather(); }); // ════════════════════════════════════ // NAVIGATION // ════════════════════════════════════ function goTo(id) { const p = document.getElementById(currentPage); const n = document.getElementById(id); p.classList.remove('active'); p.classList.add('exit-left'); n.classList.add('active'); setTimeout(()=>p.classList.remove('exit-left'),420); currentPage = id; } function goBack() { document.getElementById(currentPage).classList.remove('active'); document.getElementById('page-menu').classList.add('active'); currentPage = 'page-menu'; } // ════════════════════════════════════ // HIDDEN ADMIN TRIGGER // ════════════════════════════════════ function secretTap() { secretTaps++; clearTimeout(secretTimer); secretTimer = setTimeout(()=>{ secretTaps=0; }, 2000); if (secretTaps >= 5) { secretTaps = 0; openAdmin(); } } // ════════════════════════════════════ // WEATHER // ════════════════════════════════════ const WX_MAP = { 0:['☀️','Cerah / 晴天'],1:['🌤️','Cerah Berawan / 大致晴'],2:['⛅','Berawan / 多雲'],3:['☁️','Mendung / 陰天'], 45:['🌫️','Kabut / 霧'],48:['🌫️','Kabut / 霧'],51:['🌦️','Gerimis / 毛毛雨'],53:['🌦️','Gerimis / 毛毛雨'], 55:['🌧️','Hujan Ringan / 細雨'],61:['🌧️','Hujan / 小雨'],63:['🌧️','Hujan Sedang / 中雨'],65:['🌧️','Hujan Deras / 大雨'], 80:['🌦️','Hujan Lokal / 陣雨'],81:['🌧️','Hujan / 陣雨'],95:['⛈️','Hujan Badai / 雷雨'],96:['⛈️','Hujan Badai / 雷雨'], }; async function loadWeather() { const el = document.getElementById('weather-card'); try { const coords = await new Promise(res=>{ if(!navigator.geolocation){res({lat:25.04,lng:121.51});return;} navigator.geolocation.getCurrentPosition( p=>res({lat:p.coords.latitude,lng:p.coords.longitude}), ()=>res({lat:25.04,lng:121.51}),{timeout:7000}); }); const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current=temperature_2m,weathercode&daily=precipitation_sum&timezone=auto&forecast_days=1`); const d = await r.json(); const temp = Math.round(d.current.temperature_2m); const wx = WX_MAP[d.current.weathercode] || ['🌡️','—']; const rain = (d.daily.precipitation_sum[0]||0).toFixed(1); const rainTxt = parseFloat(rain)>0 ? `💧 Curah hujan: ${rain} mm / 降雨量: ${rain} mm` : `💧 Tidak ada hujan / 今日無降雨`; el.innerHTML = `<div class="weather-inner"> <div class="weather-icon">${wx[0]}</div> <div class="weather-info"> <div class="weather-temp">${temp}°C <small>Suhu / 氣溫</small></div> <div class="weather-desc">${wx[1]}</div> <div class="weather-rain">${rainTxt}</div> </div> </div>`; } catch(e) { el.innerHTML='<div class="weather-load">🌤️ Cuaca tidak tersedia / 天氣暫時無法載入</div>'; } } // ════════════════════════════════════ // SESSION // ════════════════════════════════════ function startSession() { sessionTime = new Date(); sessionGPS = null; ['bp','spo2','water','urine'].forEach(t=>document.getElementById('card-'+t).classList.remove('done')); getGPS(p=>{ sessionGPS=p; }); document.getElementById('session-badge').textContent = `⏰ ${sessionTime.toLocaleTimeString('zh-TW')}`; goTo('page-menu'); } function getGPS(cb) { if(!navigator.geolocation){cb({lat:'不支援',lng:'',addr:''});return;} navigator.geolocation.getCurrentPosition( p=>cb({lat:p.coords.latitude.toFixed(6),lng:p.coords.longitude.toFixed(6),addr:''}), ()=>cb({lat:'無法取得',lng:'',addr:''}),{timeout:8000}); } async function getGPSWithAddr() { return new Promise(res=>{ if(!navigator.geolocation){res({lat:'不支援',lng:'',addr:'不支援定位'});return;} navigator.geolocation.getCurrentPosition(async p=>{ const lat=p.coords.latitude.toFixed(6), lng=p.coords.longitude.toFixed(6); let addr=''; try{ const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=zh-TW`); const d=await r.json(); addr=d.display_name||''; // Shorten: take first 3 parts const parts=addr.split(','); addr=parts.slice(0,4).join(', '); }catch(e){addr='地址解析失敗';} res({lat,lng,addr}); },()=>res({lat:'無法取得',lng:'',addr:'GPS無法取得'}),{timeout:8000}); }); } // ════════════════════════════════════ // INPUT CONFIGS // ════════════════════════════════════ const CFGS = { bp: { title_id:'Tekanan Darah', title_zh:'血壓測量', sub_id:'Geser roda untuk memilih nilai tekanan darah', sep:'/', rollers:[ {key:'sys',name_id:'Sistolik (Atas)',name_zh:'收縮壓（高壓）',unit:'mmHg',min:60,max:230,step:1,init:120}, {key:'dia',name_id:'Diastolik (Bawah)',name_zh:'舒張壓（低壓）',unit:'mmHg',min:40,max:150,step:1,init:80}, ], hints:[ {type:'warn', title_id:'⚠️ Tanda Bahaya / 危險警示', rows:[ {id:'Sistolik ≥ 140 atau ≤ 90: segera laporkan ke keluarga',zh:'收縮壓 ≥ 140 或 ≤ 90：請立即通報家屬'}, {id:'Diastolik ≥ 90 atau ≤ 60: perhatikan gejala pusing',zh:'舒張壓 ≥ 90 或 ≤ 60：注意是否有頭暈'}, {id:'Jika Bapak mengeluh sakit kepala hebat, hubungi dokter',zh:'若爸爸訴說劇烈頭痛，請聯絡醫師'}, ]}, {type:'info', title_id:'ℹ️ Nilai Normal / 正常值參考', rows:[ {id:'Normal: Sistolik 90–139, Diastolik 60–89 mmHg',zh:'正常：高壓90-139，低壓60-89 mmHg'}, {id:'Ukur saat Bapak dalam kondisi tenang dan duduk',zh:'測量時請讓爸爸安靜坐著'}, ]}, ] }, spo2: { title_id:'Saturasi Oksigen', title_zh:'血氧濃度', sub_id:'Geser roda untuk memilih nilai SpO₂', rollers:[ {key:'spo2',name_id:'SpO₂',name_zh:'血氧飽和度',unit:'%',min:70,max:100,step:1,init:98}, ], hints:[ {type:'warn', title_id:'⚠️ Tanda Bahaya / 危險警示', rows:[ {id:'SpO₂ < 95%: segera beritahu keluarga',zh:'血氧 < 95%：請立即通知家屬'}, {id:'SpO₂ < 90%: darurat, hubungi dokter sekarang!',zh:'血氧 < 90%：緊急，請立即聯絡醫師！'}, {id:'Perhatikan jika Bapak tampak sesak atau pucat',zh:'注意爸爸是否看起來喘不過氣或臉色蒼白'}, ]}, {type:'info', title_id:'ℹ️ Nilai Normal / 正常值參考', rows:[ {id:'Normal: 95–100%',zh:'正常：95–100%'}, {id:'Pastikan alat oximeter menempel erat di jari',zh:'確認血氧機夾緊手指'}, ]}, ] }, water: { title_id:'Asupan Air Minum', title_zh:'飲水量', sub_id:'Geser roda untuk memilih jumlah air yang diminum', rollers:[ {key:'water',name_id:'Asupan Air',name_zh:'飲水量',unit:'ml',min:0,max:3000,step:50,init:1000}, ], hints:[ {type:'info', title_id:'ℹ️ Panduan / 建議', rows:[ {id:'Lansia perlu minum sekitar 1500–2000 ml per hari',zh:'老年人每天需飲水約1500–2000 ml'}, {id:'Kurang minum bisa menyebabkan dehidrasi dan sembelit',zh:'飲水不足可能導致脫水與便秘'}, {id:'Ingatkan Bapak minum air secara teratur',zh:'請提醒爸爸定時補充水分'}, ]}, {type:'warn', title_id:'⚠️ Perhatikan / 注意', rows:[ {id:'< 800 ml: berisiko dehidrasi, segera beri minum',zh:'< 800 ml：有脫水風險，請立即補充水分'}, {id:'> 2500 ml: perlu perhatian jika ada masalah ginjal',zh:'> 2500 ml：若有腎臟問題請注意'}, ]}, ] }, urine: { title_id:'Volume Urin', title_zh:'排尿量', sub_id:'Geser roda untuk memilih jumlah urin', rollers:[ {key:'urine',name_id:'Volume Urin',name_zh:'排尿量',unit:'ml',min:0,max:3000,step:50,init:1000}, ], hints:[ {type:'info', title_id:'ℹ️ Panduan / 建議', rows:[ {id:'Normal: sekitar 800–2000 ml per hari',zh:'正常：每天約 800–2000 ml'}, {id:'Warna urin harus kuning muda (jernih)',zh:'尿液顏色應為淡黃色（清澈）'}, ]}, {type:'warn', title_id:'⚠️ Perhatikan / 注意', rows:[ {id:'< 400 ml: waspadai retensi urin atau dehidrasi',zh:'< 400 ml：注意尿液滯留或脫水'}, {id:'> 2500 ml: waspadai diabetes atau efek obat',zh:'> 2500 ml：注意是否糖尿病或藥物作用'}, {id:'Urin keruh atau berdarah: hubungi dokter segera',zh:'尿液混濁或帶血：請立即聯絡醫師'}, ]}, ] }, }; // ════════════════════════════════════ // OPEN INPUT PAGE // ════════════════════════════════════ function openInput(type) { currentType = type; const cfg = CFGS[type]; document.getElementById('ih-id').textContent = cfg.title_id; document.getElementById('ih-zh').textContent = cfg.title_zh; document.getElementById('ih-sub').textContent = cfg.sub_id; const body = document.getElementById('input-body'); body.innerHTML = ''; // Roller group const grp = document.createElement('div'); grp.className='roller-group'; const lid = document.createElement('div'); lid.className='roller-lbl-id'; lid.textContent='Pilih Nilai / 選擇數值'; const lzh = document.createElement('div'); lzh.className='roller-lbl-zh'; lzh.textContent='上下滑動滾輪來選擇'; grp.appendChild(lid); grp.appendChild(lzh); const row = document.createElement('div'); row.className='rollers-row'; cfg.rollers.forEach((r,i)=>{ if(i>0&&cfg.sep){const s=document.createElement('div');s.className='roller-sep';s.textContent=cfg.sep;row.appendChild(s);} const w=document.createElement('div'); w.className='roller-wrap'; const nid=document.createElement('div'); nid.className='roller-name-id'; nid.textContent=r.name_id; const nzh=document.createElement('div'); nzh.className='roller-name-zh'; nzh.textContent=r.name_zh; w.appendChild(nid); w.appendChild(nzh); w.appendChild(buildDrum(r)); const u=document.createElement('div'); u.className='roller-unit'; u.textContent=r.unit; w.appendChild(u); row.appendChild(w); }); grp.appendChild(row); body.appendChild(grp); // Hint cards (cfg.hints||[]).forEach(h=>{ const hc=document.createElement('div'); hc.className='hint-card '+(h.type==='warn'?'warn':'info'); const ht=document.createElement('div'); ht.className='hint-title '+(h.type==='warn'?'':'info-t'); ht.textContent=h.title_id; hc.appendChild(ht); h.rows.forEach(r=>{ const rid=document.createElement('div'); rid.className='hint-row '+(h.type==='warn'?'':'info-r'); rid.textContent='• '+r.id; const rzh=document.createElement('div'); rzh.className='hint-zh '+(h.type==='warn'?'':'info-zh'); rzh.textContent=' '+r.zh; hc.appendChild(rid); hc.appendChild(rzh); }); body.appendChild(hc); }); // Save button const btn=document.createElement('button'); btn.className='btn-save'; btn.innerHTML='<span class="s-id">Simpan Catatan ✓</span><span class="s-zh">儲存此項記錄</span>'; btn.onclick=saveInput; body.appendChild(btn); goTo('page-input'); } // ════════════════════════════════════ // DRUM ROLLER // ════════════════════════════════════ function buildDrum(cfg) { const {min,max,step,init} = cfg; const vals=[]; for(let v=min;v<=max;v+=step)vals.push(v); const IH=36, PAD=2; const drum=document.createElement('div'); drum.className='drum'; drum.dataset.key=cfg.key; const hl=document.createElement('div'); hl.className='drum-hl'; drum.appendChild(hl); const list=document.createElement('div'); list.className='drum-list'; for(let p=0;p<PAD;p++){const pi=document.createElement('div');pi.className='drum-item';list.appendChild(pi);} vals.forEach(v=>{const it=document.createElement('div');it.className='drum-item';it.textContent=v;it.dataset.val=v;list.appendChild(it);}); for(let p=0;p<PAD;p++){const pi=document.createElement('div');pi.className='drum-item';list.appendChild(pi);} drum.appendChild(list); let si=vals.indexOf(init); if(si<0)si=0; let co=si*IH; function snap(off,anim){ off=Math.max(0,Math.min((vals.length-1)*IH,off)); co=off; list.style.transition=anim?'transform .18s cubic-bezier(.4,0,.2,1)':'none'; list.style.transform=`translateY(${-off}px)`; si=Math.round(off/IH); drum.dataset.selected=vals[si]; list.querySelectorAll('.drum-item[data-val]').forEach((el,i)=>el.classList.toggle('sel',i===si)); } snap(co,false); let sy=0,so=0,drag=false,ly=0,vel=0,lt=0; const onS=y=>{drag=true;sy=y;so=co;ly=y;vel=0;lt=Date.now();list.style.transition='none';}; const onM=y=>{if(!drag)return;const now=Date.now(),dt=now-lt;if(dt>0)vel=(ly-y)/dt*16;ly=y;lt=now;snap(so+(sy-y),false);}; const onE=()=>{if(!drag)return;drag=false;snap(Math.round((co+vel*4)/IH)*IH,true);}; drum.addEventListener('touchstart',e=>{onS(e.touches[0].clientY);e.preventDefault();},{passive:false}); drum.addEventListener('touchmove', e=>{onM(e.touches[0].clientY);e.preventDefault();},{passive:false}); drum.addEventListener('touchend', ()=>onE()); drum.addEventListener('mousedown', e=>onS(e.clientY)); window.addEventListener('mousemove',e=>{if(drag)onM(e.clientY);}); window.addEventListener('mouseup', ()=>{if(drag)onE();}); drum.addEventListener('wheel',e=>{e.preventDefault();snap(Math.round((co+((e.deltaY>0?1:-1)*IH))/IH)*IH,true);},{passive:false}); return drum; } // ════════════════════════════════════ // SAVE // ════════════════════════════════════ async function saveInput() { const cfg = CFGS[currentType]; const vals={}; document.querySelectorAll('#input-body .drum').forEach(d=>{vals[d.dataset.key]=d.dataset.selected;}); const saveTime = new Date(); // Get GPS + address const gpsData = await getGPSWithAddr(); const records = getRecords(); records.unshift({id:Date.now(),type:currentType,time:saveTime.toISOString(),sessionGPS,measureGPS:gpsData,values:vals}); localStorage.setItem('health_records',JSON.stringify(records)); document.getElementById('card-'+currentType).classList.add('done'); showSuccess(cfg, vals, saveTime, gpsData); } // ════════════════════════════════════ // SUCCESS OVERLAY // ════════════════════════════════════ const THANKS = [ {id:'Terima kasih atas ketelitian Anda!', zh:'感謝您的細心記錄！'}, {id:'Jazakallah khair atas pelayanan Anda.', zh:'願真主以善報賞賜您。'}, {id:'Kerja bagus! Bapak beruntung ada Anda.', zh:'做得好！爸爸有您真幸福。'}, {id:'Semoga Allah membalas kebaikan Anda.', zh:'願真主回報您的善行。'}, {id:'Luar biasa! Catatan Anda sangat berarti.', zh:'太棒了！您的記錄意義深遠。'}, ]; function showSuccess(cfg, vals, time, gps) { const thx = THANKS[Math.floor(Math.random()*THANKS.length)]; document.getElementById('ok-tid').textContent = cfg.title_id + ' — Berhasil Disimpan!'; document.getElementById('ok-tzh').textContent = cfg.title_zh + ' 記錄完成'; let det=''; cfg.rollers.forEach(r=>{det+=`${r.name_id} (${r.name_zh})：${vals[r.key]} ${r.unit}\n`;}); document.getElementById('ok-det').textContent = det.trim(); document.getElementById('ok-time').textContent = `⏰ ${time.toLocaleTimeString('zh-TW')} — ${time.toLocaleDateString('zh-TW')}`; document.getElementById('ok-thx-id').textContent = thx.id; document.getElementById('ok-thx-zh').textContent = thx.zh; const ov=document.getElementById('overlay-ok'); ov.classList.add('show'); setTimeout(()=>{ ov.classList.remove('show'); document.getElementById(currentPage).classList.remove('active'); document.getElementById('page-menu').classList.add('active'); currentPage='page-menu'; }, 3000); } // ════════════════════════════════════ // END SESSION // ════════════════════════════════════ function endSession() { showToast('✅ Selesai! Terima kasih / 測量結束，謝謝您！'); setTimeout(()=>{ document.getElementById(currentPage).classList.remove('active'); document.getElementById('page-home').classList.add('active'); currentPage='page-home'; },700); } // ════════════════════════════════════ // ADMIN // ════════════════════════════════════ function openAdmin() { document.getElementById(currentPage).classList.remove('active'); document.getElementById('page-admin').classList.add('active'); currentPage='page-admin'; } function doLogin() { if(document.getElementById('pwd-input').value===ADMIN_PWD){ document.getElementById('admin-login-wrap').style.display='none'; const m=document.getElementById('admin-main'); m.style.display='flex'; m.style.flexDirection='column'; renderAdmin(); } else { showToast('❌ 密碼錯誤，請再試一次'); document.getElementById('pwd-input').value=''; } } function doLogout() { document.getElementById('admin-login-wrap').style.display='block'; document.getElementById('admin-main').style.display='none'; document.getElementById('pwd-input').value=''; // Go back home document.getElementById('page-admin').classList.remove('active'); document.getElementById('page-home').classList.add('active'); currentPage='page-home'; } const TL={bp:'🩸 血壓',spo2:'🫁 血氧',water:'💧 飲水量',urine:'🚿 排尿量'}; const TC={bp:'#e63946',spo2:'#4361ee',water:'#4cc9f0',urine:'#f9c74f'}; function renderAdmin() { const records=getRecords(); const list=document.getElementById('records-list'); if(!records.length){list.innerHTML='<div class="empty"><div class="ei">📭</div>尚無任何記錄</div>';return;} list.innerHTML=records.map(r=>{ const dt=new Date(r.time); const ds=dt.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'}); const ts=dt.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); const g=r.measureGPS||{}; const hasGPS=g.lat&&g.lat!=='無法取得'&&g.lat!=='不支援'; const addrLine=g.addr?`📍 ${g.addr}`:(hasGPS?`📍 ${g.lat}, ${g.lng}`:'📍 無法取得位置'); const coordLine=hasGPS?`座標：${g.lat}, ${g.lng}`:''; const v=r.values||{}; let vHtml=''; if(r.type==='bp'){ const warn=(parseInt(v.sys)>=140||parseInt(v.dia)>=90)?'<span class="bw">⚠ 異常</span>':'<span class="bo">✓ 正常</span>'; vHtml=`<div class="rc-item"><div class="rl">收縮壓</div><div class="rv">${v.sys}<span class="ru"> mmHg</span></div></div> <div class="rc-item"><div class="rl">舒張壓 ${warn}</div><div class="rv">${v.dia}<span class="ru"> mmHg</span></div></div>`; } else if(r.type==='spo2'){ const warn=parseInt(v.spo2)<95?'<span class="bw">⚠ 偏低</span>':'<span class="bo">✓ 正常</span>'; vHtml=`<div class="rc-item"><div class="rl">血氧飽和度 ${warn}</div><div class="rv">${v.spo2}<span class="ru"> %</span></div></div>`; } else if(r.type==='water'){ vHtml=`<div class="rc-item"><div class="rl">飲水量</div><div class="rv">${v.water}<span class="ru"> ml</span></div></div>`; } else if(r.type==='urine'){ vHtml=`<div class="rc-item"><div class="rl">排尿量</div><div class="rv">${v.urine}<span class="ru"> ml</span></div></div>`; } return `<div class="rc" style="border-left-color:${TC[r.type]||'#52b788'}"> <div class="rc-type">${TL[r.type]||r.type}</div> <div class="rc-time">📅 ${ds} &nbsp;⏰ ${ts}</div> <div class="rc-addr">${addrLine}${coordLine?'<br><span style="font-size:0.6rem;color:#b0c0bc">'+coordLine+'</span>':''}</div> <div class="rc-grid">${vHtml}</div> </div>`; }).join(''); } function clearAll(){ if(confirm('確定要清除全部記錄嗎？此動作無法復原。')){ localStorage.removeItem('health_records'); renderAdmin(); showToast('🗑 已清除全部記錄'); } } function exportCSV(){ const records=getRecords(); if(!records.length){showToast('沒有記錄可匯出');return;} let csv='日期,時間,項目,GPS緯度,GPS經度,地址,收縮壓,舒張壓,血氧,飲水量ml,排尿量ml\n'; records.forEach(r=>{ const dt=new Date(r.time); const v=r.values||{},g=r.measureGPS||{}; csv+=[ dt.toLocaleDateString('zh-TW'),dt.toLocaleTimeString('zh-TW'), TL[r.type]||r.type,g.lat||'',g.lng||'','"'+(g.addr||'')+'"', v.sys||'',v.dia||'',v.spo2||'',v.water||'',v.urine||'' ].join(',')+'\n'; }); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'})); a.download=`健康記錄_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`; a.click(); showToast('📤 匯出成功！'); } // ════════════════════════════════════ // UTILS // ════════════════════════════════════ function getRecords(){try{return JSON.parse(localStorage.getItem('health_records')||'[]');}catch{return[];}} function showToast(msg){ const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show'); clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2800); } </script> </body> </html>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Catatan Kesehatan / 健康記錄</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gd: #1a3c34; --gm: #2d6a4f; --gl: #52b788; --gp: #d8f3dc;
+  --cream: #f8f5f0; --warm: #f4a261;
+  --text: #1b2631; --muted: #7a8c8e; --white: #fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Noto Sans','Noto Sans TC',sans-serif;background:var(--gd);color:var(--text)}
+
+/* ── PAGE SYSTEM ── */
+.page{position:fixed;inset:0;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);overflow:hidden}
+.page.active{transform:translateX(0)}
+.page.exit-left{transform:translateX(-100%)}
+
+/* ── PAGE 1: HOME ── */
+#page-home{background:linear-gradient(160deg,#1a3c34 0%,#2d6a4f 55%,#40916c 100%);align-items:center;justify-content:space-between;padding:0 24px 40px}
+#page-home::before{content:'';position:absolute;width:260px;height:260px;background:rgba(82,183,136,0.13);border-radius:50%;top:-70px;right:-70px;pointer-events:none}
+#page-home::after{content:'';position:absolute;width:180px;height:180px;background:rgba(244,162,97,0.10);border-radius:50%;bottom:100px;left:-50px;pointer-events:none}
+
+.home-top{width:100%;padding-top:56px;position:relative;z-index:1}
+.home-date{font-size:0.68rem;letter-spacing:2px;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:6px;font-family:'DM Mono',monospace}
+.home-greeting{font-size:1.9rem;font-weight:900;color:#fff;line-height:1.2;margin-bottom:2px}
+.home-greeting .wave{display:inline-block;animation:wave 2.5s infinite}
+@keyframes wave{0%,100%{transform:rotate(0)}25%{transform:rotate(20deg)}75%{transform:rotate(-10deg)}}
+.home-sub-id{font-size:0.88rem;color:rgba(255,255,255,0.8);margin-top:4px;font-weight:500}
+.home-sub-zh{font-size:0.65rem;color:rgba(255,255,255,0.35);margin-top:2px;font-weight:300}
+
+.home-weather{width:100%;position:relative;z-index:1;margin:8px 0}
+.weather-inner{background:rgba(255,255,255,0.11);border:1px solid rgba(255,255,255,0.18);border-radius:16px;padding:12px 16px;backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px}
+.weather-icon{font-size:2.2rem;flex-shrink:0}
+.weather-info{flex:1}
+.weather-temp{font-size:1.45rem;font-weight:900;color:#fff;line-height:1}
+.weather-temp small{font-size:0.7rem;font-weight:400;opacity:.65}
+.weather-desc{font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:2px}
+.weather-rain{font-size:0.68rem;color:rgba(180,230,255,0.9);margin-top:3px}
+.weather-load{color:rgba(255,255,255,0.45);font-size:0.78rem;text-align:center;padding:10px}
+
+.home-bottom{width:100%;position:relative;z-index:1}
+.quote-card{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.16);border-radius:16px;padding:14px 18px;margin-bottom:20px;backdrop-filter:blur(8px)}
+.quote-tag{font-size:0.62rem;letter-spacing:1.5px;color:var(--gl);text-transform:uppercase;margin-bottom:8px;font-family:'DM Mono',monospace}
+.quote-id{font-size:0.88rem;color:rgba(255,255,255,0.92);line-height:1.65;font-weight:500;margin-bottom:5px;transition:opacity .5s}
+.quote-zh{font-size:0.6rem;color:rgba(255,255,255,0.32);line-height:1.5;font-weight:300;font-style:italic;transition:opacity .5s}
+.q-dots{display:flex;gap:5px;justify-content:center;margin-top:8px}
+.q-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.2);transition:background .3s}
+.q-dot.on{background:var(--gl)}
+
+.btn-start{width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,var(--gl),#40916c);color:#fff;font-family:inherit;font-size:1rem;font-weight:800;letter-spacing:1px;cursor:pointer;box-shadow:0 8px 24px rgba(52,183,136,0.4);transition:transform .15s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-start:active{transform:scale(0.97)}
+.btn-start .id{font-size:1rem}
+.btn-start .zh{font-size:0.68rem;opacity:.65;font-weight:400;letter-spacing:0}
+
+/* Hidden admin trigger area */
+#admin-trigger{position:fixed;bottom:0;right:0;width:60px;height:60px;z-index:50;opacity:0}
+
+/* ── PAGE 2: MENU ── */
+#page-menu{background:var(--cream)}
+.page-header{background:linear-gradient(135deg,var(--gd),var(--gm));padding:48px 24px 22px;color:white;flex-shrink:0}
+.ph-title-id{font-size:1.2rem;font-weight:800;letter-spacing:.5px}
+.ph-title-zh{font-size:0.7rem;color:rgba(255,255,255,0.45);font-weight:300;margin-top:2px}
+.ph-sub-id{font-size:0.78rem;color:rgba(255,255,255,0.65);margin-top:6px}
+.ph-sub-zh{font-size:0.6rem;color:rgba(255,255,255,0.35);margin-top:1px;font-weight:300}
+.session-badge{margin-top:12px;background:rgba(255,255,255,0.1);border-radius:10px;padding:8px 12px;font-size:0.7rem;color:rgba(255,255,255,0.7);font-family:'DM Mono',monospace}
+
+.menu-body{flex:1;overflow-y:auto;padding:20px 18px}
+.menu-sec-id{font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;padding-left:3px}
+.menu-sec-zh{font-size:0.6rem;color:#b0bec5;font-weight:300;margin-bottom:12px;padding-left:3px}
+.measure-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+
+.measure-card{background:var(--white);border-radius:20px;padding:20px 14px 16px;text-align:center;box-shadow:0 4px 16px rgba(26,60,52,0.08);cursor:pointer;transition:transform .15s;border:2px solid transparent;position:relative;overflow:hidden}
+.measure-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.measure-card.bp::before{background:linear-gradient(90deg,#e63946,#f4a261)}
+.measure-card.spo2::before{background:linear-gradient(90deg,#4361ee,#7209b7)}
+.measure-card.water::before{background:linear-gradient(90deg,#4cc9f0,#48cae4)}
+.measure-card.urine::before{background:linear-gradient(90deg,#f9c74f,#f8961e)}
+.measure-card:active{transform:scale(0.96)}
+.measure-card.done{border-color:var(--gl)}
+.mc-done{display:none;position:absolute;top:8px;right:8px;width:20px;height:20px;background:var(--gl);color:#fff;border-radius:50%;font-size:0.6rem;font-weight:800;align-items:center;justify-content:center}
+.measure-card.done .mc-done{display:flex}
+.mc-icon{font-size:2rem;margin-bottom:8px}
+.mc-name-id{font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:1px}
+.mc-name-zh{font-size:0.6rem;color:var(--muted);font-weight:300}
+
+.btn-end{width:100%;padding:16px;border:2px solid var(--gm);border-radius:14px;background:transparent;font-family:inherit;cursor:pointer;transition:all .15s}
+.btn-end:active{background:var(--gp)}
+.btn-end .e-id{font-size:0.9rem;font-weight:700;color:var(--gm);display:block}
+.btn-end .e-zh{font-size:0.62rem;color:#a0b0a8;font-weight:300;display:block;margin-top:2px}
+
+/* ── PAGE 3: INPUT ── */
+#page-input{background:var(--cream)}
+.input-header{background:linear-gradient(135deg,var(--gd),var(--gm));padding:48px 24px 22px;color:white;flex-shrink:0}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;color:rgba(255,255,255,0.65);cursor:pointer;margin-bottom:10px;background:none;border:none;font-family:inherit}
+.ih-title-id{font-size:1.3rem;font-weight:800}
+.ih-title-zh{font-size:0.68rem;color:rgba(255,255,255,0.4);font-weight:300;margin-top:2px}
+.ih-sub-id{font-size:0.75rem;color:rgba(255,255,255,0.6);margin-top:6px}
+
+.input-body{flex:1;overflow-y:auto;padding:22px 18px;display:flex;flex-direction:column;gap:16px}
+
+.roller-group{background:var(--white);border-radius:20px;padding:18px;box-shadow:0 4px 16px rgba(26,60,52,0.07)}
+.roller-lbl-id{font-size:0.78rem;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px}
+.roller-lbl-zh{font-size:0.6rem;color:#b0c4be;font-weight:300;margin-bottom:14px}
+.rollers-row{display:flex;gap:10px;align-items:flex-start;justify-content:center}
+.roller-wrap{flex:1;text-align:center;max-width:160px}
+.roller-name-id{font-size:0.65rem;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.3px}
+.roller-name-zh{font-size:0.55rem;color:#c0ccc8;font-weight:300;margin-bottom:6px}
+.roller-unit{font-size:0.62rem;color:var(--muted);margin-top:5px}
+
+.drum{position:relative;height:176px;overflow:hidden;border-radius:14px;background:#f0f4f2;cursor:grab;user-select:none;touch-action:none}
+.drum-list{display:flex;flex-direction:column;will-change:transform}
+.drum-item{height:36px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:600;font-family:'DM Mono',monospace;color:rgba(0,0,0,0.2);flex-shrink:0}
+.drum-item.sel{color:var(--gd);font-size:1.45rem;font-weight:800}
+.drum::before,.drum::after{content:'';position:absolute;left:0;right:0;height:70px;pointer-events:none;z-index:2}
+.drum::before{top:0;background:linear-gradient(to bottom,#f0f4f2,transparent)}
+.drum::after{bottom:0;background:linear-gradient(to top,#f0f4f2,transparent)}
+.drum-hl{position:absolute;top:50%;left:6px;right:6px;height:36px;transform:translateY(-50%);background:rgba(82,183,136,0.14);border-radius:8px;border-top:1.5px solid rgba(82,183,136,0.38);border-bottom:1.5px solid rgba(82,183,136,0.38);pointer-events:none;z-index:1}
+.roller-sep{font-size:1.7rem;font-weight:300;color:var(--muted);padding-top:76px;flex-shrink:0}
+
+/* Hint card */
+.hint-card{border-radius:16px;padding:14px 16px;border-left:4px solid #f4a261}
+.hint-card.warn{background:#fff8f0;border-color:#f4a261}
+.hint-card.info{background:#f0f8ff;border-color:#4cc9f0}
+.hint-title{font-size:0.72rem;font-weight:700;color:#b5632a;margin-bottom:6px}
+.hint-title.info-t{color:#1a6fa8}
+.hint-row{font-size:0.72rem;color:#6b5040;line-height:1.7;margin-bottom:2px}
+.hint-row.info-r{color:#1a4a6b}
+.hint-zh{font-size:0.6rem;color:#b0a090;font-weight:300;margin-top:1px}
+.hint-zh.info-zh{color:#90aabb}
+
+.btn-save{width:100%;padding:17px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--gl),var(--gm));color:white;font-family:inherit;cursor:pointer;box-shadow:0 6px 20px rgba(45,106,79,0.28);transition:transform .15s;margin-top:2px}
+.btn-save:active{transform:scale(0.98)}
+.btn-save .s-id{font-size:0.95rem;font-weight:800;letter-spacing:1px;display:block}
+.btn-save .s-zh{font-size:0.62rem;opacity:.65;font-weight:300;display:block;margin-top:2px}
+
+/* ── SUCCESS OVERLAY ── */
+#overlay-ok{position:fixed;inset:0;z-index:999;background:rgba(26,60,52,0.85);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+#overlay-ok.show{opacity:1;pointer-events:all}
+.ok-box{background:var(--white);border-radius:24px;padding:32px 26px;text-align:center;width:86%;transform:scale(0.86);transition:transform .3s cubic-bezier(.175,.885,.32,1.275)}
+#overlay-ok.show .ok-box{transform:scale(1)}
+.ok-icon{font-size:3.2rem;margin-bottom:10px;display:block}
+.ok-title-id{font-size:1.1rem;font-weight:800;color:var(--gd);margin-bottom:2px}
+.ok-title-zh{font-size:0.65rem;color:var(--muted);font-weight:300;margin-bottom:10px}
+.ok-detail{font-size:0.78rem;color:var(--muted);line-height:1.85;white-space:pre-line}
+.ok-time{font-family:'DM Mono',monospace;color:var(--gm);font-size:0.72rem;margin-top:10px}
+.ok-thanks-id{font-size:0.82rem;font-weight:600;color:var(--gl);margin-top:12px}
+.ok-thanks-zh{font-size:0.6rem;color:#c0d0c8;font-weight:300;margin-top:2px}
+
+/* ── PAGE 4: ADMIN ── */
+#page-admin{background:var(--cream)}
+.admin-login{padding:28px 24px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.al-icon{font-size:2.8rem;text-align:center;margin-bottom:8px}
+.al-title{font-size:1.05rem;font-weight:800;text-align:center;color:var(--gd);margin-bottom:4px}
+.al-sub{font-size:0.75rem;text-align:center;color:var(--muted);margin-bottom:24px}
+.admin-login input{width:100%;padding:14px 16px;border:2px solid #dde;border-radius:14px;font-size:1rem;font-family:inherit;margin-bottom:14px;background:var(--white)}
+.admin-login input:focus{outline:none;border-color:var(--gl)}
+.btn-login{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--gl),var(--gm));color:white;font-family:inherit;font-size:0.95rem;font-weight:800;cursor:pointer}
+
+.admin-body{flex:1;overflow-y:auto;padding:18px}
+.admin-actions{display:flex;gap:8px;margin-bottom:18px}
+.btn-aa{flex:1;padding:11px;border-radius:12px;font-family:inherit;font-size:0.75rem;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.btn-export{background:var(--gp);color:var(--gd)}
+.btn-clear{background:#fde8d8;color:#b5432a}
+.btn-logout{background:#eee;color:#666}
+
+.rc{background:var(--white);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(26,60,52,0.07);border-left:4px solid var(--gl)}
+.rc-type{font-size:0.68rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+.rc-time{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);margin-bottom:3px}
+.rc-addr{font-size:0.68rem;color:#8a9e9a;margin-bottom:8px;line-height:1.4}
+.rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.rc-item .rl{font-size:0.65rem;color:var(--muted)}
+.rc-item .rv{font-size:0.95rem;font-weight:700;font-family:'DM Mono',monospace;color:var(--gd)}
+.rc-item .ru{font-size:0.6rem;color:var(--muted)}
+.bw{display:inline-block;background:#fde8d8;color:#b5432a;font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:4px}
+.bo{display:inline-block;background:#d8f3dc;color:#1b4332;font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:4px}
+.empty{text-align:center;padding:44px 20px;color:var(--muted);font-size:0.82rem}
+.empty .ei{font-size:2.4rem;margin-bottom:8px}
+
+/* TOAST */
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gd);color:white;padding:11px 22px;border-radius:30px;font-size:0.8rem;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.22);z-index:9999;white-space:nowrap;transition:transform .35s cubic-bezier(.175,.885,.32,1.275)}
+#toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══ PAGE 1: HOME ══ -->
+<div class="page active" id="page-home">
+  <div class="home-top">
+    <div class="home-date" id="home-date"></div>
+    <div class="home-greeting"><span class="wave">👋</span> <span id="greet-id">Selamat pagi!</span></div>
+    <div class="home-sub-id" id="greet-sub-id"></div>
+    <div class="home-sub-zh" id="greet-sub-zh"></div>
+  </div>
+
+  <div class="home-weather" id="weather-card">
+    <div class="weather-load">⏳ Memuat cuaca… / 載入天氣中…</div>
+  </div>
+
+  <div class="home-bottom">
+    <div class="quote-card">
+      <div class="quote-tag">🌙 Hikmah Islam Hari Ini · 今日伊斯蘭箴言</div>
+      <div class="quote-id" id="q-id"></div>
+      <div class="quote-zh" id="q-zh"></div>
+      <div class="q-dots" id="q-dots"></div>
+    </div>
+    <button class="btn-start" onclick="startSession()">
+      <span>▶</span>
+      <span><span class="id">Mulai Pencatatan</span><span class="zh">開始記錄</span></span>
+    </button>
+  </div>
+</div>
+
+<!-- Hidden admin trigger (bottom-right corner, tap 5×) -->
+<div id="admin-trigger" onclick="secretTap()"></div>
+
+<!-- ══ PAGE 2: MENU ══ -->
+<div class="page" id="page-menu">
+  <div class="page-header">
+    <div class="ph-title-id">📋 Pilih Item Pengukuran</div>
+    <div class="ph-title-zh">選擇測量項目</div>
+    <div class="ph-sub-id">Ketuk item di bawah untuk mulai memasukkan data</div>
+    <div class="ph-sub-zh">點選下方項目開始輸入數值</div>
+    <div class="session-badge" id="session-badge">⏰ —</div>
+  </div>
+  <div class="menu-body">
+    <div class="menu-sec-id">Item Pengukuran</div>
+    <div class="menu-sec-zh">測量項目</div>
+    <div class="measure-grid">
+      <div class="measure-card bp"    id="card-bp"    onclick="openInput('bp')">
+        <div class="mc-done">✓</div>
+        <div class="mc-icon">🩸</div>
+        <div class="mc-name-id">Tekanan Darah</div>
+        <div class="mc-name-zh">血壓</div>
+      </div>
+      <div class="measure-card spo2"  id="card-spo2"  onclick="openInput('spo2')">
+        <div class="mc-done">✓</div>
+        <div class="mc-icon">🫁</div>
+        <div class="mc-name-id">Saturasi Oksigen</div>
+        <div class="mc-name-zh">血氧</div>
+      </div>
+      <div class="measure-card water" id="card-water" onclick="openInput('water')">
+        <div class="mc-done">✓</div>
+        <div class="mc-icon">💧</div>
+        <div class="mc-name-id">Asupan Air</div>
+        <div class="mc-name-zh">飲水量</div>
+      </div>
+      <div class="measure-card urine" id="card-urine" onclick="openInput('urine')">
+        <div class="mc-done">✓</div>
+        <div class="mc-icon">🚿</div>
+        <div class="mc-name-id">Volume Urin</div>
+        <div class="mc-name-zh">排尿量</div>
+      </div>
+    </div>
+    <button class="btn-end" onclick="endSession()">
+      <span class="e-id">✅ Selesai Pengukuran</span>
+      <span class="e-zh">結束測量，回首頁</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ PAGE 3: INPUT ══ -->
+<div class="page" id="page-input">
+  <div class="input-header">
+    <button class="back-btn" onclick="goBack()">← Kembali / 返回</button>
+    <div class="ih-title-id" id="ih-id"></div>
+    <div class="ih-title-zh" id="ih-zh"></div>
+    <div class="ih-sub-id"   id="ih-sub"></div>
+  </div>
+  <div class="input-body" id="input-body"></div>
+</div>
+
+<!-- ══ PAGE 4: ADMIN ══ -->
+<div class="page" id="page-admin">
+  <div class="page-header">
+    <div class="ph-title-id">📊 Panel Pengelola</div>
+    <div class="ph-title-zh">管理者後台</div>
+  </div>
+  <div id="admin-login-wrap">
+    <div class="admin-login">
+      <div class="al-icon">🔐</div>
+      <div class="al-title">管理者登入</div>
+      <div class="al-sub">請輸入密碼以進入後台</div>
+      <input type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn-login" onclick="doLogin()">登 入</button>
+    </div>
+  </div>
+  <div id="admin-main" style="display:none;flex:1;overflow:hidden;flex-direction:column">
+    <div class="admin-body">
+      <div class="admin-actions">
+        <button class="btn-aa btn-export" onclick="exportCSV()">📤 匯出 CSV</button>
+        <button class="btn-aa btn-clear"  onclick="clearAll()">🗑 清除記錄</button>
+        <button class="btn-aa btn-logout" onclick="doLogout()">登出</button>
+      </div>
+      <div id="records-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SUCCESS OVERLAY ══ -->
+<div id="overlay-ok">
+  <div class="ok-box">
+    <span class="ok-icon">✅</span>
+    <div class="ok-title-id" id="ok-tid"></div>
+    <div class="ok-title-zh" id="ok-tzh"></div>
+    <div class="ok-detail"   id="ok-det"></div>
+    <div class="ok-time"     id="ok-time"></div>
+    <div class="ok-thanks-id" id="ok-thx-id"></div>
+    <div class="ok-thanks-zh" id="ok-thx-zh"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════
+const ADMIN_PWD = '721126';
+
+// ── 招呼語 10句（7天隨機不重複）──
+const GREETINGS = [
+  { id:'Selamat pagi! Semoga hari ini membawa keberkahan.',            zh:'早安！願今天充滿祝福。',          sub_id:'Terima kasih atas dedikasi Anda merawat Bapak.',            sub_zh:'感謝您用心照顧爸爸。' },
+  { id:'Halo! Semoga Allah memberikan kekuatan hari ini.',            zh:'您好！願真主賜予您今日力量。',       sub_id:'Setiap catatan Anda adalah bentuk kasih sayang.',            sub_zh:'每一筆記錄都是您愛心的體現。' },
+  { id:'Selamat siang! Jaga kesehatan diri Anda juga ya.',            zh:'午安！也請您好好照顧自己的健康。',   sub_id:'Orang yang merawat orang lain juga butuh istirahat.',        sub_zh:'照顧別人的人，自己也需要休息。' },
+  { id:'Assalamu\'alaikum! Semoga hari ini penuh kebaikan.',          zh:'平安！願今天充滿善意。',            sub_id:'Pekerjaan Anda sangat berarti bagi keluarga ini.',           sub_zh:'您的付出對這個家庭意義重大。' },
+  { id:'Selamat datang! Mari kita mulai dengan penuh semangat.',      zh:'歡迎！讓我們充滿活力地開始吧。',   sub_id:'Ketelitian Anda sangat kami hargai.',                       sub_zh:'您的細心讓我們非常感激。' },
+  { id:'Halo! Hari baru, semangat baru.',                             zh:'您好！新的一天，新的活力。',        sub_id:'Bapak beruntung memiliki perawat sebaik Anda.',             sub_zh:'爸爸有您這樣好的照護者真幸運。' },
+  { id:'Selamat bekerja! Semoga Allah memudahkan urusan Anda.',       zh:'工作順利！願真主讓您的事情順暢。', sub_id:'Setiap langkah kecil membuat perbedaan besar.',             sub_zh:'每一個小步驟都帶來巨大的改變。' },
+  { id:'Bismillah, mari kita mulai pencatatan hari ini.',             zh:'奉真主之名，讓我們開始今天的記錄。', sub_id:'Konsistensi Anda sangat membantu pemantauan kesehatan.',   sub_zh:'您的持續記錄非常有助於健康追蹤。' },
+  { id:'Halo! Terima kasih sudah hadir dan peduli.',                  zh:'您好！感謝您的出現與關心。',        sub_id:'Perhatian kecil Anda berdampak besar.',                     sub_zh:'您小小的關心帶來深遠的影響。' },
+  { id:'Selamat! Anda adalah pahlawan kesehatan keluarga ini.',       zh:'您好！您是這個家庭的健康守護者。', sub_id:'Semua usaha Anda tidak akan sia-sia, insya Allah.',         sub_zh:'您所有的努力都不會白費，以真主之名。' },
+];
+
+// ── 伊斯蘭箴言 100則 ──
+const QURAN_QUOTES = [
+  {id:"Sesungguhnya Allah mencintai orang-orang yang berbuat baik. (QS. Al-Baqarah: 195)",zh:"真主愛行善的人。"},
+  {id:"Kebersihan adalah sebagian dari iman. (HR. Muslim)",zh:"清潔是信仰的一部分。"},
+  {id:"Barang siapa meringankan kesulitan saudaranya, Allah akan meringankan kesulitannya. (HR. Muslim)",zh:"凡減輕兄弟困難者，真主將減輕他的困難。"},
+  {id:"Sebaik-baik manusia adalah yang paling bermanfaat bagi orang lain. (HR. Ahmad)",zh:"最好的人，是對他人最有益的人。"},
+  {id:"Dan bersabarlah, sesungguhnya Allah beserta orang-orang yang sabar. (QS. Al-Anfal: 46)",zh:"要忍耐，真主與忍耐者同在。"},
+  {id:"Mukmin yang kuat lebih baik daripada mukmin yang lemah. (HR. Muslim)",zh:"強壯的信徒勝於軟弱的信徒。"},
+  {id:"Tidak ada penyakit kecuali Allah telah menurunkan obatnya. (HR. Bukhari)",zh:"沒有疾病，真主不給予其藥方。"},
+  {id:"Jagalah kesehatanmu sebelum datang sakitmu. (HR. Bukhari)",zh:"在生病之前，好好守護你的健康。"},
+  {id:"Sesungguhnya dalam dirimu ada hak yang harus kamu penuhi. (HR. Bukhari)",zh:"你的身體對你有應盡的權利。"},
+  {id:"Allah tidak membebani seseorang melainkan sesuai kesanggupannya. (QS. Al-Baqarah: 286)",zh:"真主不使一個人負擔超出他的能力。"},
+  {id:"Sesungguhnya Allah Maha Lembut dan menyukai kelembutan. (HR. Bukhari)",zh:"真主是溫和的，且喜愛溫和。"},
+  {id:"Senyum kepada saudaramu adalah sedekah. (HR. Tirmidzi)",zh:"對兄弟微笑是一種施捨。"},
+  {id:"Barang siapa yang bersyukur, niscaya Aku akan menambah nikmatnya. (QS. Ibrahim: 7)",zh:"凡感恩者，我必增加其恩賜。"},
+  {id:"Sesungguhnya Allah tidak menyia-nyiakan pahala orang yang berbuat baik. (QS. At-Taubah: 120)",zh:"真主不會辜負行善者的回報。"},
+  {id:"Barang siapa melepaskan kesusahan seorang mukmin, Allah melepaskan kesusahannya. (HR. Muslim)",zh:"凡解除信士憂愁者，真主解除其憂愁。"},
+  {id:"Makan dan minumlah, tapi jangan berlebihan. (QS. Al-A'raf: 31)",zh:"吃喝，但不要過度。"},
+  {id:"Sesungguhnya tubuhmu mempunyai hak atasmu. (HR. Bukhari)",zh:"你的身體確實對你有權利。"},
+  {id:"Orang beriman itu seperti cermin bagi saudaranya. (HR. Abu Dawud)",zh:"信士對兄弟如同一面鏡子。"},
+  {id:"Berkahilah kami dalam apa yang Engkau rezekikan kepada kami. (Doa Nabi)",zh:"求真主在你賜予我們的一切中降賜祝福。"},
+  {id:"Sesungguhnya Allah suka jika kamu melakukan sesuatu dengan sempurna. (HR. Baihaqi)",zh:"真主喜愛你把每件事做得盡善盡美。"},
+  {id:"Berikanlah kemudahan dan janganlah kamu mempersulit. (HR. Bukhari)",zh:"給予便利，不要製造困難。"},
+  {id:"Setiap kebaikan adalah sedekah. (HR. Muslim)",zh:"每一件善事都是施捨。"},
+  {id:"Cintailah sesama manusia seperti mencintai dirimu sendiri. (HR. Bukhari & Muslim)",zh:"愛護他人，如同愛護自己。"},
+  {id:"Sesungguhnya amal itu tergantung niatnya. (HR. Bukhari)",zh:"行為的價值取決於其意圖。"},
+  {id:"Allah tidak melihat rupa dan hartamu, tetapi melihat hati dan amalmu. (HR. Muslim)",zh:"真主不看你的外貌和財富，而看你的心和行為。"},
+  {id:"Orang yang paling sempurna imannya adalah yang paling baik akhlaknya. (HR. Tirmidzi)",zh:"信仰最完整的人，是品德最好的人。"},
+  {id:"Jika kamu bersyukur, pasti Kami tambah nikmat untukmu. (QS. Ibrahim: 7)",zh:"若你感恩，我必增加你的恩賜。"},
+  {id:"Dan tolong-menolonglah kamu dalam kebaikan dan ketakwaan. (QS. Al-Maidah: 2)",zh:"要在善事和敬畏方面互相幫助。"},
+  {id:"Sesungguhnya sesudah kesulitan itu ada kemudahan. (QS. Al-Insyirah: 6)",zh:"困難之後，必有容易。"},
+  {id:"Barang siapa bertawakkal kepada Allah, maka Allah cukup baginya. (QS. At-Talaq: 3)",zh:"凡依靠真主者，真主即足以滿足他。"},
+  {id:"Berdoalah kepada-Ku, niscaya akan Aku perkenankan bagimu. (QS. Ghafir: 60)",zh:"求告我，我必回應你。"},
+  {id:"Sesungguhnya Allah beserta orang-orang yang bertakwa. (QS. An-Nahl: 128)",zh:"真主與敬畏者同在。"},
+  {id:"Janganlah kamu berputus asa dari rahmat Allah. (QS. Az-Zumar: 53)",zh:"不要對真主的慈憫感到絕望。"},
+  {id:"Dan hanya kepada Allah-lah kamu bertawakkal. (QS. Al-Maidah: 23)",zh:"只依靠真主。"},
+  {id:"Orang yang memuliakan tamu, memuliakan Allah. (HR. Bukhari)",zh:"尊重客人者，即尊重真主。"},
+  {id:"Sebaik-baik kalian adalah yang mempelajari Al-Qur'an dan mengajarkannya. (HR. Bukhari)",zh:"你們中最好的人，是學習可蘭經並教導它的人。"},
+  {id:"Sesungguhnya Allah tidak mengubah keadaan suatu kaum kecuali mereka mengubah diri sendiri. (QS. Ar-Ra'd: 11)",zh:"真主不改變一個民族的狀況，除非他們自己改變。"},
+  {id:"Ridha Allah tergantung ridha orang tua. (HR. Tirmidzi)",zh:"真主的喜悅在於父母的喜悅。"},
+  {id:"Surga itu di bawah telapak kaki ibu. (HR. Ahmad)",zh:"天堂在母親的腳下。"},
+  {id:"Bertakwalah kepada Allah di mana saja kamu berada. (HR. Tirmidzi)",zh:"無論身在何處，都要敬畏真主。"},
+  {id:"Sesungguhnya kesabaran itu bersama ujian. (HR. Ahmad)",zh:"忍耐與考驗相伴。"},
+  {id:"Barang siapa menutup aib saudaranya, Allah tutup aibnya di hari kiamat. (HR. Muslim)",zh:"凡遮掩兄弟過失者，真主在末日遮掩其過失。"},
+  {id:"Saling bercintalah dan jangan saling membenci. (HR. Muslim)",zh:"要相愛，不要相恨。"},
+  {id:"Sesungguhnya Allah Maha Pengampun lagi Maha Penyayang. (QS. Al-Baqarah: 173)",zh:"真主是至恕至慈的。"},
+  {id:"Mudahkanlah dan jangan mempersulit, gembirakanlah dan jangan menakut-nakuti. (HR. Bukhari)",zh:"給予便利不要阻礙，給予喜悅不要驚嚇。"},
+  {id:"Dan Allah selalu menjaga orang-orang yang beriman. (QS. Yusuf: 64)",zh:"真主守護信士們。"},
+  {id:"Sesungguhnya rahmat Allah sangat dekat kepada orang yang berbuat baik. (QS. Al-A'raf: 56)",zh:"真主的慈憫對行善者非常接近。"},
+  {id:"Siapa yang tidak bersyukur kepada manusia, ia tidak bersyukur kepada Allah. (HR. Abu Dawud)",zh:"不感謝人的人，也就不感謝真主。"},
+  {id:"Kebajikan tidak akan pernah lenyap dan dosa tidak akan pernah terlupakan. (HR. Tirmidzi)",zh:"善行永不消失，罪行永不遺忘。"},
+  {id:"Sesungguhnya orang mukmin itu bersaudara. (QS. Al-Hujurat: 10)",zh:"信士們確實是兄弟。"},
+  {id:"Wahai jiwa yang tenang, kembalilah kepada Tuhanmu dengan ridha dan diridhai. (QS. Al-Fajr: 27-28)",zh:"安寧的靈魂啊，以喜悅和被喜悅的狀態回歸你的主。"},
+  {id:"Hendaklah kamu berlaku adil, karena keadilan itu lebih dekat kepada takwa. (QS. Al-Maidah: 8)",zh:"要公正，因為公正更接近敬畏。"},
+  {id:"Allah tidak membiarkan pahala orang yang berbuat baik sia-sia. (QS. At-Taubah: 120)",zh:"真主不會讓行善者的回報落空。"},
+  {id:"Maka nikmat Tuhanmu yang manakah yang kamu dustakan? (QS. Ar-Rahman: 13)",zh:"那麼，你們還否認你們主的哪些恩典？"},
+  {id:"Ingatlah, hanya dengan mengingat Allah hati menjadi tentram. (QS. Ar-Ra'd: 28)",zh:"謹記，只有念及真主，心才得安寧。"},
+  {id:"Dan Kami turunkan dari Al-Quran sesuatu yang menjadi penawar dan rahmat. (QS. Al-Isra: 82)",zh:"我從可蘭經降下的，是治癒與慈憫。"},
+  {id:"Beribadahlah kepada Allah seakan kamu melihat-Nya. (HR. Bukhari)",zh:"敬拜真主，如同你能看見祂。"},
+  {id:"Tidak ada yang lebih berat dalam timbangan daripada akhlak yang baik. (HR. Abu Dawud)",zh:"在天平上，沒有比良好品德更重的東西。"},
+  {id:"Allah itu Indah dan mencintai keindahan. (HR. Muslim)",zh:"真主是美麗的，且喜愛美麗。"},
+  {id:"Sesungguhnya kemudahan itu bersama kesulitan. (QS. Al-Insyirah: 5)",zh:"困難與容易同在。"},
+  {id:"Tidaklah seorang muslim tertimpa kelelahan kecuali Allah hapuskan dosanya. (HR. Bukhari)",zh:"穆斯林所受的疲勞，真主必消除其罪過。"},
+  {id:"Barang siapa berjalan untuk menuntut ilmu, Allah mudahkan jalannya ke surga. (HR. Muslim)",zh:"凡為求知而行走者，真主為其開通通往天堂之路。"},
+  {id:"Janganlah kamu menzalimi dirimu sendiri. (QS. Al-Baqarah: 231)",zh:"不要虧待自己。"},
+  {id:"Dan Dia bersama kamu di mana saja kamu berada. (QS. Al-Hadid: 4)",zh:"無論你身在何處，祂都與你同在。"},
+  {id:"Sesungguhnya pertolongan Allah sangat dekat. (QS. Al-Baqarah: 214)",zh:"真主的援助確實近在咫尺。"},
+  {id:"Allah tidak membebani seseorang di luar kemampuannya. (QS. Al-Baqarah: 286)",zh:"真主不使人承受超越其能力的負擔。"},
+  {id:"Barang siapa bertakwa kepada Allah, niscaya Dia akan mengadakan jalan keluar baginya. (QS. At-Talaq: 2)",zh:"凡敬畏真主者，真主為其開闢出路。"},
+  {id:"Sesungguhnya Allah Maha Mendengar dan Maha Melihat. (QS. Al-Hajj: 61)",zh:"真主是全聽的、全見的。"},
+  {id:"Katakanlah kebenaran walaupun itu pahit. (HR. Ibnu Hibban)",zh:"說真話，即使它苦澀。"},
+  {id:"Cukuplah Allah sebagai pelindung. (QS. An-Nisa: 45)",zh:"真主作為守護者已足夠。"},
+  {id:"Sesungguhnya Allah tidak menzalimi manusia sedikitpun. (QS. Yunus: 44)",zh:"真主絕不虧待人類絲毫。"},
+  {id:"Wahai orang-orang yang beriman, bersabarlah dan kuatkanlah kesabaranmu. (QS. Ali Imran: 200)",zh:"信士們！要忍耐，要加強你們的忍耐。"},
+  {id:"Dan bagi Allah-lah segala urusan sebelum dan sesudahnya. (QS. Ar-Rum: 4)",zh:"一切事在始末皆歸於真主。"},
+  {id:"Sesungguhnya Kami menciptakan manusia dalam bentuk yang sebaik-baiknya. (QS. At-Tin: 4)",zh:"我確實以最美好的形態創造了人類。"},
+  {id:"Jangan bersedih, sesungguhnya Allah bersama kita. (QS. At-Taubah: 40)",zh:"不要悲傷，真主確實與我們同在。"},
+  {id:"Dan Dia selalu mengawasi segala sesuatu. (QS. Al-Ahzab: 52)",zh:"祂對一切都在監察。"},
+  {id:"Sesungguhnya orang yang paling mulia adalah yang paling bertakwa. (QS. Al-Hujurat: 13)",zh:"你們中最尊貴的，是最敬畏真主的。"},
+  {id:"Tangan di atas lebih baik daripada tangan di bawah. (HR. Bukhari)",zh:"施予的手勝於接受的手。"},
+  {id:"Setiap yang menyakitkan orang mukmin, Allah catat sebagai kebaikan. (HR. Muslim)",zh:"每一個令信士痛苦之事，真主記錄為善功。"},
+  {id:"Berbuat baiklah sebagaimana Allah berbuat baik kepadamu. (QS. Al-Qasas: 77)",zh:"行善，正如真主對你行善一樣。"},
+  {id:"Janganlah kamu saling mendengki dan saling membenci. (HR. Muslim)",zh:"不要互相嫉妒，不要互相仇恨。"},
+  {id:"Dan sesungguhnya akhirat itu lebih baik bagimu daripada yang permulaan (dunia). (QS. Ad-Duha: 4)",zh:"後世對你確實比今世更好。"},
+  {id:"Barang siapa yang menolong saudaranya, Allah menolong dia. (HR. Muslim)",zh:"凡幫助兄弟者，真主幫助他。"},
+  {id:"Dan Tuhanmu tidak pernah lupa. (QS. Maryam: 64)",zh:"你的主從不遺忘。"},
+  {id:"Sesungguhnya Allah menyukai orang yang bertobat dan menyukai orang yang menyucikan diri. (QS. Al-Baqarah: 222)",zh:"真主喜愛悔過者和自我潔淨者。"},
+  {id:"Berilah kabar gembira kepada orang-orang yang sabar. (QS. Al-Baqarah: 155)",zh:"向忍耐者報喜。"},
+  {id:"Sesungguhnya kebaikan itu jalan menuju surga. (HR. Bukhari & Muslim)",zh:"善行確實是通往天堂之路。"},
+  {id:"Setiap jiwa akan merasakan mati. (QS. Ali Imran: 185)",zh:"每個靈魂都會嚐到死亡的滋味。"},
+  {id:"Cukuplah kematian sebagai peringatan. (HR. Tirmidzi)",zh:"死亡足以作為警示。"},
+  {id:"Sesungguhnya setelah kesulitan pasti ada kemudahan. (QS. Al-Insyirah: 5-6)",zh:"困難之後必有容易。"},
+  {id:"Dan Kami jadikan dari air segala sesuatu yang hidup. (QS. Al-Anbiya: 30)",zh:"我以水創造一切生命。"},
+  {id:"Makanlah dari rezeki yang baik-baik. (QS. Al-Mu'minun: 51)",zh:"從美好的賜予中飲食。"},
+  {id:"Sesungguhnya Allah adalah sumber kedamaian. (QS. Al-Hasyr: 23)",zh:"真主是和平的源泉。"},
+  {id:"Janganlah kamu boros, sesungguhnya Allah tidak menyukai orang yang boros. (QS. Al-A'raf: 31)",zh:"不要浪費，真主不喜愛浪費者。"},
+  {id:"Dan bertasbihlah kepada-Nya pagi dan sore. (QS. Al-Ahzab: 42)",zh:"早晚讚頌祂的榮耀。"},
+  {id:"Sesungguhnya Allah itu Maha Perkasa lagi Maha Bijaksana. (QS. Al-Baqarah: 228)",zh:"真主是全能的、至睿的。"},
+  {id:"Barang siapa bersabar, Allah berikan yang lebih baik. (HR. Ahmad)",zh:"凡忍耐者，真主賜予更好的。"},
+  {id:"Sesungguhnya Allah Maha Pengasih lagi Maha Penyayang. (QS. Al-Baqarah: 163)",zh:"真主是至仁的、至慈的。"},
+  {id:"Dan bertawakkallah kepada Allah, cukuplah Allah sebagai pelindung. (QS. Al-Ahzab: 3)",zh:"依靠真主，真主作為守護者已足夠。"},
+  {id:"Tidak ada daya dan kekuatan kecuali dari Allah. (HR. Bukhari)",zh:"除真主之外，別無能力與力量。"},
+  {id:"Sesungguhnya bersama kesabaran ada kemenangan. (HR. Tirmidzi)",zh:"忍耐之中有勝利。"},
+  {id:"Dan Allah Maha Mengetahui apa yang ada dalam hati. (QS. Al-Maidah: 7)",zh:"真主對心中所有的一切全知。"},
+];
+
+// ════════════════════════════════════
+//  STATE
+// ════════════════════════════════════
+let currentPage = 'page-home';
+let sessionGPS = null, sessionTime = null;
+let currentType = null;
+let secretTaps = 0, secretTimer = null;
+
+// ── Greeting rotation (7-day non-repeat) ──
+function getTodayGreeting() {
+  const today = new Date().toDateString();
+  let data = JSON.parse(localStorage.getItem('greet_data')||'{}');
+  if (data.date !== today) {
+    // Pick 7 unique for the week pool, or just pick today's
+    let used = data.used || [];
+    // Reset if all used
+    if (used.length >= GREETINGS.length) used = [];
+    // Pick one not in used
+    let avail = GREETINGS.map((_,i)=>i).filter(i=>!used.includes(i));
+    const pick = avail[Math.floor(Math.random()*avail.length)];
+    used.push(pick);
+    data = {date:today, pick, used};
+    localStorage.setItem('greet_data', JSON.stringify(data));
+  }
+  return GREETINGS[data.pick];
+}
+
+// ── Quote rotation (daily non-repeat) ──
+function getTodayQuote() {
+  const today = new Date().toDateString();
+  let data = JSON.parse(localStorage.getItem('quote_data')||'{}');
+  if (data.date !== today) {
+    let used = data.used || [];
+    if (used.length >= QURAN_QUOTES.length) used = [];
+    let avail = QURAN_QUOTES.map((_,i)=>i).filter(i=>!used.includes(i));
+    const pick = avail[Math.floor(Math.random()*avail.length)];
+    used.push(pick);
+    data = {date:today, pick, used};
+    localStorage.setItem('quote_data', JSON.stringify(data));
+  }
+  return QURAN_QUOTES[data.pick];
+}
+
+// ════════════════════════════════════
+//  INIT
+// ════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  // Date
+  const now = new Date();
+  document.getElementById('home-date').textContent =
+    now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+  // Greeting
+  const g = getTodayGreeting();
+  document.getElementById('greet-id').textContent = g.id;
+  document.getElementById('greet-sub-id').textContent = g.sub_id;
+  document.getElementById('greet-sub-zh').textContent = g.sub_zh;
+
+  // Quote (single daily, shown static — no carousel needed, one per day)
+  const q = getTodayQuote();
+  document.getElementById('q-id').textContent = q.id;
+  document.getElementById('q-zh').textContent = '（' + q.zh + '）';
+  // No dots needed for single quote
+  document.getElementById('q-dots').style.display = 'none';
+
+  // Weather
+  loadWeather();
+});
+
+// ════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════
+function goTo(id) {
+  const p = document.getElementById(currentPage);
+  const n = document.getElementById(id);
+  p.classList.remove('active'); p.classList.add('exit-left');
+  n.classList.add('active');
+  setTimeout(()=>p.classList.remove('exit-left'),420);
+  currentPage = id;
+}
+function goBack() {
+  document.getElementById(currentPage).classList.remove('active');
+  document.getElementById('page-menu').classList.add('active');
+  currentPage = 'page-menu';
+}
+
+// ════════════════════════════════════
+//  HIDDEN ADMIN TRIGGER
+// ════════════════════════════════════
+function secretTap() {
+  secretTaps++;
+  clearTimeout(secretTimer);
+  secretTimer = setTimeout(()=>{ secretTaps=0; }, 2000);
+  if (secretTaps >= 5) {
+    secretTaps = 0;
+    openAdmin();
+  }
+}
+
+// ════════════════════════════════════
+//  WEATHER
+// ════════════════════════════════════
+const WX_MAP = {
+  0:['☀️','Cerah / 晴天'],1:['🌤️','Cerah Berawan / 大致晴'],2:['⛅','Berawan / 多雲'],3:['☁️','Mendung / 陰天'],
+  45:['🌫️','Kabut / 霧'],48:['🌫️','Kabut / 霧'],51:['🌦️','Gerimis / 毛毛雨'],53:['🌦️','Gerimis / 毛毛雨'],
+  55:['🌧️','Hujan Ringan / 細雨'],61:['🌧️','Hujan / 小雨'],63:['🌧️','Hujan Sedang / 中雨'],65:['🌧️','Hujan Deras / 大雨'],
+  80:['🌦️','Hujan Lokal / 陣雨'],81:['🌧️','Hujan / 陣雨'],95:['⛈️','Hujan Badai / 雷雨'],96:['⛈️','Hujan Badai / 雷雨'],
+};
+async function loadWeather() {
+  const el = document.getElementById('weather-card');
+  try {
+    const coords = await new Promise(res=>{
+      if(!navigator.geolocation){res({lat:25.04,lng:121.51});return;}
+      navigator.geolocation.getCurrentPosition(
+        p=>res({lat:p.coords.latitude,lng:p.coords.longitude}),
+        ()=>res({lat:25.04,lng:121.51}),{timeout:7000});
+    });
+    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current=temperature_2m,weathercode&daily=precipitation_sum&timezone=auto&forecast_days=1`);
+    const d = await r.json();
+    const temp = Math.round(d.current.temperature_2m);
+    const wx   = WX_MAP[d.current.weathercode] || ['🌡️','—'];
+    const rain = (d.daily.precipitation_sum[0]||0).toFixed(1);
+    const rainTxt = parseFloat(rain)>0
+      ? `💧 Curah hujan: ${rain} mm / 降雨量: ${rain} mm`
+      : `💧 Tidak ada hujan / 今日無降雨`;
+    el.innerHTML = `<div class="weather-inner">
+      <div class="weather-icon">${wx[0]}</div>
+      <div class="weather-info">
+        <div class="weather-temp">${temp}°C <small>Suhu / 氣溫</small></div>
+        <div class="weather-desc">${wx[1]}</div>
+        <div class="weather-rain">${rainTxt}</div>
+      </div>
+    </div>`;
+  } catch(e) {
+    el.innerHTML='<div class="weather-load">🌤️ Cuaca tidak tersedia / 天氣暫時無法載入</div>';
+  }
+}
+
+// ════════════════════════════════════
+//  SESSION
+// ════════════════════════════════════
+function startSession() {
+  sessionTime = new Date();
+  sessionGPS = null;
+  ['bp','spo2','water','urine'].forEach(t=>document.getElementById('card-'+t).classList.remove('done'));
+  getGPS(p=>{ sessionGPS=p; });
+  document.getElementById('session-badge').textContent = `⏰ ${sessionTime.toLocaleTimeString('zh-TW')}`;
+  goTo('page-menu');
+}
+function getGPS(cb) {
+  if(!navigator.geolocation){cb({lat:'不支援',lng:'',addr:''});return;}
+  navigator.geolocation.getCurrentPosition(
+    p=>cb({lat:p.coords.latitude.toFixed(6),lng:p.coords.longitude.toFixed(6),addr:''}),
+    ()=>cb({lat:'無法取得',lng:'',addr:''}),{timeout:8000});
+}
+async function getGPSWithAddr() {
+  return new Promise(res=>{
+    if(!navigator.geolocation){res({lat:'不支援',lng:'',addr:'不支援定位'});return;}
+    navigator.geolocation.getCurrentPosition(async p=>{
+      const lat=p.coords.latitude.toFixed(6), lng=p.coords.longitude.toFixed(6);
+      let addr='';
+      try{
+        const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=zh-TW`);
+        const d=await r.json();
+        addr=d.display_name||'';
+        // Shorten: take first 3 parts
+        const parts=addr.split(',');
+        addr=parts.slice(0,4).join(', ');
+      }catch(e){addr='地址解析失敗';}
+      res({lat,lng,addr});
+    },()=>res({lat:'無法取得',lng:'',addr:'GPS無法取得'}),{timeout:8000});
+  });
+}
+
+// ════════════════════════════════════
+//  INPUT CONFIGS
+// ════════════════════════════════════
+const CFGS = {
+  bp: {
+    title_id:'Tekanan Darah', title_zh:'血壓測量',
+    sub_id:'Geser roda untuk memilih nilai tekanan darah',
+    sep:'/',
+    rollers:[
+      {key:'sys',name_id:'Sistolik (Atas)',name_zh:'收縮壓（高壓）',unit:'mmHg',min:60,max:230,step:1,init:120},
+      {key:'dia',name_id:'Diastolik (Bawah)',name_zh:'舒張壓（低壓）',unit:'mmHg',min:40,max:150,step:1,init:80},
+    ],
+    hints:[
+      {type:'warn',
+       title_id:'⚠️ Tanda Bahaya / 危險警示',
+       rows:[
+         {id:'Sistolik ≥ 140 atau ≤ 90: segera laporkan ke keluarga',zh:'收縮壓 ≥ 140 或 ≤ 90：請立即通報家屬'},
+         {id:'Diastolik ≥ 90 atau ≤ 60: perhatikan gejala pusing',zh:'舒張壓 ≥ 90 或 ≤ 60：注意是否有頭暈'},
+         {id:'Jika Bapak mengeluh sakit kepala hebat, hubungi dokter',zh:'若爸爸訴說劇烈頭痛，請聯絡醫師'},
+       ]},
+      {type:'info',
+       title_id:'ℹ️ Nilai Normal / 正常值參考',
+       rows:[
+         {id:'Normal: Sistolik 90–139, Diastolik 60–89 mmHg',zh:'正常：高壓90-139，低壓60-89 mmHg'},
+         {id:'Ukur saat Bapak dalam kondisi tenang dan duduk',zh:'測量時請讓爸爸安靜坐著'},
+       ]},
+    ]
+  },
+  spo2: {
+    title_id:'Saturasi Oksigen', title_zh:'血氧濃度',
+    sub_id:'Geser roda untuk memilih nilai SpO₂',
+    rollers:[
+      {key:'spo2',name_id:'SpO₂',name_zh:'血氧飽和度',unit:'%',min:70,max:100,step:1,init:98},
+    ],
+    hints:[
+      {type:'warn',
+       title_id:'⚠️ Tanda Bahaya / 危險警示',
+       rows:[
+         {id:'SpO₂ < 95%: segera beritahu keluarga',zh:'血氧 < 95%：請立即通知家屬'},
+         {id:'SpO₂ < 90%: darurat, hubungi dokter sekarang!',zh:'血氧 < 90%：緊急，請立即聯絡醫師！'},
+         {id:'Perhatikan jika Bapak tampak sesak atau pucat',zh:'注意爸爸是否看起來喘不過氣或臉色蒼白'},
+       ]},
+      {type:'info',
+       title_id:'ℹ️ Nilai Normal / 正常值參考',
+       rows:[
+         {id:'Normal: 95–100%',zh:'正常：95–100%'},
+         {id:'Pastikan alat oximeter menempel erat di jari',zh:'確認血氧機夾緊手指'},
+       ]},
+    ]
+  },
+  water: {
+    title_id:'Asupan Air Minum', title_zh:'飲水量',
+    sub_id:'Geser roda untuk memilih jumlah air yang diminum',
+    rollers:[
+      {key:'water',name_id:'Asupan Air',name_zh:'飲水量',unit:'ml',min:0,max:3000,step:50,init:1000},
+    ],
+    hints:[
+      {type:'info',
+       title_id:'ℹ️ Panduan / 建議',
+       rows:[
+         {id:'Lansia perlu minum sekitar 1500–2000 ml per hari',zh:'老年人每天需飲水約1500–2000 ml'},
+         {id:'Kurang minum bisa menyebabkan dehidrasi dan sembelit',zh:'飲水不足可能導致脫水與便秘'},
+         {id:'Ingatkan Bapak minum air secara teratur',zh:'請提醒爸爸定時補充水分'},
+       ]},
+      {type:'warn',
+       title_id:'⚠️ Perhatikan / 注意',
+       rows:[
+         {id:'< 800 ml: berisiko dehidrasi, segera beri minum',zh:'< 800 ml：有脫水風險，請立即補充水分'},
+         {id:'> 2500 ml: perlu perhatian jika ada masalah ginjal',zh:'> 2500 ml：若有腎臟問題請注意'},
+       ]},
+    ]
+  },
+  urine: {
+    title_id:'Volume Urin', title_zh:'排尿量',
+    sub_id:'Geser roda untuk memilih jumlah urin',
+    rollers:[
+      {key:'urine',name_id:'Volume Urin',name_zh:'排尿量',unit:'ml',min:0,max:3000,step:50,init:1000},
+    ],
+    hints:[
+      {type:'info',
+       title_id:'ℹ️ Panduan / 建議',
+       rows:[
+         {id:'Normal: sekitar 800–2000 ml per hari',zh:'正常：每天約 800–2000 ml'},
+         {id:'Warna urin harus kuning muda (jernih)',zh:'尿液顏色應為淡黃色（清澈）'},
+       ]},
+      {type:'warn',
+       title_id:'⚠️ Perhatikan / 注意',
+       rows:[
+         {id:'< 400 ml: waspadai retensi urin atau dehidrasi',zh:'< 400 ml：注意尿液滯留或脫水'},
+         {id:'> 2500 ml: waspadai diabetes atau efek obat',zh:'> 2500 ml：注意是否糖尿病或藥物作用'},
+         {id:'Urin keruh atau berdarah: hubungi dokter segera',zh:'尿液混濁或帶血：請立即聯絡醫師'},
+       ]},
+    ]
+  },
+};
+
+// ════════════════════════════════════
+//  OPEN INPUT PAGE
+// ════════════════════════════════════
+function openInput(type) {
+  currentType = type;
+  const cfg = CFGS[type];
+  document.getElementById('ih-id').textContent  = cfg.title_id;
+  document.getElementById('ih-zh').textContent  = cfg.title_zh;
+  document.getElementById('ih-sub').textContent = cfg.sub_id;
+
+  const body = document.getElementById('input-body');
+  body.innerHTML = '';
+
+  // Roller group
+  const grp = document.createElement('div'); grp.className='roller-group';
+  const lid = document.createElement('div'); lid.className='roller-lbl-id'; lid.textContent='Pilih Nilai / 選擇數值';
+  const lzh = document.createElement('div'); lzh.className='roller-lbl-zh'; lzh.textContent='上下滑動滾輪來選擇';
+  grp.appendChild(lid); grp.appendChild(lzh);
+
+  const row = document.createElement('div'); row.className='rollers-row';
+  cfg.rollers.forEach((r,i)=>{
+    if(i>0&&cfg.sep){const s=document.createElement('div');s.className='roller-sep';s.textContent=cfg.sep;row.appendChild(s);}
+    const w=document.createElement('div'); w.className='roller-wrap';
+    const nid=document.createElement('div'); nid.className='roller-name-id'; nid.textContent=r.name_id;
+    const nzh=document.createElement('div'); nzh.className='roller-name-zh'; nzh.textContent=r.name_zh;
+    w.appendChild(nid); w.appendChild(nzh);
+    w.appendChild(buildDrum(r));
+    const u=document.createElement('div'); u.className='roller-unit'; u.textContent=r.unit;
+    w.appendChild(u);
+    row.appendChild(w);
+  });
+  grp.appendChild(row);
+  body.appendChild(grp);
+
+  // Hint cards
+  (cfg.hints||[]).forEach(h=>{
+    const hc=document.createElement('div');
+    hc.className='hint-card '+(h.type==='warn'?'warn':'info');
+    const ht=document.createElement('div');
+    ht.className='hint-title '+(h.type==='warn'?'':'info-t');
+    ht.textContent=h.title_id; hc.appendChild(ht);
+    h.rows.forEach(r=>{
+      const rid=document.createElement('div'); rid.className='hint-row '+(h.type==='warn'?'':'info-r'); rid.textContent='• '+r.id;
+      const rzh=document.createElement('div'); rzh.className='hint-zh '+(h.type==='warn'?'':'info-zh'); rzh.textContent='  '+r.zh;
+      hc.appendChild(rid); hc.appendChild(rzh);
+    });
+    body.appendChild(hc);
+  });
+
+  // Save button
+  const btn=document.createElement('button'); btn.className='btn-save';
+  btn.innerHTML='<span class="s-id">Simpan Catatan ✓</span><span class="s-zh">儲存此項記錄</span>';
+  btn.onclick=saveInput;
+  body.appendChild(btn);
+
+  goTo('page-input');
+}
+
+// ════════════════════════════════════
+//  DRUM ROLLER
+// ════════════════════════════════════
+function buildDrum(cfg) {
+  const {min,max,step,init} = cfg;
+  const vals=[]; for(let v=min;v<=max;v+=step)vals.push(v);
+  const IH=36, PAD=2;
+  const drum=document.createElement('div'); drum.className='drum'; drum.dataset.key=cfg.key;
+  const hl=document.createElement('div'); hl.className='drum-hl'; drum.appendChild(hl);
+  const list=document.createElement('div'); list.className='drum-list';
+  for(let p=0;p<PAD;p++){const pi=document.createElement('div');pi.className='drum-item';list.appendChild(pi);}
+  vals.forEach(v=>{const it=document.createElement('div');it.className='drum-item';it.textContent=v;it.dataset.val=v;list.appendChild(it);});
+  for(let p=0;p<PAD;p++){const pi=document.createElement('div');pi.className='drum-item';list.appendChild(pi);}
+  drum.appendChild(list);
+
+  let si=vals.indexOf(init); if(si<0)si=0;
+  let co=si*IH;
+  function snap(off,anim){
+    off=Math.max(0,Math.min((vals.length-1)*IH,off));
+    co=off;
+    list.style.transition=anim?'transform .18s cubic-bezier(.4,0,.2,1)':'none';
+    list.style.transform=`translateY(${-off}px)`;
+    si=Math.round(off/IH);
+    drum.dataset.selected=vals[si];
+    list.querySelectorAll('.drum-item[data-val]').forEach((el,i)=>el.classList.toggle('sel',i===si));
+  }
+  snap(co,false);
+
+  let sy=0,so=0,drag=false,ly=0,vel=0,lt=0;
+  const onS=y=>{drag=true;sy=y;so=co;ly=y;vel=0;lt=Date.now();list.style.transition='none';};
+  const onM=y=>{if(!drag)return;const now=Date.now(),dt=now-lt;if(dt>0)vel=(ly-y)/dt*16;ly=y;lt=now;snap(so+(sy-y),false);};
+  const onE=()=>{if(!drag)return;drag=false;snap(Math.round((co+vel*4)/IH)*IH,true);};
+  drum.addEventListener('touchstart',e=>{onS(e.touches[0].clientY);e.preventDefault();},{passive:false});
+  drum.addEventListener('touchmove', e=>{onM(e.touches[0].clientY);e.preventDefault();},{passive:false});
+  drum.addEventListener('touchend',  ()=>onE());
+  drum.addEventListener('mousedown', e=>onS(e.clientY));
+  window.addEventListener('mousemove',e=>{if(drag)onM(e.clientY);});
+  window.addEventListener('mouseup',  ()=>{if(drag)onE();});
+  drum.addEventListener('wheel',e=>{e.preventDefault();snap(Math.round((co+((e.deltaY>0?1:-1)*IH))/IH)*IH,true);},{passive:false});
+  return drum;
+}
+
+// ════════════════════════════════════
+//  SAVE
+// ════════════════════════════════════
+async function saveInput() {
+  const cfg = CFGS[currentType];
+  const vals={};
+  document.querySelectorAll('#input-body .drum').forEach(d=>{vals[d.dataset.key]=d.dataset.selected;});
+  const saveTime = new Date();
+
+  // Get GPS + address
+  const gpsData = await getGPSWithAddr();
+
+  const records = getRecords();
+  records.unshift({id:Date.now(),type:currentType,time:saveTime.toISOString(),sessionGPS,measureGPS:gpsData,values:vals});
+  localStorage.setItem('health_records',JSON.stringify(records));
+
+  document.getElementById('card-'+currentType).classList.add('done');
+  showSuccess(cfg, vals, saveTime, gpsData);
+}
+
+// ════════════════════════════════════
+//  SUCCESS OVERLAY
+// ════════════════════════════════════
+const THANKS = [
+  {id:'Terima kasih atas ketelitian Anda!',       zh:'感謝您的細心記錄！'},
+  {id:'Jazakallah khair atas pelayanan Anda.',    zh:'願真主以善報賞賜您。'},
+  {id:'Kerja bagus! Bapak beruntung ada Anda.',   zh:'做得好！爸爸有您真幸福。'},
+  {id:'Semoga Allah membalas kebaikan Anda.',     zh:'願真主回報您的善行。'},
+  {id:'Luar biasa! Catatan Anda sangat berarti.', zh:'太棒了！您的記錄意義深遠。'},
+];
+
+function showSuccess(cfg, vals, time, gps) {
+  const thx = THANKS[Math.floor(Math.random()*THANKS.length)];
+  document.getElementById('ok-tid').textContent  = cfg.title_id + ' — Berhasil Disimpan!';
+  document.getElementById('ok-tzh').textContent  = cfg.title_zh + ' 記錄完成';
+  let det='';
+  cfg.rollers.forEach(r=>{det+=`${r.name_id} (${r.name_zh})：${vals[r.key]} ${r.unit}\n`;});
+  document.getElementById('ok-det').textContent  = det.trim();
+  document.getElementById('ok-time').textContent = `⏰ ${time.toLocaleTimeString('zh-TW')} — ${time.toLocaleDateString('zh-TW')}`;
+  document.getElementById('ok-thx-id').textContent = thx.id;
+  document.getElementById('ok-thx-zh').textContent = thx.zh;
+
+  const ov=document.getElementById('overlay-ok');
+  ov.classList.add('show');
+  setTimeout(()=>{
+    ov.classList.remove('show');
+    document.getElementById(currentPage).classList.remove('active');
+    document.getElementById('page-menu').classList.add('active');
+    currentPage='page-menu';
+  }, 3000);
+}
+
+// ════════════════════════════════════
+//  END SESSION
+// ════════════════════════════════════
+function endSession() {
+  showToast('✅ Selesai! Terima kasih / 測量結束，謝謝您！');
+  setTimeout(()=>{
+    document.getElementById(currentPage).classList.remove('active');
+    document.getElementById('page-home').classList.add('active');
+    currentPage='page-home';
+  },700);
+}
+
+// ════════════════════════════════════
+//  ADMIN
+// ════════════════════════════════════
+function openAdmin() {
+  document.getElementById(currentPage).classList.remove('active');
+  document.getElementById('page-admin').classList.add('active');
+  currentPage='page-admin';
+}
+function doLogin() {
+  if(document.getElementById('pwd-input').value===ADMIN_PWD){
+    document.getElementById('admin-login-wrap').style.display='none';
+    const m=document.getElementById('admin-main');
+    m.style.display='flex'; m.style.flexDirection='column';
+    renderAdmin();
+  } else {
+    showToast('❌ 密碼錯誤，請再試一次');
+    document.getElementById('pwd-input').value='';
+  }
+}
+function doLogout() {
+  document.getElementById('admin-login-wrap').style.display='block';
+  document.getElementById('admin-main').style.display='none';
+  document.getElementById('pwd-input').value='';
+  // Go back home
+  document.getElementById('page-admin').classList.remove('active');
+  document.getElementById('page-home').classList.add('active');
+  currentPage='page-home';
+}
+
+const TL={bp:'🩸 血壓',spo2:'🫁 血氧',water:'💧 飲水量',urine:'🚿 排尿量'};
+const TC={bp:'#e63946',spo2:'#4361ee',water:'#4cc9f0',urine:'#f9c74f'};
+
+function renderAdmin() {
+  const records=getRecords();
+  const list=document.getElementById('records-list');
+  if(!records.length){list.innerHTML='<div class="empty"><div class="ei">📭</div>尚無任何記錄</div>';return;}
+  list.innerHTML=records.map(r=>{
+    const dt=new Date(r.time);
+    const ds=dt.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'});
+    const ts=dt.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const g=r.measureGPS||{};
+    const hasGPS=g.lat&&g.lat!=='無法取得'&&g.lat!=='不支援';
+    const addrLine=g.addr?`📍 ${g.addr}`:(hasGPS?`📍 ${g.lat}, ${g.lng}`:'📍 無法取得位置');
+    const coordLine=hasGPS?`座標：${g.lat}, ${g.lng}`:'';
+    const v=r.values||{};
+    let vHtml='';
+    if(r.type==='bp'){
+      const warn=(parseInt(v.sys)>=140||parseInt(v.dia)>=90)?'<span class="bw">⚠ 異常</span>':'<span class="bo">✓ 正常</span>';
+      vHtml=`<div class="rc-item"><div class="rl">收縮壓</div><div class="rv">${v.sys}<span class="ru"> mmHg</span></div></div>
+             <div class="rc-item"><div class="rl">舒張壓 ${warn}</div><div class="rv">${v.dia}<span class="ru"> mmHg</span></div></div>`;
+    } else if(r.type==='spo2'){
+      const warn=parseInt(v.spo2)<95?'<span class="bw">⚠ 偏低</span>':'<span class="bo">✓ 正常</span>';
+      vHtml=`<div class="rc-item"><div class="rl">血氧飽和度 ${warn}</div><div class="rv">${v.spo2}<span class="ru"> %</span></div></div>`;
+    } else if(r.type==='water'){
+      vHtml=`<div class="rc-item"><div class="rl">飲水量</div><div class="rv">${v.water}<span class="ru"> ml</span></div></div>`;
+    } else if(r.type==='urine'){
+      vHtml=`<div class="rc-item"><div class="rl">排尿量</div><div class="rv">${v.urine}<span class="ru"> ml</span></div></div>`;
+    }
+    return `<div class="rc" style="border-left-color:${TC[r.type]||'#52b788'}">
+      <div class="rc-type">${TL[r.type]||r.type}</div>
+      <div class="rc-time">📅 ${ds} &nbsp;⏰ ${ts}</div>
+      <div class="rc-addr">${addrLine}${coordLine?'<br><span style="font-size:0.6rem;color:#b0c0bc">'+coordLine+'</span>':''}</div>
+      <div class="rc-grid">${vHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function clearAll(){
+  if(confirm('確定要清除全部記錄嗎？此動作無法復原。')){
+    localStorage.removeItem('health_records');
+    renderAdmin(); showToast('🗑 已清除全部記錄');
+  }
+}
+function exportCSV(){
+  const records=getRecords();
+  if(!records.length){showToast('沒有記錄可匯出');return;}
+  let csv='日期,時間,項目,GPS緯度,GPS經度,地址,收縮壓,舒張壓,血氧,飲水量ml,排尿量ml\n';
+  records.forEach(r=>{
+    const dt=new Date(r.time);
+    const v=r.values||{},g=r.measureGPS||{};
+    csv+=[
+      dt.toLocaleDateString('zh-TW'),dt.toLocaleTimeString('zh-TW'),
+      TL[r.type]||r.type,g.lat||'',g.lng||'','"'+(g.addr||'')+'"',
+      v.sys||'',v.dia||'',v.spo2||'',v.water||'',v.urine||''
+    ].join(',')+'\n';
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`健康記錄_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`;
+  a.click(); showToast('📤 匯出成功！');
+}
+
+// ════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════
+function getRecords(){try{return JSON.parse(localStorage.getItem('health_records')||'[]');}catch{return[];}}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

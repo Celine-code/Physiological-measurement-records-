@@ -170,74 +170,62 @@ body::after{
 /* ══════════════════════════════════════
    PAGE 2 — MENU
 ══════════════════════════════════════ */
-#page-menu{background:var(--paper)}
+#page-menu{background:var(--paper);display:flex;flex-direction:column;overflow:hidden}
 
-.menu-header{background:var(--wh);
-  border-bottom:2px solid var(--pink-lt);
-  padding:clamp(36px,9vw,48px) var(--sp-md) var(--sp-sm);
-  flex-shrink:0;position:relative}
-/* Dashed bottom line like the image */
+.menu-header{background:var(--wh);border-bottom:2px solid var(--pink-lt);
+  padding:clamp(28px,7vw,38px) var(--sp-md) var(--sp-xs);
+  flex-shrink:0;position:relative;text-align:center}
 .menu-header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:0;
   border-bottom:2.5px dashed var(--peach);opacity:.7}
-.mh-title{font-family:'Nunito',sans-serif;font-size:var(--fs-lg);font-weight:900;
-  color:var(--blue-dk)}
-.mh-zh{font-size:var(--fs-xs);color:var(--ink-lt);font-weight:500;margin-top:2px}
-.mh-sub{font-size:var(--fs-sm);color:var(--ink-lt);margin-top:2px;font-weight:600}
-.mh-sub-zh{font-size:var(--fs-xs);color:var(--ink-xlt);margin-top:0px;font-weight:400}
-.session-pill{display:inline-flex;align-items:center;gap:6px;margin-top:var(--sp-xs);
-  background:var(--mint-lt);border:1.5px solid var(--mint);
-  border-radius:var(--r-full);padding:5px 14px;
-  font-size:var(--fs-xs);color:var(--mint-dk);font-family:'DM Mono',monospace;font-weight:500}
+.mh-title{font-family:'Nunito',sans-serif;font-size:var(--fs-lg);font-weight:900;color:var(--blue-dk)}
+.mh-zh{font-size:var(--fs-xs);color:var(--ink-lt);font-weight:500;margin-top:1px}
+.mh-sub{font-size:var(--fs-sm);color:var(--ink-lt);margin-top:1px;font-weight:600}
+.mh-sub-zh{font-size:var(--fs-xs);color:var(--ink-xlt);margin-top:0;font-weight:400}
+.session-pill{display:inline-flex;align-items:center;gap:6px;
+  background:var(--mint-lt);border:1.5px solid var(--mint);border-radius:var(--r-full);
+  padding:4px 12px;font-size:var(--fs-xs);color:var(--mint-dk);font-family:'DM Mono',monospace;font-weight:500}
 
-.menu-body{flex:1;overflow-y:auto;padding:var(--sp-sm) var(--sp-md) max(var(--sp-md), env(safe-area-inset-bottom, 16px));-webkit-overflow-scrolling:touch}
-.menu-body::-webkit-scrollbar{display:none}
-.menu-sec{font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:800;
-  color:var(--blue-dk);margin-bottom:1px;padding-left:2px}
-.menu-sec-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;
-  margin-bottom:var(--sp-xs);padding-left:2px}
+.menu-body{flex:1;display:flex;flex-direction:column;overflow:hidden;
+  padding:var(--sp-xs) var(--sp-sm) max(var(--sp-xs), env(safe-area-inset-bottom, 8px));gap:var(--sp-xs)}
 
-.measure-grid{display:grid;grid-template-columns:1fr 1fr;
-  gap:clamp(8px,2.5vw,14px);margin-bottom:var(--sp-md)}
+.measure-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);
+  gap:clamp(5px,1.5vw,9px);flex:1;min-height:0}
 
-/* Cards like checklist items in the image */
-.mc{background:var(--wh);
-  border:2px solid var(--pink-lt);
-  border-radius:var(--r-md);
-  padding:clamp(12px,3.2vw,16px) clamp(8px,2.5vw,12px) clamp(10px,3vw,14px);
-  text-align:center;cursor:pointer;
-  transition:transform .15s,box-shadow .15s;
-  position:relative;overflow:hidden;
-  box-shadow:0 4px 14px rgba(242,160,184,0.14)}
-/* Colour tab top */
-.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;border-radius:20px 20px 0 0}
+.mc{background:var(--wh);border:2px solid var(--pink-lt);border-radius:var(--r-md);
+  text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s;
+  position:relative;overflow:hidden;box-shadow:0 3px 10px rgba(242,160,184,0.12);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:20px 20px 0 0}
 .mc.bp::before   {background:var(--pink)}
 .mc.spo2::before {background:var(--blue)}
 .mc.water::before{background:var(--mint)}
 .mc.urine::before{background:var(--peach)}
+.mc.temp::before {background:linear-gradient(90deg,#f4a0a0,#f4c08a)}
+.mc.bowel::before{background:linear-gradient(90deg,#c4a882,#e0c49a)}
+.mc.face::before {background:linear-gradient(90deg,#f2c0d0,#e8b0c8)}
+.mc.daily::before{background:linear-gradient(90deg,#a8d4c8,#b8e0d8)}
 .mc:active{transform:scale(0.95)}
-.mc.done{border-color:var(--mint);background:#f5fdfb;
-  box-shadow:0 4px 14px rgba(168,212,200,0.25)}
-.mc-tick{display:none;position:absolute;top:8px;right:8px;width:20px;height:20px;
+.mc.done{border-color:var(--mint);background:#f5fdfb;box-shadow:0 3px 10px rgba(168,212,200,0.25)}
+.mc-tick{display:none;position:absolute;top:6px;right:6px;width:18px;height:18px;
   background:var(--mint-dk);color:var(--wh);border-radius:50%;
-  font-size:0.6rem;font-weight:900;align-items:center;justify-content:center}
+  font-size:0.55rem;font-weight:900;align-items:center;justify-content:center}
 .mc.done .mc-tick{display:flex}
-.mc-icon{font-size:clamp(1.8rem,5.5vw,2.4rem);margin-bottom:var(--sp-xs);line-height:1.1}
-.mc-id{font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:800;
-  color:var(--ink);margin-bottom:2px;line-height:1.2}
-.mc-zh{font-size:var(--fs-xs);color:var(--ink-lt);font-weight:500}
+.mc-icon{font-size:clamp(1.3rem,4vw,1.9rem);line-height:1}
+.mc-id{font-family:'Nunito',sans-serif;font-size:clamp(0.68rem,2vw,0.85rem);font-weight:800;
+  color:var(--ink);line-height:1.2}
+.mc-zh{font-size:clamp(0.58rem,1.7vw,0.72rem);color:var(--ink-lt);font-weight:500}
 
-/* End button — dashed like the image */
-.btn-end{width:80%;margin:0 auto;display:block;padding:clamp(11px,3vw,14px);
+.btn-end{width:100%;display:block;padding:clamp(9px,2.2vw,12px);
   border:2px solid rgba(242,160,184,0.6);border-radius:var(--r-full);
   background:rgba(255,255,255,0.82);backdrop-filter:blur(10px);
   color:var(--pink-dk);font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:var(--fs-lg);cursor:pointer;letter-spacing:.3px;
+  font-size:var(--fs-md);cursor:pointer;
   box-shadow:0 4px 18px rgba(242,160,184,0.25);
-  transition:transform .15s,box-shadow .15s;display:block;width:100%}
-.btn-end:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(242,160,184,0.2)}
+  transition:transform .15s,box-shadow .15s;flex-shrink:0}
+.btn-end:active{transform:scale(0.97)}
 .e-id{display:block}
 .e-zh{font-family:'Noto Sans TC',sans-serif;font-size:var(--fs-xs);
-  color:var(--ink-xlt);font-weight:400;display:block;margin-top:2px}
+  color:var(--ink-xlt);font-weight:400;display:block;margin-top:1px}
 
 /* ══════════════════════════════════════
    PAGE 3 — INPUT
@@ -458,10 +446,6 @@ body::after{
 .cb .czh{display:block;font-size:0.62rem;color:var(--ink-xlt);font-weight:400;margin-top:1px}
 
 /* 新卡片顏色條 */
-.mc.temp::before  {background:linear-gradient(90deg,#f4a0a0,#f4c08a)}
-.mc.bowel::before {background:linear-gradient(90deg,#c4a882,#e0c49a)}
-.mc.face::before  {background:linear-gradient(90deg,#f2c0d0,#e8b0c8)}
-.mc.daily::before {background:linear-gradient(90deg,#a8d4c8,#b8e0d8)}
 .btn-aa{flex:1;padding:clamp(8px,2.3vw,11px);border-radius:var(--r-full);
   font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:800;
   cursor:pointer;border:none;transition:transform .15s;
@@ -617,13 +601,15 @@ body::after{
   <div class="menu-header">
     <div class="mh-title">📋 Pilih Pengukuran</div>
     <div class="mh-zh">選擇測量項目</div>
-    <div class="mh-sub">Ketuk item untuk memasukkan data</div>
-    <div class="mh-sub-zh">點選項目開始輸入</div>
-    <div class="session-pill" id="session-pill">⏰ —</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
+      <div>
+        <div class="mh-sub">Ketuk item untuk memasukkan data</div>
+        <div class="mh-sub-zh">點選項目開始輸入</div>
+      </div>
+      <div class="session-pill" id="session-pill">⏰ —</div>
+    </div>
   </div>
   <div class="menu-body">
-    <div class="menu-sec">Item Pengukuran</div>
-    <div class="menu-sec-zh">測量項目</div>
     <div class="measure-grid">
       <div class="mc bp"    id="card-bp"    onclick="openInput('bp')">
         <div class="mc-tick">✓</div>

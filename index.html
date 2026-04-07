@@ -121,16 +121,32 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Noto Sans','Noto S
 .drum-hl{position:absolute;top:50%;left:6px;right:6px;height:36px;transform:translateY(-50%);background:rgba(82,183,136,0.14);border-radius:8px;border-top:1.5px solid rgba(82,183,136,0.38);border-bottom:1.5px solid rgba(82,183,136,0.38);pointer-events:none;z-index:1}
 .roller-sep{font-size:1.7rem;font-weight:300;color:var(--muted);padding-top:76px;flex-shrink:0}
 
-/* Hint card */
-.hint-card{border-radius:16px;padding:14px 16px;border-left:4px solid #f4a261}
-.hint-card.warn{background:#fff8f0;border-color:#f4a261}
-.hint-card.info{background:#f0f8ff;border-color:#4cc9f0}
-.hint-title{font-size:0.72rem;font-weight:700;color:#b5632a;margin-bottom:6px}
+/* ── HINT SLIDE PANEL ── */
+.hint-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);max-height:55vh;overflow-y:auto;border-radius:22px 22px 0 0;box-shadow:0 -8px 32px rgba(26,60,52,0.18)}
+.hint-panel.warn-p{background:#fff8f0}
+.hint-panel.info-p{background:#f0f8ff}
+.hint-panel.open{transform:translateY(0)}
+.hint-panel-inner{padding:18px 20px 28px}
+.hint-drag{width:40px;height:4px;background:rgba(0,0,0,0.1);border-radius:4px;margin:0 auto 14px}
+.hint-title{font-size:0.78rem;font-weight:700;color:#b5632a;margin-bottom:10px}
 .hint-title.info-t{color:#1a6fa8}
-.hint-row{font-size:0.72rem;color:#6b5040;line-height:1.7;margin-bottom:2px}
+.hint-row{font-size:0.75rem;color:#6b5040;line-height:1.75;margin-bottom:2px}
 .hint-row.info-r{color:#1a4a6b}
-.hint-zh{font-size:0.6rem;color:#b0a090;font-weight:300;margin-top:1px}
+.hint-zh{font-size:0.62rem;color:#b0a090;font-weight:300;margin-top:0px;margin-bottom:6px}
 .hint-zh.info-zh{color:#90aabb}
+.hint-close{display:block;width:100%;margin-top:14px;padding:10px;border:none;border-radius:12px;background:rgba(0,0,0,0.07);font-family:inherit;font-size:0.78rem;color:#666;cursor:pointer}
+
+/* ── HINT BUBBLES (collapsed) ── */
+.hint-bubbles{display:flex;gap:8px;flex-wrap:wrap;margin-top:0}
+.hint-bubble{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:30px;font-size:0.72rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:transform .15s,box-shadow .15s;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+.hint-bubble:active{transform:scale(0.95)}
+.hint-bubble.warn-b{background:#fff0e0;color:#b5632a;border:1.5px solid #f4a261}
+.hint-bubble.info-b{background:#e8f4ff;color:#1a6fa8;border:1.5px solid #4cc9f0}
+.hint-bubble .bbl-icon{font-size:0.9rem}
+
+/* Panel overlay backdrop */
+.hint-backdrop{position:fixed;inset:0;z-index:199;background:rgba(0,0,0,0);pointer-events:none;transition:background .3s}
+.hint-backdrop.show{background:rgba(0,0,0,0.25);pointer-events:all}
 
 .btn-save{width:100%;padding:17px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--gl),var(--gm));color:white;font-family:inherit;cursor:pointer;box-shadow:0 6px 20px rgba(45,106,79,0.28);transition:transform .15s;margin-top:2px}
 .btn-save:active{transform:scale(0.98)}
@@ -244,13 +260,13 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Noto Sans','Noto S
       </div>
       <div class="measure-card water" id="card-water" onclick="openInput('water')">
         <div class="mc-done">✓</div>
-        <div class="mc-icon">💧</div>
+        <div class="mc-icon">🥤</div>
         <div class="mc-name-id">Asupan Air</div>
         <div class="mc-name-zh">飲水量</div>
       </div>
       <div class="measure-card urine" id="card-urine" onclick="openInput('urine')">
         <div class="mc-done">✓</div>
-        <div class="mc-icon">🚿</div>
+        <div class="mc-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="18" cy="14" rx="9" ry="11" fill="#f9c74f" opacity="0.9"/><path d="M18 25 C18 25 14 28 14 31 C14 33.2 15.8 35 18 35 C20.2 35 22 33.2 22 31 C22 28 18 25 18 25Z" fill="#f8961e"/><circle cx="18" cy="14" r="4" fill="white" opacity="0.4"/><path d="M12 10 Q9 6 10 2" stroke="#f8961e" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M24 10 Q27 6 26 2" stroke="#f8961e" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></div>
         <div class="mc-name-id">Volume Urin</div>
         <div class="mc-name-zh">排尿量</div>
       </div>
@@ -522,6 +538,7 @@ function goTo(id) {
   currentPage = id;
 }
 function goBack() {
+  document.querySelectorAll('.hint-panel,.hint-backdrop').forEach(el=>el.remove());
   document.getElementById(currentPage).classList.remove('active');
   document.getElementById('page-menu').classList.add('active');
   currentPage = 'page-menu';
@@ -543,39 +560,84 @@ function secretTap() {
 // ════════════════════════════════════
 //  WEATHER
 // ════════════════════════════════════
-const WX_MAP = {
-  0:['☀️','Cerah / 晴天'],1:['🌤️','Cerah Berawan / 大致晴'],2:['⛅','Berawan / 多雲'],3:['☁️','Mendung / 陰天'],
-  45:['🌫️','Kabut / 霧'],48:['🌫️','Kabut / 霧'],51:['🌦️','Gerimis / 毛毛雨'],53:['🌦️','Gerimis / 毛毛雨'],
-  55:['🌧️','Hujan Ringan / 細雨'],61:['🌧️','Hujan / 小雨'],63:['🌧️','Hujan Sedang / 中雨'],65:['🌧️','Hujan Deras / 大雨'],
-  80:['🌦️','Hujan Lokal / 陣雨'],81:['🌧️','Hujan / 陣雨'],95:['⛈️','Hujan Badai / 雷雨'],96:['⛈️','Hujan Badai / 雷雨'],
+// Weather code mappings for wttr.in
+const WX_ICON = {
+  113:'☀️',116:'⛅',119:'☁️',122:'☁️',143:'🌫️',176:'🌦️',179:'🌨️',
+  182:'🌧️',185:'🌧️',200:'⛈️',227:'❄️',230:'❄️',248:'🌫️',260:'🌫️',
+  263:'🌦️',266:'🌦️',281:'🌧️',284:'🌧️',293:'🌧️',296:'🌧️',299:'🌧️',
+  302:'🌧️',305:'🌧️',308:'🌧️',311:'🌧️',314:'🌧️',317:'🌧️',320:'🌨️',
+  323:'🌨️',326:'🌨️',329:'❄️',332:'❄️',335:'❄️',338:'❄️',350:'🌧️',
+  353:'🌦️',356:'🌧️',359:'🌧️',362:'🌧️',365:'🌧️',368:'🌨️',371:'❄️',
+  374:'🌧️',377:'🌧️',386:'⛈️',389:'⛈️',392:'⛈️',395:'⛈️'
+};
+const WX_DESC = {
+  113:'Cerah / 晴天',116:'Berawan Sebagian / 多雲',119:'Berawan / 陰天',122:'Mendung / 陰',
+  143:'Berkabut / 霧',176:'Hujan Lokal / 陣雨',200:'Badai Petir / 雷雨',
+  263:'Gerimis / 毛毛雨',266:'Gerimis / 毛毛雨',293:'Hujan Ringan / 小雨',
+  296:'Hujan / 雨',299:'Hujan Sedang / 中雨',302:'Hujan Lebat / 大雨',
+  305:'Hujan Sangat Lebat / 豪雨',353:'Hujan Lokal / 陣雨',386:'Hujan Badai / 雷雨',
 };
 async function loadWeather() {
   const el = document.getElementById('weather-card');
   try {
-    const coords = await new Promise(res=>{
-      if(!navigator.geolocation){res({lat:25.04,lng:121.51});return;}
-      navigator.geolocation.getCurrentPosition(
-        p=>res({lat:p.coords.latitude,lng:p.coords.longitude}),
-        ()=>res({lat:25.04,lng:121.51}),{timeout:7000});
-    });
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current=temperature_2m,weathercode&daily=precipitation_sum&timezone=auto&forecast_days=1`);
+    // Try to get location, fallback to auto-detect by IP
+    let locParam = 'auto';
+    try {
+      const coords = await new Promise((res,rej)=>{
+        if(!navigator.geolocation){rej();return;}
+        navigator.geolocation.getCurrentPosition(
+          p=>res(p.coords),
+          ()=>rej(),
+          {timeout:5000,maximumAge:60000}
+        );
+      });
+      locParam = coords.latitude.toFixed(4)+','+coords.longitude.toFixed(4);
+    } catch(e){ locParam='auto'; }
+
+    const r = await fetch(`https://wttr.in/${locParam}?format=j1`, {signal:AbortSignal.timeout(8000)});
+    if(!r.ok) throw new Error('wttr fail');
     const d = await r.json();
-    const temp = Math.round(d.current.temperature_2m);
-    const wx   = WX_MAP[d.current.weathercode] || ['🌡️','—'];
-    const rain = (d.daily.precipitation_sum[0]||0).toFixed(1);
-    const rainTxt = parseFloat(rain)>0
-      ? `💧 Curah hujan: ${rain} mm / 降雨量: ${rain} mm`
-      : `💧 Tidak ada hujan / 今日無降雨`;
+    const cur = d.current_condition[0];
+    const today = d.weather[0];
+    const temp = cur.temp_C;
+    const code = parseInt(cur.weatherCode);
+    const rain = today.hourly.reduce((s,h)=>s+parseFloat(h.chanceofrain||0),0)/today.hourly.length;
+    const rainMm = parseFloat(today.totalSnow_cm||0)*10 + parseFloat(today.hourly[0]?.precipMM||0);
+    const wxIcon = WX_ICON[code] || '🌡️';
+    const wxDesc = WX_DESC[code] || cur.weatherDesc[0]?.value || '—';
+    const maxT = today.maxtempC, minT = today.mintempC;
+    const rainTxt = rain > 30
+      ? `🌧️ Kemungkinan hujan ${Math.round(rain)}% / 降雨機率 ${Math.round(rain)}%`
+      : `💧 Kemungkinan hujan rendah / 降雨機率低`;
+
     el.innerHTML = `<div class="weather-inner">
-      <div class="weather-icon">${wx[0]}</div>
+      <div class="weather-icon">${wxIcon}</div>
       <div class="weather-info">
-        <div class="weather-temp">${temp}°C <small>Suhu / 氣溫</small></div>
-        <div class="weather-desc">${wx[1]}</div>
+        <div class="weather-temp">${temp}°C <small>${minT}°–${maxT}° / 氣溫</small></div>
+        <div class="weather-desc">${wxDesc}</div>
         <div class="weather-rain">${rainTxt}</div>
       </div>
     </div>`;
   } catch(e) {
-    el.innerHTML='<div class="weather-load">🌤️ Cuaca tidak tersedia / 天氣暫時無法載入</div>';
+    // Fallback: Open-Meteo
+    try {
+      const r2 = await fetch('https://api.open-meteo.com/v1/forecast?latitude=25.04&longitude=121.51&current=temperature_2m,weathercode&daily=precipitation_probability_max&timezone=Asia%2FTaipei&forecast_days=1',{signal:AbortSignal.timeout(6000)});
+      const d2 = await r2.json();
+      const temp2 = Math.round(d2.current.temperature_2m);
+      const prob2 = d2.daily.precipitation_probability_max[0]||0;
+      const icons2={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',61:'🌧️',63:'🌧️',80:'🌦️',95:'⛈️'};
+      const ic2 = icons2[d2.current.weathercode]||'🌡️';
+      el.innerHTML = `<div class="weather-inner">
+        <div class="weather-icon">${ic2}</div>
+        <div class="weather-info">
+          <div class="weather-temp">${temp2}°C <small>Suhu / 氣溫</small></div>
+          <div class="weather-desc">Cuaca hari ini / 今日天氣</div>
+          <div class="weather-rain">🌧️ Kemungkinan hujan ${prob2}% / 降雨機率 ${prob2}%</div>
+        </div>
+      </div>`;
+    } catch(e2){
+      el.innerHTML='<div class="weather-load">🌤️ Cuaca tidak tersedia / 天氣暫時無法載入</div>';
+    }
   }
 }
 
@@ -597,22 +659,39 @@ function getGPS(cb) {
     ()=>cb({lat:'無法取得',lng:'',addr:''}),{timeout:8000});
 }
 async function getGPSWithAddr() {
-  return new Promise(res=>{
-    if(!navigator.geolocation){res({lat:'不支援',lng:'',addr:'不支援定位'});return;}
-    navigator.geolocation.getCurrentPosition(async p=>{
-      const lat=p.coords.latitude.toFixed(6), lng=p.coords.longitude.toFixed(6);
-      let addr='';
-      try{
-        const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=zh-TW`);
-        const d=await r.json();
-        addr=d.display_name||'';
-        // Shorten: take first 3 parts
-        const parts=addr.split(',');
-        addr=parts.slice(0,4).join(', ');
-      }catch(e){addr='地址解析失敗';}
-      res({lat,lng,addr});
-    },()=>res({lat:'無法取得',lng:'',addr:'GPS無法取得'}),{timeout:8000});
+  // Get coords with retry
+  const coords = await new Promise(res=>{
+    if(!navigator.geolocation){res(null);return;}
+    let done=false;
+    const tryGet=(attempt)=>{
+      navigator.geolocation.getCurrentPosition(
+        p=>{ if(!done){done=true;res(p.coords);} },
+        ()=>{ if(attempt<3&&!done) setTimeout(()=>tryGet(attempt+1),1000); else if(!done){done=true;res(null);} },
+        {timeout:8000,maximumAge:30000,enableHighAccuracy:attempt===1}
+      );
+    };
+    tryGet(1);
   });
+  if(!coords) return {lat:'無法取得',lng:'',addr:'GPS無法取得'};
+  const lat=coords.latitude.toFixed(6), lng=coords.longitude.toFixed(6);
+  // Try address lookup with 2 fallback APIs
+  let addr='';
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=zh-TW`,{signal:AbortSignal.timeout(6000)});
+    const d=await r.json();
+    const raw=d.display_name||'';
+    // Build short address: district + city + country
+    const a=d.address||{};
+    const parts=[a.suburb||a.neighbourhood||a.quarter,a.city||a.town||a.village||a.county,a.state,a.country].filter(Boolean);
+    addr=parts.length>0?parts.join('、'):raw.split(',').slice(0,4).join(', ');
+  }catch(e1){
+    try{
+      const r2=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=zh`,{signal:AbortSignal.timeout(5000)});
+      const d2=await r2.json();
+      addr=[d2.locality,d2.city,d2.countryName].filter(Boolean).join('、')||'地址解析失敗';
+    }catch(e2){addr='地址解析失敗';}
+  }
+  return {lat,lng,addr};
 }
 
 // ════════════════════════════════════
@@ -745,20 +824,50 @@ function openInput(type) {
   grp.appendChild(row);
   body.appendChild(grp);
 
-  // Hint cards
-  (cfg.hints||[]).forEach(h=>{
-    const hc=document.createElement('div');
-    hc.className='hint-card '+(h.type==='warn'?'warn':'info');
-    const ht=document.createElement('div');
-    ht.className='hint-title '+(h.type==='warn'?'':'info-t');
-    ht.textContent=h.title_id; hc.appendChild(ht);
+  // ── Build hint slide panels + bubbles
+  // Remove any old panels/backdrops
+  document.querySelectorAll('.hint-panel,.hint-backdrop').forEach(el=>el.remove());
+  const backdrop=document.createElement('div'); backdrop.className='hint-backdrop'; document.body.appendChild(backdrop);
+
+  const bubblesRow=document.createElement('div'); bubblesRow.className='hint-bubbles';
+
+  (cfg.hints||[]).forEach((h,idx)=>{
+    const panelId='hint-panel-'+idx;
+    const isWarn=h.type==='warn';
+
+    // Build slide panel
+    const panel=document.createElement('div');
+    panel.className='hint-panel '+(isWarn?'warn-p':'info-p');
+    panel.id=panelId;
+    const inner=document.createElement('div'); inner.className='hint-panel-inner';
+    const drag=document.createElement('div'); drag.className='hint-drag'; inner.appendChild(drag);
+    const ht=document.createElement('div'); ht.className='hint-title '+(isWarn?'':'info-t'); ht.textContent=h.title_id; inner.appendChild(ht);
     h.rows.forEach(r=>{
-      const rid=document.createElement('div'); rid.className='hint-row '+(h.type==='warn'?'':'info-r'); rid.textContent='• '+r.id;
-      const rzh=document.createElement('div'); rzh.className='hint-zh '+(h.type==='warn'?'':'info-zh'); rzh.textContent='  '+r.zh;
-      hc.appendChild(rid); hc.appendChild(rzh);
+      const rid=document.createElement('div'); rid.className='hint-row '+(isWarn?'':'info-r'); rid.textContent='• '+r.id; inner.appendChild(rid);
+      const rzh=document.createElement('div'); rzh.className='hint-zh '+(isWarn?'':'info-zh'); rzh.textContent='  '+r.zh; inner.appendChild(rzh);
     });
-    body.appendChild(hc);
+    const closeBtn=document.createElement('button'); closeBtn.className='hint-close';
+    closeBtn.textContent='Tutup / 關閉 ✕';
+    closeBtn.onclick=()=>closeHintPanel(panelId);
+    inner.appendChild(closeBtn);
+    panel.appendChild(inner);
+    document.body.appendChild(panel);
+
+    // Swipe down to close
+    let startY=0;
+    panel.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;},{passive:true});
+    panel.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-startY>50)closeHintPanel(panelId);},{passive:true});
+
+    // Build bubble
+    const bbl=document.createElement('button');
+    bbl.className='hint-bubble '+(isWarn?'warn-b':'info-b');
+    bbl.innerHTML=`<span class="bbl-icon">${isWarn?'⚠️':'ℹ️'}</span>${isWarn?'Bahaya / 危險':'Normal / 正常值'}`;
+    bbl.onclick=()=>openHintPanel(panelId);
+    bubblesRow.appendChild(bbl);
   });
+  body.appendChild(bubblesRow);
+
+  backdrop.onclick=()=>{ document.querySelectorAll('.hint-panel.open').forEach(p=>p.classList.remove('open')); backdrop.classList.remove('show'); };
 
   // Save button
   const btn=document.createElement('button'); btn.className='btn-save';
@@ -829,6 +938,25 @@ async function saveInput() {
 
   document.getElementById('card-'+currentType).classList.add('done');
   showSuccess(cfg, vals, saveTime, gpsData);
+}
+
+// ════════════════════════════════════
+//  HINT PANEL CONTROLS
+// ════════════════════════════════════
+function openHintPanel(id){
+  const panel=document.getElementById(id);
+  if(!panel)return;
+  // Close any open
+  document.querySelectorAll('.hint-panel.open').forEach(p=>p.classList.remove('open'));
+  panel.classList.add('open');
+  const bd=document.querySelector('.hint-backdrop');
+  if(bd)bd.classList.add('show');
+}
+function closeHintPanel(id){
+  const panel=document.getElementById(id);
+  if(panel)panel.classList.remove('open');
+  const bd=document.querySelector('.hint-backdrop');
+  if(bd&&!document.querySelector('.hint-panel.open'))bd.classList.remove('show');
 }
 
 // ════════════════════════════════════

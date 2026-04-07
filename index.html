@@ -66,7 +66,7 @@ body::after{
 }
 
 /* ══ PAGE SYSTEM ══ */
-.page{position:fixed;inset:0;height:100dvh;display:flex;flex-direction:column;
+.page{position:fixed;inset:0;height:100dvh;z-index:1;display:flex;flex-direction:column;
   transform:translateX(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   overflow:hidden;will-change:transform;z-index:1}
 .page.active{transform:translateX(0)}
@@ -213,13 +213,14 @@ body::after{
 .mc-zh{font-size:var(--fs-xs);color:var(--ink-lt);font-weight:500}
 
 /* End button — dashed like the image */
-.btn-end{width:100%;padding:clamp(13px,3.5vw,16px);
-  border:2.5px dashed var(--pink);border-radius:var(--r-full);
-  background:var(--wh);font-family:'Nunito',sans-serif;
-  font-size:var(--fs-md);font-weight:800;color:var(--pink-dk);
-  cursor:pointer;transition:all .15s;
-  box-shadow:0 3px 12px rgba(242,160,184,0.15)}
-.btn-end:active{background:var(--pink-lt);transform:scale(0.98)}
+.btn-end{width:100%;padding:clamp(15px,4.5vw,20px);
+  border:2px solid rgba(242,160,184,0.6);border-radius:var(--r-full);
+  background:rgba(255,255,255,0.82);backdrop-filter:blur(10px);
+  color:var(--pink-dk);font-family:'Nunito',sans-serif;font-weight:900;
+  font-size:var(--fs-lg);cursor:pointer;letter-spacing:.3px;
+  box-shadow:0 4px 18px rgba(242,160,184,0.25);
+  transition:transform .15s,box-shadow .15s;display:block;width:100%}
+.btn-end:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(242,160,184,0.2)}
 .e-id{display:block}
 .e-zh{font-family:'Noto Sans TC',sans-serif;font-size:var(--fs-xs);
   color:var(--ink-xlt);font-weight:400;display:block;margin-top:2px}
@@ -334,7 +335,7 @@ body::after{
 /* ══════════════════════════════════════
    SUCCESS OVERLAY
 ══════════════════════════════════════ */
-#overlay-ok{position:fixed;inset:0;z-index:999;background:rgba(74,58,74,0.4);
+#overlay-ok{position:fixed;inset:0;z-index:9990;background:rgba(74,58,74,0.4);
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(6px)}
 #overlay-ok.show{opacity:1;pointer-events:all}
@@ -474,7 +475,7 @@ body::after{
 .empty-i{font-size:clamp(2rem,7vw,2.8rem);margin-bottom:var(--sp-sm)}
 
 /* 確認對話框 */
-#confirm-dialog{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;
+#confirm-dialog{position:fixed;inset:0;z-index:9995;display:flex;align-items:center;justify-content:center;
   background:rgba(74,58,74,0.4);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
 #confirm-dialog.show{opacity:1;pointer-events:all}
 .confirm-box{background:#fff;border:2px solid var(--pink-lt);border-radius:var(--r-lg);
@@ -607,7 +608,6 @@ body::after{
         <div class="mc-id">Volume Urin</div>
         <div class="mc-zh">排尿量</div>
       </div>
-    </div>
       <div class="mc temp"  id="card-temp"  onclick="openInput('temp')">
         <div class="mc-tick">✓</div>
         <div class="mc-icon">🌡️</div>
@@ -971,10 +971,10 @@ const CFGS = {
       {key:'bowel_count',lbl_id:'Berapa kali?',lbl_zh:'今天幾次？',cols:3,showIf:{key:'bowel_yn',val:'yes'},
         opts:[{v:'1',i:'1️⃣',id:'1次',zh:''},{v:'2',i:'2️⃣',id:'2次',zh:''},{v:'3',i:'3️⃣',id:'3次',zh:''},
               {v:'4',i:'4️⃣',id:'4次',zh:''},{v:'5+',i:'🔢',id:'5次以上',zh:''}]},
-      {key:'bowel_texture',lbl_id:'Konsistensi / 性狀',lbl_zh:'糞便性狀',cols:2,showIf:{key:'bowel_yn',val:'yes'},
+      {key:'bowel_texture',lbl_id:'Konsistensi / 性狀',lbl_zh:'糞便性狀（可複選）',cols:2,multi:true,showIf:{key:'bowel_yn',val:'yes'},
         opts:[{v:'hard',i:'🪨',id:'Keras / 硬',zh:'乾硬費力'},{v:'normal',i:'🟤',id:'Normal / 正常',zh:'成形順暢'},
               {v:'soft',i:'💩',id:'Lembek / 軟',zh:'軟爛鬆散'},{v:'watery',i:'💧',id:'Cair / 稀',zh:'水狀糊狀'}]},
-      {key:'bowel_color',lbl_id:'Warna / 顏色',lbl_zh:'糞便顏色',cols:3,showIf:{key:'bowel_yn',val:'yes'},
+      {key:'bowel_color',lbl_id:'Warna / 顏色',lbl_zh:'糞便顏色（可複選）',cols:3,multi:true,showIf:{key:'bowel_yn',val:'yes'},
         opts:[{v:'brown',i:'🟫',id:'Coklat/棕',zh:'正常'},{v:'black',i:'⬛',id:'Hitam/黑',zh:'注意出血'},
               {v:'red',i:'🔴',id:'Merah/紅',zh:'注意出血'},{v:'yellow',i:'🟡',id:'Kuning/黃',zh:''},
               {v:'white',i:'⚪',id:'Putih/白',zh:'注意肝膽'},{v:'green',i:'🟢',id:'Hijau/綠',zh:''}]},
@@ -1284,15 +1284,25 @@ async function getGPSAddr(){
 // ══ CHOICE SELECTIONS STATE ══
 let choiceVals = {};
 
-function setChoice(key, val, el){
-  choiceVals[key] = val;
-  // update UI: deselect siblings, select this
-  el.closest('.choice-grid').querySelectorAll('.cb').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel');
-  // check showIf — show/hide dependent sections
+function setChoice(key, val, el, multi){
+  if(multi){
+    // 複選 toggle
+    if(!Array.isArray(choiceVals[key])) choiceVals[key]=[];
+    const arr=choiceVals[key];
+    const idx=arr.indexOf(val);
+    if(idx>=0){ arr.splice(idx,1); el.classList.remove('sel'); }
+    else { arr.push(val); el.classList.add('sel'); }
+  } else {
+    // 單選
+    choiceVals[key] = val;
+    el.closest('.choice-grid').querySelectorAll('.cb').forEach(b=>b.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+  // showIf
   document.querySelectorAll('[data-showif-key]').forEach(sec=>{
     const k=sec.dataset.showifKey, v=sec.dataset.showifVal;
-    sec.style.display=(choiceVals[k]===v)?'':'none';
+    const cur=choiceVals[k];
+    sec.style.display=(Array.isArray(cur)?cur.includes(v):cur===v)?'':'none';
   });
 }
 
@@ -1326,7 +1336,7 @@ function openInput(type){
       sec.opts.forEach(opt=>{
         const btn=document.createElement('div');btn.className='cb';
         btn.innerHTML=`<span class="ci">${opt.i}</span><span class="cid">${opt.id}</span>${opt.zh?`<span class="czh">${opt.zh}</span>`:''}`;
-        btn.onclick=()=>setChoice(sec.key, opt.v, btn);
+        const isMulti = sec.multi===true; btn.onclick=()=>setChoice(sec.key, opt.v, btn, isMulti);
         grid.appendChild(btn);
       });
       wrap.appendChild(grid);
@@ -1412,7 +1422,14 @@ function closeHP(id){
 function buildDrum(cfg){
   const {min,max,step,init}=cfg;
   const vals=[];
-  for(let v=min;v<=max;v+=step) vals.push(v);
+  // 浮點精度：用整數計算再除
+  const steps = Math.round((max - min) / step);
+  for(let i=0;i<=steps;i++){
+    const v = parseFloat((min + i*step).toFixed(10));
+    // 依 step 小數位數格式化
+    const decimals = step < 1 ? (step.toString().split('.')[1]||'').length : 0;
+    vals.push(decimals > 0 ? parseFloat(v.toFixed(decimals)) : Math.round(v));
+  }
 
   const IH  = 52;   // item height px
   const VIS = 3;    // show 3 items only (compact)
@@ -1445,7 +1462,9 @@ function buildDrum(cfg){
     const it=document.createElement('div');
     it.dataset.val=v;
     it.style.cssText=`height:${IH}px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:rgba(74,58,74,0.38);transition:color .12s,font-size .12s;`;
-    it.textContent=v;
+    // 依 step 格式化顯示
+    const decs2 = step < 1 ? (step.toString().split('.')[1]||'').length : 0;
+    it.textContent = decs2 > 0 ? parseFloat(v).toFixed(decs2) : v;
     list.appendChild(it);
   });
 
@@ -1464,7 +1483,8 @@ function buildDrum(cfg){
     // which index is centred?
     const centred = Math.round((H/2 - y - IH/2) / IH);
     idx = Math.max(0, Math.min(vals.length-1, centred));
-    drum.dataset.selected = vals[idx];
+    const decs3 = step < 1 ? (step.toString().split('.')[1]||'').length : 0;
+    drum.dataset.selected = decs3 > 0 ? parseFloat(vals[idx]).toFixed(decs3) : vals[idx];
     list.querySelectorAll('[data-val]').forEach((el,i)=>{
       if(i===idx){
         el.style.color    = '#1a1020';
@@ -1628,7 +1648,30 @@ function saveInput(){
 
   // 數值行
   let valLines='';
-  cfg.rollers.forEach(r=>{valLines+=`<div style="font-weight:700;color:var(--ink)">${r.name_id} (${r.name_zh})：${vals[r.key]} ${r.unit}</div>`;});
+  if(cfg.type==='choice'){
+    // choice 類型：顯示每個選擇結果
+    const CHOICE_LABELS = {
+      bowel_yn:{yes:'有排便',no:'沒有排便'},
+      bowel_count:{},bowel_texture:{hard:'硬',normal:'正常',soft:'軟',watery:'稀'},
+      bowel_color:{brown:'棕色',black:'黑色',red:'紅色',yellow:'黃色',white:'白色',green:'綠色'},
+      face_color:{normal:'正常紅潤',pale:'蒼白',yellow:'偏黃',flush:'潮紅',dark:'暗沉',blue:'發紺'},
+      face_eye:{clear:'清亮',dull:'無神',yellow:'黃眼白',red:'充血'},
+      walk:{yes:'有去散步',no:'沒有散步'},
+      cough:{none:'沒有咳嗽',mild:'輕微咳嗽',often:'頻繁咳嗽',severe:'嚴重咳嗽'},
+      phlegm:{none:'沒有痰',clear:'透明痰',white:'白色痰',yellow:'黃色痰',green:'綠色痰',blood:'帶血痰'},
+      energy:{good:'有力氣',ok:'普通',weak:'沒力氣',vweak:'非常虛弱'},
+    };
+    cfg.sections.forEach(sec=>{
+      const v=vals[sec.key];
+      if(!v||(Array.isArray(v)&&v.length===0)) return;
+      const display=Array.isArray(v)
+        ? v.map(x=>(CHOICE_LABELS[sec.key]?.[x]||x)).join('、')
+        : (CHOICE_LABELS[sec.key]?.[v]||v);
+      valLines+=`<div style="margin-bottom:4px"><span style="color:var(--ink-lt);font-size:0.85em">${sec.lbl_zh||sec.lbl_id}：</span><span style="font-weight:700;color:var(--ink)">${display}</span></div>`;
+    });
+  } else if(cfg.rollers){
+    cfg.rollers.forEach(r=>{valLines+=`<div style="font-weight:700;color:var(--ink)">${r.name_id} (${r.name_zh})：${vals[r.key]} ${r.unit}</div>`;});
+  }
 
   // 統計行
   const statHtml=`

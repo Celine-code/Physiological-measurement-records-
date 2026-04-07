@@ -985,7 +985,7 @@ const CFGS = {
       ]},
       {type:'info',title_id:'ℹ️ Nilai Normal / 正常值參考',rows:[
         {id:'Normal dewasa sehat: 95–100%',zh:'健康成人正常值：95–100%'},
-        {id:'Lansia: di atas 94% masih tergolong aman',zh:'老年人：94% 以上仍屬安全範圍'},
+        {id:'Untuk Bapak: di atas 94% masih tergolong aman',zh:'中高齡患者：94% 以上仍屬安全範圍'},
         {id:'Pastikan oximeter menempel erat, jari tidak dingin',zh:'確認血氧機夾緊，手指不要太冷'},
       ]},
     ]
@@ -998,7 +998,7 @@ const CFGS = {
     ],
     hints:[
       {type:'info',title_id:'ℹ️ Panduan / 建議攝取',rows:[
-        {id:'Lansia dianjurkan minum 1500–2000 ml per hari',zh:'老年人建議每天飲水1500–2000 ml'},
+        {id:'Dianjurkan minum 1500–2000 ml per hari untuk Bapak',zh:'中高齡患者建議每天飲水1500–2000 ml'},
         {id:'Bagi ke 6–8 kali minum agar tidak memberatkan ginjal',zh:'分6–8次飲用，減輕腎臟負擔'},
         {id:'Ingatkan Bapak minum setiap 2 jam sekali',zh:'每2小時提醒爸爸補充水分'},
       ]},
@@ -1363,6 +1363,45 @@ function renderOutfit(wx){
   </div>`;
 }
 
+// ══ SOUND EFFECTS ══
+function playSuccessSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const t=ctx.currentTime;
+    // 三個音符：do → mi → sol，上揚的完成感
+    const notes=[523.25, 659.25, 783.99]; // C5 E5 G5
+    notes.forEach((freq,i)=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.type='sine';
+      osc.frequency.setValueAtTime(freq,t+i*0.12);
+      gain.gain.setValueAtTime(0,t+i*0.12);
+      gain.gain.linearRampToValueAtTime(0.18,t+i*0.12+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001,t+i*0.12+0.22);
+      osc.start(t+i*0.12);
+      osc.stop(t+i*0.12+0.25);
+    });
+  }catch(e){}
+}
+
+function playOkSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const t=ctx.currentTime;
+    // 短促一聲輕 pop
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type='sine';
+    osc.frequency.setValueAtTime(880,t);
+    osc.frequency.exponentialRampToValueAtTime(440,t+0.12);
+    gain.gain.setValueAtTime(0.15,t);
+    gain.gain.exponentialRampToValueAtTime(0.001,t+0.15);
+    osc.start(t);osc.stop(t+0.15);
+  }catch(e){}
+}
+
 // ══ NAVIGATION ══
 // 讓手機返回鍵也能正確導航
 
@@ -1694,41 +1733,325 @@ function closeHintTooltip(){
   document.getElementById('hint-tooltip-overlay').style.display='none';
 }
 
-// ══ ROLLER STATUS (方案二：即時狀態) ══
+// ══ ROLLER STATUS + CHOICE ASSESSMENT ══
+// 依照爸爸病況客製：67歲、雙側腦血管病變、全癱臥床/輪椅、鼻胃管、COVID後肺損傷、失語
 function getRollerStatus(type, vals){
   if(type==='bp'){
-    const sys=vals.sys||0, dia=vals.dia||0;
-    if(sys>=180||dia>=120) return {icon:'🚨',id:'DARURAT! Tekanan sangat tinggi',zh:'緊急！血壓極高，立即通知家屬',bg:'#ffe0e0',color:'#c0392b'};
-    if(sys>=140||dia>=90)  return {icon:'⚠️',id:'Tekanan darah tinggi',zh:'血壓偏高，請通知家屬',bg:'#fff3e0',color:'#d35400'};
-    if(sys<90||dia<60)     return {icon:'⚠️',id:'Tekanan darah rendah',zh:'血壓偏低，請留意症狀',bg:'#fff3e0',color:'#d35400'};
-    return {icon:'✅',id:'Tekanan darah normal',zh:'血壓正常，很好！',bg:'#e8f8f0',color:'#27ae60'};
+    const sys=parseFloat(vals.sys)||0, dia=parseFloat(vals.dia)||0;
+    if(sys>=180||dia>=120) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'DARURAT! Tekanan darah sangat tinggi!',zh:'緊急！血壓極高，立即通知家屬與醫師',
+      extra:[
+        {id:'Bapak berisiko stroke ulang — jangan tunda!',zh:'爸爸有再次腦中風風險，請勿延誤就醫'},
+        {id:'Baringkan kepala sedikit lebih tinggi, tenangkan Bapak',zh:'將頭部稍微抬高，安撫爸爸情緒'},
+        {id:'Catat waktu dan nilai ini, laporkan ke dokter',zh:'記錄測量時間與數值，立即回報醫師'},
+      ]};
+    if(sys>=160||dia>=100) return {icon:'⚠️',bg:'#fff0e0',color:'#c0392b',
+      id:'Tekanan darah tinggi — perlu perhatian',zh:'血壓明顯偏高，需要留意',
+      extra:[
+        {id:'Hubungi keluarga, pantau setiap 30 menit',zh:'通知家屬，每30分鐘再測一次'},
+        {id:'Pastikan Bapak tidak stres, posisi nyaman',zh:'確認爸爸姿勢舒適，避免刺激'},
+        {id:'Tunda fisioterapi hari ini jika ada',zh:'今日若有安排復健，建議暫緩'},
+      ]};
+    if(sys>=140||dia>=90) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Tekanan darah sedikit tinggi',zh:'血壓稍微偏高，請密切觀察',
+      extra:[
+        {id:'Catat dan laporkan ke keluarga',zh:'記錄並回報給家屬'},
+        {id:'Perhatikan apakah Bapak tampak tidak nyaman',zh:'觀察爸爸是否有不舒服的表情'},
+      ]};
+    if(sys<90||dia<60) return {icon:'⚠️',bg:'#fff0f8',color:'#8e44ad',
+      id:'Tekanan darah rendah — waspadai',zh:'血壓偏低，需要注意',
+      extra:[
+        {id:'Jangan ubah posisi Bapak tiba-tiba',zh:'切勿突然改變爸爸的姿勢'},
+        {id:'Pastikan cairan NGT berjalan dengan baik',zh:'確認鼻胃管灌食是否正常進行'},
+        {id:'Hubungi keluarga jika tidak membaik',zh:'若未改善請立即通知家屬'},
+      ]};
+    return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'Tekanan darah normal — bagus!',zh:'血壓正常，很棒！',
+      extra:[
+        {id:'Tetap pantau secara rutin sesuai jadwal',zh:'繼續按照排程規律測量'},
+        {id:'Bapak riwayat stroke — kontrol tekanan sangat penting',zh:'爸爸有腦中風病史，持續控制血壓至關重要'},
+      ]};
   }
+
   if(type==='spo2'){
-    const s=vals.spo2||0;
-    if(s<90)  return {icon:'🚨',id:'DARURAT! SpO₂ sangat rendah',zh:'緊急！血氧極低，立即就醫',bg:'#ffe0e0',color:'#c0392b'};
-    if(s<95)  return {icon:'⚠️',id:'SpO₂ rendah, awasi kondisi',zh:'血氧偏低，密切觀察',bg:'#fff3e0',color:'#d35400'};
-    return {icon:'✅',id:'SpO₂ normal',zh:'血氧正常，很好！',bg:'#e8f8f0',color:'#27ae60'};
+    const s=parseFloat(vals.spo2)||0;
+    if(s<88) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'DARURAT! SpO₂ sangat rendah!',zh:'緊急！血氧極低，立即就醫',
+      extra:[
+        {id:'Bapak riwayat COVID + gangguan paru — ini darurat',zh:'爸爸有COVID肺部受損病史，此情況屬緊急'},
+        {id:'Pastikan saluran napas bersih dari lendir',zh:'確認呼吸道暢通，清除分泌物'},
+        {id:'Hubungi IGD / 119 segera',zh:'立即撥打急診或119'},
+      ]};
+    if(s<92) return {icon:'🚨',bg:'#ffe8e0',color:'#c0392b',
+      id:'SpO₂ sangat rendah — tindakan segera',zh:'血氧很低，請立即採取行動',
+      extra:[
+        {id:'Bersihkan saluran napas, periksa posisi kepala',zh:'清理呼吸道，確認頭部姿勢是否造成壓迫'},
+        {id:'Hubungi keluarga sekarang',zh:'立即通知家屬'},
+        {id:'Siap ke IGD jika tidak membaik dalam 5 menit',zh:'若5分鐘內未改善，準備送急診'},
+      ]};
+    if(s<95) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'SpO₂ rendah — awasi dengan ketat',zh:'血氧偏低，需密切觀察',
+      extra:[
+        {id:'Bapak gangguan paru pasca-COVID — laporkan ke keluarga',zh:'爸爸有COVID後遺症肺部問題，需回報家屬與醫師'},
+        {id:'Periksa apakah ada lendir atau napas terlihat berat',zh:'觀察是否有痰液堆積或呼吸費力'},
+        {id:'Ubah posisi tidur untuk bantu paru-paru',zh:'調整臥位，協助翻身讓肺部換位通氣'},
+      ]};
+    if(s<=96) return {icon:'🟡',bg:'#fffbe0',color:'#b7950b',
+      id:'SpO₂ batas bawah normal',zh:'血氧在正常低標，請持續觀察',
+      extra:[
+        {id:'Mengingat riwayat paru Bapak, pantau lebih sering hari ini',zh:'考量爸爸的肺部病史，今日建議多測量幾次'},
+      ]};
+    return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'SpO₂ normal — bagus!',zh:'血氧正常，很好！',
+      extra:[
+        {id:'Tetap pantau rutin — paru Bapak butuh perhatian jangka panjang',zh:'繼續定期測量，爸爸的肺部需要長期關注'},
+      ]};
   }
+
   if(type==='water'){
-    const w=vals.water||0;
-    if(w<800)  return {icon:'⚠️',id:'Kurang minum! Berikan air segera',zh:'飲水不足！請立即補充水分',bg:'#fff3e0',color:'#d35400'};
-    if(w>2500) return {icon:'⚠️',id:'Asupan air sangat banyak',zh:'飲水量偏多，若有腎臟問題請注意',bg:'#fff3e0',color:'#d35400'};
-    if(w>=1500)return {icon:'✅',id:'Asupan air cukup',zh:'飲水量充足，很棒！',bg:'#e8f8f0',color:'#27ae60'};
-    return {icon:'💧',id:'Asupan air kurang ideal',zh:'飲水量稍嫌不足，繼續加油',bg:'#e8f4fd',color:'#2980b9'};
+    const w=parseFloat(vals.water)||0;
+    if(w<500) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'Asupan air sangat kurang!',zh:'飲水量嚴重不足！',
+      extra:[
+        {id:'Pasien tirah baring berisiko dehidrasi berat',zh:'臥床患者極易嚴重脫水，需立即處理'},
+        {id:'Segera tambah cairan via NGT sesuai instruksi dokter',zh:'立即按照醫師指示由鼻胃管補充水分'},
+        {id:'Pantau produksi urin dan warna urin',zh:'觀察排尿量與尿液顏色'},
+      ]};
+    if(w<1000) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Asupan air kurang',zh:'飲水量不足',
+      extra:[
+        {id:'Bapak makan via NGT — tambahkan air di antara pemberian',zh:'爸爸以鼻胃管進食，灌食之間請補充白開水'},
+        {id:'Target harian 1500–1800 ml untuk Bapak',zh:'臥床患者建議每日補充1500–1800 ml水分'},
+      ]};
+    if(w>=1500&&w<=2000) return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'Asupan air ideal!',zh:'飲水量達標，非常好！',
+      extra:[
+        {id:'Hidrasi baik membantu cegah ISK dan batu ginjal',zh:'良好的水分補充有助預防泌尿道感染和腎結石'},
+      ]};
+    if(w>2000) return {icon:'⚠️',bg:'#e8f4fd',color:'#2980b9',
+      id:'Asupan air cukup banyak',zh:'飲水量偏多，請確認',
+      extra:[
+        {id:'Jika ada gangguan ginjal/jantung, konsultasikan ke dokter',zh:'若有腎臟或心臟問題，請詢問醫師是否適量'},
+      ]};
+    return {icon:'💧',bg:'#e8f4fd',color:'#2980b9',
+      id:'Asupan air perlu ditingkatkan',zh:'飲水量稍嫌不足，繼續補充',
+      extra:[
+        {id:'Bagi menjadi beberapa kali pemberian via NGT',zh:'建議分次由鼻胃管補充，避免一次灌入過多'},
+      ]};
   }
+
   if(type==='urine'){
-    const u=vals.urine||0;
-    if(u<400)  return {icon:'🚨',id:'Volume urin sangat sedikit!',zh:'排尿量極少，注意脫水或尿液滯留',bg:'#ffe0e0',color:'#c0392b'};
-    if(u>2500) return {icon:'⚠️',id:'Volume urin sangat banyak',zh:'排尿量偏多，可能為糖尿病或利尿劑',bg:'#fff3e0',color:'#d35400'};
-    return {icon:'✅',id:'Volume urin normal',zh:'排尿量正常',bg:'#e8f8f0',color:'#27ae60'};
+    const u=parseFloat(vals.urine)||0;
+    if(u<300) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'Volume urin sangat sedikit — darurat!',zh:'排尿量極少，緊急！',
+      extra:[
+        {id:'Kemungkinan retensi urin atau dehidrasi berat',zh:'可能是尿液滯留或嚴重脫水'},
+        {id:'Bapak tidak bisa komunikasi — periksa tanda ketidaknyamanan',zh:'爸爸無法表達，請觀察有無不舒服的表情'},
+        {id:'Hubungi keluarga, evaluasi apakah perlu kateter',zh:'通知家屬，評估是否需要導尿管'},
+      ]};
+    if(u<600) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Volume urin kurang',zh:'排尿量不足',
+      extra:[
+        {id:'Tingkatkan asupan cairan via NGT',zh:'增加鼻胃管水分補充量'},
+        {id:'Periksa apakah ada retensi — perut terasa tegang?',zh:'確認是否有尿液滯留，觀察腹部是否脹硬'},
+      ]};
+    if(u>=800&&u<=2000) return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'Volume urin normal',zh:'排尿量正常，很好！',
+      extra:[
+        {id:'Keseimbangan cairan terjaga dengan baik',zh:'水分進出平衡良好'},
+      ]};
+    if(u>2000) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Volume urin banyak — perhatikan',zh:'排尿量偏多，需留意',
+      extra:[
+        {id:'Mungkin efek diuretik atau kadar gula tinggi',zh:'可能為利尿劑作用或血糖偏高所致'},
+        {id:'Pantau tanda dehidrasi: bibir kering, kulit tidak elastis',zh:'觀察脫水症狀：嘴唇乾燥、皮膚彈性差'},
+      ]};
+    return {icon:'💧',bg:'#e8f4fd',color:'#2980b9',
+      id:'Volume urin sedikit kurang',zh:'排尿量稍嫌不足',
+      extra:[{id:'Tambahkan asupan air dan pantau perkembangan',zh:'增加水分攝取並持續觀察'}]};
   }
+
   if(type==='temp'){
-    const t=vals.temp||0;
-    if(t>=38.5) return {icon:'🚨',id:'Demam tinggi! Hubungi keluarga',zh:'高燒！請立即通知家屬',bg:'#ffe0e0',color:'#c0392b'};
-    if(t>=37.5) return {icon:'⚠️',id:'Demam ringan, pantau terus',zh:'輕微發燒，持續觀察',bg:'#fff3e0',color:'#d35400'};
-    if(t<35.5)  return {icon:'🚨',id:'Hipotermia! Cari bantuan segera',zh:'低體溫！請立即就醫',bg:'#ffe0e0',color:'#c0392b'};
-    return {icon:'✅',id:'Suhu tubuh normal',zh:'體溫正常',bg:'#e8f8f0',color:'#27ae60'};
+    const t=parseFloat(vals.temp)||0;
+    if(t>=39.0) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'Demam tinggi — hubungi dokter!',zh:'高燒！立即聯絡醫師',
+      extra:[
+        {id:'Bapak riwayat stroke + tirah baring → infeksi bisa memburuk cepat',zh:'爸爸有腦中風病史且長期臥床，感染可能快速惡化'},
+        {id:'Waspadai: ISK, pneumonia, infeksi luka baring',zh:'注意感染來源：泌尿道感染、肺炎、褥瘡感染'},
+        {id:'Kompres hangat, pantau tiap 30 menit, laporkan ke keluarga',zh:'溫水擦拭降溫，每30分鐘量一次，通知家屬'},
+      ]};
+    if(t>=38.5) return {icon:'🚨',bg:'#ffe8e0',color:'#c0392b',
+      id:'Demam tinggi!',zh:'高燒！請立即通知家屬',
+      extra:[
+        {id:'Perhatikan tanda infeksi: kemerahan kulit, sekret NGT, urin keruh',zh:'觀察感染跡象：皮膚發紅、鼻胃管分泌物異常、尿液混濁'},
+        {id:'Kompres, banyak cairan, laporkan ke dokter',zh:'物理降溫，補充水分，回報醫師'},
+      ]};
+    if(t>=37.5) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Demam ringan — pantau terus',zh:'輕微發燒，持續觀察',
+      extra:[
+        {id:'Ukur ulang 1 jam kemudian',zh:'1小時後再測一次'},
+        {id:'Perhatikan napas, kondisi kulit, dan ekspresi Bapak',zh:'觀察呼吸狀況、皮膚情況與爸爸的表情反應'},
+      ]};
+    if(t<35.5) return {icon:'🚨',bg:'#e0f0ff',color:'#1a5276',
+      id:'Hipotermia! Suhu terlalu rendah',zh:'低體溫！緊急狀況',
+      extra:[
+        {id:'Selimuti Bapak segera, tambahkan kehangatan',zh:'立即加蓋毯子保暖'},
+        {id:'Bapak tidak bisa sampaikan rasa dingin — selalu pantau',zh:'爸爸無法表達怕冷，需主動確認保暖'},
+        {id:'Hubungi keluarga segera',zh:'立即通知家屬'},
+      ]};
+    if(t>=36.0&&t<=37.4) return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'Suhu tubuh normal',zh:'體溫正常',
+      extra:[
+        {id:'Tetap pantau rutin, terutama setelah makan via NGT',zh:'繼續定期量測，尤其鼻胃管灌食後'},
+      ]};
+    return {icon:'🌡️',bg:'#f0f8ff',color:'#2980b9',
+      id:'Suhu sedikit di bawah normal',zh:'體溫略偏低',
+      extra:[
+        {id:'Pastikan Bapak tidak kedinginan, cek selimut',zh:'確認爸爸是否受涼，檢查被蓋與衣物是否足夠'},
+      ]};
   }
+
+  if(type==='bowel'){
+    const yn=vals.bowel_yn;
+    const color=Array.isArray(vals.bowel_color)?vals.bowel_color:(vals.bowel_color?[vals.bowel_color]:[]);
+    const texture=Array.isArray(vals.bowel_texture)?vals.bowel_texture:(vals.bowel_texture?[vals.bowel_texture]:[]);
+    const dangerColor=color.includes('black')||color.includes('red')||color.includes('white');
+    const watery=texture.includes('watery');
+    const hard=texture.includes('hard');
+
+    if(yn==='no') return {icon:'📋',bg:'#f8f4ff',color:'#6c3483',
+      id:'Bapak tidak BAB hari ini',zh:'今日未排便',
+      extra:[
+        {id:'Tirah baring + NGT → rentan sembelit',zh:'長期臥床加上鼻胃管進食，容易便秘'},
+        {id:'Jika > 3 hari tidak BAB, laporkan ke dokter',zh:'若超過3天未排便，請通知醫師評估'},
+        {id:'Pastikan asupan serat dan cairan cukup',zh:'確認膳食纖維與水分攝取是否足夠'},
+      ]};
+    if(dangerColor) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'Warna tinja berbahaya — hubungi dokter!',zh:'糞便顏色異常！立即聯絡醫師',
+      extra:[
+        {id:'Hitam: kemungkinan perdarahan saluran cerna atas',zh:'黑色：可能是上消化道出血'},
+        {id:'Merah: kemungkinan perdarahan bawah',zh:'紅色：可能是下消化道出血'},
+        {id:'Putih/pucat: kemungkinan masalah hati atau empedu',zh:'白色：可能是肝膽問題'},
+        {id:'Foto dan laporkan ke dokter / keluarga segera',zh:'拍照記錄並立即通報家屬與醫師'},
+      ]};
+    if(watery) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Tinja cair — waspadai diare',zh:'糞便稀水狀，注意腹瀉',
+      extra:[
+        {id:'Diare pada pasien tirah baring bisa sebabkan dehidrasi cepat',zh:'臥床患者腹瀉容易迅速脫水，需注意水分補充'},
+        {id:'Perhatikan apakah ada demam bersamaan',zh:'觀察是否同時伴隨發燒'},
+        {id:'Jaga kebersihan area bokong — cegah luka baring memburuk',zh:'注意臀部清潔，避免原有褥瘡惡化'},
+      ]};
+    if(hard) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Tinja keras — waspadai sembelit',zh:'糞便偏硬，注意便秘',
+      extra:[
+        {id:'Bapak kurang aktif bergerak → sembelit mudah terjadi',zh:'爸爸活動量少，便秘風險高'},
+        {id:'Tingkatkan asupan cairan dan serat via NGT',zh:'增加鼻胃管水分與纖維素攝取'},
+        {id:'Diskusikan dengan dokter jika berulang',zh:'若持續反覆，與醫師討論是否需要調整'},
+      ]};
+    return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'BAB normal hari ini',zh:'今日排便正常',
+      extra:[
+        {id:'Catat frekuensi dan konsistensi secara rutin',zh:'持續記錄排便頻率與性狀'},
+        {id:'Bersihkan area bokong dengan baik untuk cegah luka baring',zh:'做好臀部清潔，預防褥瘡'},
+      ]};
+  }
+
+  if(type==='face'){
+    const fc=vals.face_color, fe=vals.face_eye;
+    if(fc==='blue') return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'Wajah/bibir kebiruan — DARURAT!',zh:'臉色/嘴唇發紺！緊急！',
+      extra:[
+        {id:'Tanda kekurangan oksigen — cek SpO₂ segera',zh:'這是缺氧的警示信號，立即測量血氧'},
+        {id:'Bapak riwayat gangguan paru → ini sangat serius',zh:'爸爸有肺部疾病史，此情況極為嚴重'},
+        {id:'Hubungi IGD / keluarga sekarang',zh:'立即聯絡急診或家屬'},
+      ]};
+    if(fe==='yellow'||fc==='yellow') return {icon:'🚨',bg:'#fffbe0',color:'#b7950b',
+      id:'Kuning pada mata/kulit — waspadai ikterus',zh:'眼白或皮膚發黃，疑似黃疸',
+      extra:[
+        {id:'Kemungkinan masalah hati atau empedu',zh:'可能是肝膽功能問題'},
+        {id:'Hubungi dokter segera untuk evaluasi',zh:'請立即聯絡醫師進行評估'},
+      ]};
+    if(fe==='red') return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Mata merah — perlu diperhatikan',zh:'眼睛充血，需留意',
+      extra:[
+        {id:'Mungkin iritasi, infeksi, atau tekanan darah tinggi',zh:'可能是眼睛刺激、感染或血壓升高所致'},
+        {id:'Bersihkan dengan air bersih, laporkan ke keluarga',zh:'用清水清潔眼部，回報給家屬'},
+      ]};
+    if(fc==='pale') return {icon:'⚠️',bg:'#f4f6f7',color:'#566573',
+      id:'Wajah pucat — periksa kondisi',zh:'臉色蒼白，請確認狀況',
+      extra:[
+        {id:'Mungkin anemia, tekanan darah rendah, atau kelelahan',zh:'可能是貧血、低血壓或過度疲勞'},
+        {id:'Ukur tekanan darah dan SpO₂ segera',zh:'立即測量血壓和血氧'},
+        {id:'Bapak tidak bisa sampaikan rasa tidak nyaman',zh:'爸爸無法自行表達不適，需主動評估'},
+      ]};
+    if(fc==='flush') return {icon:'⚠️',bg:'#fff0e0',color:'#d35400',
+      id:'Wajah merah/kemerahan',zh:'臉色潮紅，請留意',
+      extra:[
+        {id:'Mungkin demam atau tekanan darah tinggi — ukur keduanya',zh:'可能是發燒或血壓升高，請一併測量'},
+      ]};
+    if(fc==='dark') return {icon:'⚠️',bg:'#f0ece0',color:'#78654a',
+      id:'Wajah tampak gelap/lesu',zh:'臉色暗沉，看起來疲憊',
+      extra:[
+        {id:'Mungkin kurang tidur atau kondisi umum menurun',zh:'可能是睡眠不足或整體狀況走下坡'},
+        {id:'Perhatikan perubahan mendadak dari hari sebelumnya',zh:'注意與前幾日相比有無明顯變化'},
+      ]};
+    return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'Wajah dan mata Bapak tampak baik',zh:'爸爸的臉色與眼睛狀況良好',
+      extra:[
+        {id:'Tetap amati setiap hari — perubahan wajah bisa jadi tanda awal',zh:'每天持續觀察，臉色變化往往是最早的預警信號'},
+      ]};
+  }
+
+  if(type==='daily'){
+    const walk=vals.walk, cough=vals.cough, phlegm=vals.phlegm, energy=vals.energy;
+    if(phlegm==='blood') return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'Ada dahak berdarah — DARURAT!',zh:'痰液帶血！緊急！',
+      extra:[
+        {id:'Bisa jadi tanda perdarahan paru atau infeksi berat',zh:'可能是肺部出血或嚴重感染的警示'},
+        {id:'Bapak riwayat gangguan paru pasca-COVID → sangat serius',zh:'爸爸有COVID肺部後遺症，此情況極為嚴重'},
+        {id:'Hubungi dokter / IGD segera',zh:'立即聯絡醫師或送急診'},
+      ]};
+    if(cough==='severe') return {icon:'🚨',bg:'#ffe8e0',color:'#c0392b',
+      id:'Batuk parah — perlu penanganan',zh:'嚴重咳嗽，需要處理',
+      extra:[
+        {id:'Batuk parah + disfagia → risiko aspirasi tinggi',zh:'吞嚥困難的患者劇烈咳嗽，誤吸風險很高'},
+        {id:'Periksa posisi kepala dan saluran napas',zh:'確認頭部位置，檢查呼吸道是否通暢'},
+        {id:'Segera laporkan ke keluarga dan dokter',zh:'立即通知家屬與醫師'},
+      ]};
+    if(phlegm==='green'||phlegm==='yellow') return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Dahak berwarna — kemungkinan infeksi',zh:'痰液有顏色，可能有感染',
+      extra:[
+        {id:'Bapak riwayat gangguan paru — infeksi saluran napas serius',zh:'爸爸有肺部病史，呼吸道感染需認真對待'},
+        {id:'Pantau suhu tubuh dan SpO₂ lebih sering hari ini',zh:'今日加強監測體溫與血氧'},
+        {id:'Laporkan ke dokter jika berlanjut',zh:'若持續不改善，回報醫師'},
+      ]};
+    if(energy==='vweak') return {icon:'🚨',bg:'#ffe8e0',color:'#c0392b',
+      id:'Bapak sangat lemas hari ini',zh:'爸爸今天非常虛弱',
+      extra:[
+        {id:'Perubahan energi mendadak bisa tanda infeksi atau masalah medis',zh:'精力突然明顯下降可能是感染或其他醫療問題的信號'},
+        {id:'Ukur tekanan darah, suhu, dan SpO₂ segera',zh:'立即測量血壓、體溫和血氧'},
+        {id:'Hubungi keluarga dan laporkan kondisi',zh:'通知家屬並回報狀況'},
+      ]};
+    if(cough==='often'||energy==='weak') return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Ada kondisi yang perlu diperhatikan',zh:'今日有需要留意的狀況',
+      extra:[
+        {id:'Pantau kondisi Bapak lebih ketat hari ini',zh:'今日加強觀察爸爸的狀況'},
+        {id:'Catat setiap perubahan dan laporkan ke keluarga',zh:'記錄每一個變化並回報給家屬'},
+      ]};
+    if(walk==='yes'&&energy==='good') return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'Kondisi Bapak sangat baik hari ini!',zh:'爸爸今天狀況很好！',
+      extra:[
+        {id:'Jalan-jalan sangat baik untuk sirkulasi dan cegah luka baring',zh:'外出散步對促進血液循環、預防褥瘡非常有幫助'},
+        {id:'Tetap jaga postur duduk di kursi roda',zh:'在輪椅上保持良好坐姿，定時移位減壓'},
+      ]};
+    return {icon:'📋',bg:'#f0f8ff',color:'#2980b9',
+      id:'Kondisi Bapak cukup stabil hari ini',zh:'爸爸今天狀況大致穩定',
+      extra:[
+        {id:'Tetap lakukan perawatan rutin: posisi, kebersihan, nutrisi',zh:'繼續日常照護：定時翻身換位、清潔、鼻胃管灌食'},
+        {id:'Perhatikan ekspresi Bapak untuk deteksi rasa tidak nyaman',zh:'注意爸爸的表情，因為他無法用語言表達不適'},
+      ]};
+  }
+
   return null;
 }
 
@@ -2039,7 +2362,12 @@ function saveInput(){
       background:${statusObj.bg};text-align:center">
       <div style="font-size:1.8rem;margin-bottom:2px">${statusObj.icon}</div>
       <div style="font-weight:800;font-size:var(--fs-md);color:${statusObj.color}">${statusObj.id}</div>
-      <div style="font-size:var(--fs-xs);color:${statusObj.color};opacity:.8;margin-top:2px">${statusObj.zh}</div>
+      <div style="font-size:var(--fs-xs);color:${statusObj.color};opacity:.85;margin-top:2px">${statusObj.zh}</div>
+      ${(statusObj.extra||[]).map(e=>`
+        <div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,0.08);
+          font-size:var(--fs-xs);color:${statusObj.color};opacity:.75;font-weight:600">
+          • ${e.id}<br><span style="font-weight:400;opacity:.8">${e.zh}</span>
+        </div>`).join('')}
     </div>` : '';
 
   document.getElementById('ok-det').innerHTML=statusBadge+valLines+statHtml;
@@ -2054,6 +2382,7 @@ function saveInput(){
     saveBtnEl.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';
   }
   const ov=document.getElementById('overlay-ok');ov.classList.add('show');
+  playSuccessSound();
 
   // ── GPS 完全背景作業，不阻擋任何流程 ──
   setTimeout(()=>{
@@ -2070,6 +2399,7 @@ function saveInput(){
 }
 
 function dismissOkAndGoBack(){
+  playOkSound();
   document.getElementById('overlay-ok').classList.remove('show');
   document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
   if(pageStack.length>1) pageStack.pop();

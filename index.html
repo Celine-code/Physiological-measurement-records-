@@ -88,23 +88,23 @@ body::after{
 .home-doodle{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.5;z-index:0}
 
 .home-scroll{flex:1;overflow-y:auto;
-  padding:clamp(52px,13vw,76px) var(--sp-lg) var(--sp-sm);
-  display:flex;flex-direction:column;gap:clamp(10px,2.5vw,16px);
+  padding:clamp(20px,5vw,32px) var(--sp-lg) var(--sp-xs);
+  display:flex;flex-direction:column;gap:clamp(8px,2vw,12px);
   position:relative;z-index:1;-webkit-overflow-scrolling:touch}
 .home-scroll::-webkit-scrollbar{display:none}
 
-.home-date{font-family:'DM Mono',monospace;font-size:var(--fs-xs);letter-spacing:1.5px;color:rgba(74,58,74,0.55);text-transform:uppercase;margin-bottom:var(--sp-xs)}
-.home-greeting{font-family:'Nunito',sans-serif;font-size:var(--fs-2xl);
+.home-date{font-family:'DM Mono',monospace;font-size:var(--fs-xs);letter-spacing:1.5px;color:rgba(74,58,74,0.55);text-transform:uppercase;margin-bottom:2px}
+.home-greeting{font-family:'Nunito',sans-serif;font-size:clamp(1.45rem,5.5vw,1.9rem);
   font-weight:900;color:var(--ink);line-height:1.2}
 .home-greeting .wave{display:inline-block;animation:wave 2.5s ease-in-out infinite;
   transform-origin:70% 70%}
 @keyframes wave{0%,100%{transform:rotate(0)}20%{transform:rotate(20deg)}
   40%{transform:rotate(-8deg)}60%{transform:rotate(16deg)}80%{transform:rotate(-4deg)}}
-.home-sub-id{font-size:var(--fs-sm);color:rgba(74,58,74,0.8);font-weight:600;margin-top:var(--sp-xs);line-height:1.6}
-.home-sub-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;line-height:1.4}
+.home-sub-id{font-size:var(--fs-sm);color:rgba(74,58,74,0.8);font-weight:600;margin-top:2px;line-height:1.5}
+.home-sub-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;line-height:1.3}
 
 /* Weather card */
-#weather-card{min-height:64px}
+#weather-card{min-height:0}
 .wx-card{background:rgba(255,255,255,0.78);backdrop-filter:blur(8px);
   border:1.5px solid rgba(255,255,255,0.9);
   border-radius:var(--r-lg);
@@ -152,8 +152,8 @@ body::after{
   border-top:1.5px dashed var(--pink-lt);padding-top:var(--sp-xs)}
 
 /* Start button */
-.home-bottom{padding:0 var(--sp-lg) max(clamp(24px,7vh,44px), env(safe-area-inset-bottom, 24px));position:relative;z-index:1}
-.btn-start{width:88%;margin:0 auto;padding:clamp(18px,5vw,24px) clamp(24px,6vw,40px);
+.home-bottom{padding:var(--sp-xs) var(--sp-lg) max(clamp(12px,3vh,20px), env(safe-area-inset-bottom, 12px));position:relative;z-index:1}
+.btn-start{width:88%;margin:0 auto;padding:clamp(14px,3.8vw,18px) clamp(20px,5vw,32px);
   border:none;
   border-radius:var(--r-full);
   background:linear-gradient(160deg, #f9c0d4 0%, #f07098 45%, #d9507a 100%);

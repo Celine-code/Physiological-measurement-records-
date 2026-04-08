@@ -88,8 +88,8 @@ body::after{
 .home-doodle{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.5;z-index:0}
 
 .home-scroll{flex:1;overflow-y:auto;
-  padding:clamp(52px,13vw,76px) var(--sp-lg) var(--sp-md);
-  display:flex;flex-direction:column;gap:var(--sp-md);
+  padding:clamp(52px,13vw,76px) var(--sp-lg) var(--sp-sm);
+  display:flex;flex-direction:column;gap:clamp(10px,2.5vw,16px);
   position:relative;z-index:1;-webkit-overflow-scrolling:touch}
 .home-scroll::-webkit-scrollbar{display:none}
 
@@ -181,7 +181,7 @@ body::after{
 .bs-zh{font-size:var(--fs-xs);opacity:.85;font-weight:600;
   font-family:'Noto Sans TC',sans-serif}
 
-#admin-trigger{position:fixed;bottom:0;right:0;width:36px;height:36px;z-index:50;opacity:0}
+#admin-trigger{position:absolute;bottom:0;right:0;width:44px;height:44px;z-index:50;opacity:0;cursor:default}
 
 /* ══════════════════════════════════════
    PAGE 2 — MENU
@@ -860,7 +860,7 @@ body::after{
     </div>
 
     <div id="weather-card"><div class="wx-load">⏳ Memuat cuaca… / 載入天氣…</div></div>
-    <div id="outfit-card" style="display:none"></div>
+    <div id="outfit-card" class="outfit-card" style="display:none"></div>
 
     <div id="home-schedule-card" style="display:none" class="schedule-card">
       <div class="schedule-card-tag">📅 Jadwal Hari Ini · 今日行程</div>
@@ -882,10 +882,9 @@ body::after{
         <span class="bs-zh">開始記錄</span>
       </span>
     </button>
+    <div id="admin-trigger" onclick="secretTap()"></div>
   </div>
 </div>
-
-<div id="admin-trigger" onclick="secretTap()"></div>
 
 <!-- ══ PAGE 2: MENU ══ -->
 <div class="page" id="page-menu">
@@ -933,16 +932,7 @@ body::after{
       </div>
       <div class="mc urine" id="card-urine" onclick="openInput('urine')">
         <div class="mc-tick">✓</div>
-        <div class="mc-icon"><svg viewBox="0 0 40 44" width="32" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- 便斗主體 -->
-  <path d="M10 8 Q8 8 7 10 L6 22 Q6 30 12 33 L14 34 Q14 38 20 38 Q26 38 26 34 L28 33 Q34 30 34 22 L33 10 Q32 8 30 8 Z" fill="#e8d5a0" stroke="#c4a84a" stroke-width="1.5"/>
-  <!-- 頂部掛牆板 -->
-  <rect x="8" y="4" width="24" height="6" rx="3" fill="#c4a84a"/>
-  <!-- 內部反光 -->
-  <ellipse cx="20" cy="22" rx="8" ry="6" fill="rgba(255,255,255,0.25)"/>
-  <!-- 水滴 -->
-  <path d="M20 14 C20 14 17 18 17 20 C17 21.7 18.3 23 20 23 C21.7 23 23 21.7 23 20 C23 18 20 14 20 14Z" fill="#4fc3f7" opacity="0.8"/>
-</svg></div>
+        <div class="mc-icon"><svg viewBox="0 0 40 44" width="26" height="29" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 8 Q8 8 7 10 L6 22 Q6 30 12 33 L14 34 Q14 38 20 38 Q26 38 26 34 L28 33 Q34 30 34 22 L33 10 Q32 8 30 8 Z" fill="#e8d5a0" stroke="#c4a84a" stroke-width="1.5"/><rect x="8" y="4" width="24" height="6" rx="3" fill="#c4a84a"/><ellipse cx="20" cy="22" rx="8" ry="6" fill="rgba(255,255,255,0.25)"/><path d="M20 14 C20 14 17 18 17 20 C17 21.7 18.3 23 20 23 C21.7 23 23 21.7 23 20 C23 18 20 14 20 14Z" fill="#4fc3f7" opacity="0.8"/></svg></div>
         <div class="mc-id">Volume Urin</div>
         <div class="mc-zh">排尿量</div>
       </div>
@@ -1767,8 +1757,7 @@ function renderOutfit(wx){
   }
 
   el.style.display = 'block';
-  el.innerHTML = `<div class="outfit-card">
-    <div class="outfit-tag">👔 Saran Berpakaian · 穿搭建議</div>
+  el.innerHTML = `<div class="outfit-tag">👔 Saran Berpakaian · 穿搭建議</div>
     <div class="outfit-tag-zh" style="font-size:var(--fs-xs);color:var(--ink);font-weight:600;margin-bottom:var(--sp-xs)">
       <span style="color:var(--mint-dk);font-weight:700">${summary_id}</span><br>
       <span style="color:var(--ink-xlt);font-size:0.85em">${summary_zh}</span>
@@ -1779,8 +1768,7 @@ function renderOutfit(wx){
         <span class="oi-id">${it.id}</span>
         <span class="oi-zh">${it.zh}</span>
       </div>`).join('')}
-    </div>
-  </div>`;
+    </div>`;
 }
 
 // ══ SOUND EFFECTS ══

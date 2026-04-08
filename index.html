@@ -88,7 +88,7 @@ body::after{
 .home-doodle{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.5;z-index:0}
 
 .home-scroll{flex:1;overflow-y:auto;
-  padding:clamp(20px,5vw,32px) var(--sp-lg) var(--sp-xs);
+  padding:max(8px, env(safe-area-inset-top, 8px)) var(--sp-lg) var(--sp-xs);
   display:flex;flex-direction:column;gap:clamp(8px,2vw,12px);
   position:relative;z-index:1;-webkit-overflow-scrolling:touch}
 .home-scroll::-webkit-scrollbar{display:none}
@@ -152,7 +152,10 @@ body::after{
   border-top:1.5px dashed var(--pink-lt);padding-top:var(--sp-xs)}
 
 /* Start button */
-.home-bottom{padding:var(--sp-xs) var(--sp-lg) max(clamp(12px,3vh,20px), env(safe-area-inset-bottom, 12px));position:relative;z-index:1}
+.home-bottom{padding:var(--sp-xs) var(--sp-lg) max(clamp(10px,2vh,16px), env(safe-area-inset-bottom, 10px));
+  position:relative;z-index:2;flex-shrink:0;
+  background:linear-gradient(to top,rgba(250,245,243,0.95) 70%,transparent 100%)}
+
 .btn-start{width:88%;margin:0 auto;padding:clamp(14px,3.8vw,18px) clamp(20px,5vw,32px);
   border:none;
   border-radius:var(--r-full);
@@ -752,6 +755,24 @@ body::after{
   cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .sch-mgr-empty{text-align:center;padding:24px;color:var(--ink-xlt);font-size:var(--fs-sm)}
 
+/* Settings panel */
+.settings-card{background:var(--wh);border:1.5px solid var(--pink-lt);border-radius:var(--r-md);
+  padding:var(--sp-md);margin-bottom:var(--sp-sm);box-shadow:0 3px 12px rgba(242,160,184,0.1)}
+.settings-card-title{font-family:'Nunito',sans-serif;font-size:var(--fs-md);font-weight:900;
+  color:var(--blue-dk);margin-bottom:4px}
+.settings-card-sub{font-size:var(--fs-xs);color:var(--ink-xlt);margin-bottom:var(--sp-sm)}
+.settings-form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:var(--sp-xs)}
+.settings-label{font-size:var(--fs-xs);font-weight:700;color:var(--ink-lt)}
+.settings-input{padding:10px 13px;border:1.5px solid var(--pink-lt);border-radius:10px;
+  font-family:inherit;font-size:var(--fs-sm);color:var(--ink);background:var(--paper);width:100%}
+.settings-input:focus{outline:none;border-color:var(--lav)}
+.btn-change-pwd{width:100%;padding:12px;border:none;border-radius:var(--r-full);
+  background:linear-gradient(135deg,#7aaed0,#4a80aa);color:#fff;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:var(--fs-sm);
+  cursor:pointer;margin-top:var(--sp-xs);
+  box-shadow:0 3px 12px rgba(74,128,170,.3)}
+.btn-change-pwd:active{transform:scale(0.97)}
+
 /* TOAST */
 #toast{position:fixed;bottom:max(clamp(18px,5vw,28px), env(safe-area-inset-bottom, 18px));left:50%;
   transform:translateX(-50%) translateY(80px);
@@ -1025,7 +1046,8 @@ body::after{
     <div class="adm-tabs">
       <button class="adm-tab active" id="tab-health" onclick="switchAdminTab('health')">📋 健康記錄</button>
       <button class="adm-tab" id="tab-gps" onclick="switchAdminTab('gps')">📍 GPS 軌跡</button>
-      <button class="adm-tab" id="tab-sch" onclick="switchAdminTab('sch')">📅 行程管理</button>
+      <button class="adm-tab" id="tab-sch" onclick="switchAdminTab('sch')">📅 行程</button>
+      <button class="adm-tab" id="tab-settings" onclick="switchAdminTab('settings')">⚙️ 設定</button>
     </div>
 
     <!-- 健康記錄 tab -->
@@ -1164,6 +1186,39 @@ body::after{
       <!-- 行程列表 -->
       <div class="sch-mgr-list" id="sch-list"></div>
     </div>
+
+    <!-- 設定 tab -->
+    <div class="admin-body" id="adm-panel-settings" style="display:none">
+      <div class="adm-acts">
+        <button class="btn-aa btn-logout" onclick="doLogout()">登出</button>
+      </div>
+
+      <!-- 變更密碼 -->
+      <div class="settings-card">
+        <div class="settings-card-title">🔑 變更管理密碼</div>
+        <div class="settings-card-sub">建議定期更換密碼，請勿告知外勞</div>
+        <div class="settings-form-row">
+          <div class="settings-label">目前密碼</div>
+          <input type="password" id="pwd-current" class="settings-input" placeholder="請輸入目前密碼">
+        </div>
+        <div class="settings-form-row">
+          <div class="settings-label">新密碼 <span style="font-size:.65rem;color:var(--ink-xlt)">（至少4位數）</span></div>
+          <input type="password" id="pwd-new" class="settings-input" placeholder="請輸入新密碼">
+        </div>
+        <div class="settings-form-row">
+          <div class="settings-label">確認新密碼</div>
+          <input type="password" id="pwd-confirm" class="settings-input" placeholder="再次輸入新密碼">
+        </div>
+        <button class="btn-change-pwd" onclick="changePassword()">🔒 確認變更密碼</button>
+      </div>
+
+      <!-- 目前密碼提示 -->
+      <div class="settings-card" style="border-color:var(--mint-lt)">
+        <div class="settings-card-title" style="color:var(--mint-dk)">ℹ️ 密碼資訊</div>
+        <div id="pwd-info-text" style="font-size:var(--fs-sm);color:var(--ink-lt);line-height:1.8"></div>
+        <button class="btn-aa btn-export" style="margin-top:var(--sp-sm);width:100%" onclick="resetPassword()">↩️ 重設為預設密碼</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1211,7 +1266,8 @@ body::after{
 
 <script>
 // ══ CONFIG ══
-const ADMIN_PWD = '721126';
+const ADMIN_PWD_DEFAULT = '721126';
+function getAdminPwd(){ return localStorage.getItem('admin_pwd')||ADMIN_PWD_DEFAULT; }
 
 // ══ GREETINGS ══
 const GREETINGS = [
@@ -2873,7 +2929,7 @@ function openAdmin(){
   goTo('page-admin');
 }
 function doLogin(){
-  if(document.getElementById('pwd-input').value===ADMIN_PWD){
+  if(document.getElementById('pwd-input').value===getAdminPwd()){
     document.getElementById('adm-login').style.display='none';
     document.getElementById('adm-main').style.display='flex';
     renderAdmin();
@@ -2881,14 +2937,50 @@ function doLogin(){
 }
 // ══ ADMIN TAB SWITCH ══
 function switchAdminTab(tab){
-  document.getElementById('adm-panel-health').style.display = tab==='health' ? 'block' : 'none';
-  document.getElementById('adm-panel-gps').style.display    = tab==='gps'    ? 'block' : 'none';
-  document.getElementById('adm-panel-sch').style.display    = tab==='sch'    ? 'block' : 'none';
-  document.getElementById('tab-health').classList.toggle('active', tab==='health');
-  document.getElementById('tab-gps').classList.toggle('active',    tab==='gps');
-  document.getElementById('tab-sch').classList.toggle('active',    tab==='sch');
+  document.getElementById('adm-panel-health').style.display   = tab==='health'   ? 'block' : 'none';
+  document.getElementById('adm-panel-gps').style.display      = tab==='gps'      ? 'block' : 'none';
+  document.getElementById('adm-panel-sch').style.display      = tab==='sch'      ? 'block' : 'none';
+  document.getElementById('adm-panel-settings').style.display = tab==='settings' ? 'block' : 'none';
+  document.getElementById('tab-health').classList.toggle('active',   tab==='health');
+  document.getElementById('tab-gps').classList.toggle('active',      tab==='gps');
+  document.getElementById('tab-sch').classList.toggle('active',      tab==='sch');
+  document.getElementById('tab-settings').classList.toggle('active', tab==='settings');
   if(tab==='gps') renderGPS();
   if(tab==='sch') renderSchList();
+  if(tab==='settings') renderPwdInfo();
+}
+
+function renderPwdInfo(){
+  const isCustom = !!localStorage.getItem('admin_pwd');
+  const el = document.getElementById('pwd-info-text');
+  if(el) el.innerHTML = isCustom
+    ? `✅ 目前使用<strong>自訂密碼</strong><br>上次變更時間：${localStorage.getItem('admin_pwd_time')||'不明'}`
+    : `⚠️ 目前使用<strong>預設密碼（721126）</strong><br>建議盡快變更為自訂密碼`;
+}
+
+function changePassword(){
+  const cur = document.getElementById('pwd-current').value;
+  const nw  = document.getElementById('pwd-new').value;
+  const cfm = document.getElementById('pwd-confirm').value;
+  if(cur !== getAdminPwd()){ showToast('❌ 目前密碼錯誤'); return; }
+  if(nw.length < 4){ showToast('❌ 新密碼至少需要4位'); return; }
+  if(nw !== cfm){ showToast('❌ 兩次輸入的密碼不一致'); return; }
+  if(nw === getAdminPwd()){ showToast('⚠️ 新密碼與目前密碼相同'); return; }
+  localStorage.setItem('admin_pwd', nw);
+  localStorage.setItem('admin_pwd_time', new Date().toLocaleString('zh-TW'));
+  document.getElementById('pwd-current').value='';
+  document.getElementById('pwd-new').value='';
+  document.getElementById('pwd-confirm').value='';
+  renderPwdInfo();
+  showToast('✅ 密碼已成功變更！');
+}
+
+function resetPassword(){
+  if(!confirm('確定要重設為預設密碼 721126 嗎？')) return;
+  localStorage.removeItem('admin_pwd');
+  localStorage.removeItem('admin_pwd_time');
+  renderPwdInfo();
+  showToast('↩️ 已重設為預設密碼');
 }
 
 // ══ GPS LOG ══

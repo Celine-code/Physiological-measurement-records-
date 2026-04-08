@@ -1387,9 +1387,9 @@ const CFGS = {
   },
   water:{
     title_id:'Asupan Air Minum',title_zh:'飲水量',
-    sub_id:'Geser roda untuk memilih jumlah air yang diminum hari ini',
+    sub_id:'Geser roda untuk memilih jumlah air yang diminum KALI INI',
     rollers:[
-      {key:'water',name_id:'Total Asupan Air',name_zh:'今日總飲水量',unit:'ml',min:0,max:3000,step:50,init:1000},
+      {key:'water',name_id:'Asupan Air Kali Ini',name_zh:'本次飲水量',unit:'ml',min:0,max:1500,step:50,init:300},
     ],
     hints:[
       {type:'info',title_id:'ℹ️ Panduan / 建議攝取',rows:[
@@ -1406,9 +1406,9 @@ const CFGS = {
   },
   urine:{
     title_id:'Volume Urin',title_zh:'排尿量',
-    sub_id:'Geser roda untuk memilih total volume urin hari ini',
+    sub_id:'Geser roda untuk memilih volume urin KALI INI',
     rollers:[
-      {key:'urine',name_id:'Total Volume Urin',name_zh:'今日總排尿量',unit:'ml',min:0,max:3000,step:50,init:1000},
+      {key:'urine',name_id:'Volume Urin Kali Ini',name_zh:'本次排尿量',unit:'ml',min:0,max:1000,step:25,init:250},
     ],
     hints:[
       {type:'info',title_id:'ℹ️ Panduan / 建議',rows:[
@@ -2255,65 +2255,55 @@ function getRollerStatus(type, vals){
 
   if(type==='water'){
     const w=parseFloat(vals.water)||0;
-    if(w<500) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
-      id:'Asupan air sangat kurang!',zh:'飲水量嚴重不足！',
+    if(w===0) return {icon:'💧',bg:'#f0f8ff',color:'#2980b9',
+      id:'Masukkan jumlah air kali ini',zh:'請輸入本次飲水量',extra:[]};
+    if(w<100) return {icon:'💧',bg:'#e8f4fd',color:'#2980b9',
+      id:'Jumlah sangat sedikit',zh:'本次飲水量很少',
       extra:[
-        {id:'Pasien tirah baring berisiko dehidrasi berat',zh:'臥床患者極易嚴重脫水，需立即處理'},
-        {id:'Segera tambah cairan via NGT sesuai instruksi dokter',zh:'立即按照醫師指示由鼻胃管補充水分'},
-        {id:'Pantau produksi urin dan warna urin',zh:'觀察排尿量與尿液顏色'},
+        {id:'Pastikan Bapak mendapat cukup cairan via NGT',zh:'確認爸爸透過鼻胃管有補充足夠水分'},
       ]};
-    if(w<1000) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
-      id:'Asupan air kurang',zh:'飲水量不足',
+    if(w<=600) return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'Tercatat! Terus jaga hidrasi Bapak.',zh:'已記錄！繼續維持爸爸的水分補充。',
       extra:[
-        {id:'Bapak makan via NGT — tambahkan air di antara pemberian',zh:'爸爸以鼻胃管進食，灌食之間請補充白開水'},
-        {id:'Target harian 1500–1800 ml untuk Bapak',zh:'臥床患者建議每日補充1500–1800 ml水分'},
-      ]};
-    if(w>=1500&&w<=2000) return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
-      id:'Asupan air ideal!',zh:'飲水量達標，非常好！',
-      extra:[
-        {id:'Hidrasi baik membantu cegah ISK dan batu ginjal',zh:'良好的水分補充有助預防泌尿道感染和腎結石'},
-      ]};
-    if(w>2000) return {icon:'⚠️',bg:'#e8f4fd',color:'#2980b9',
-      id:'Asupan air cukup banyak',zh:'飲水量偏多，請確認',
-      extra:[
-        {id:'Jika ada gangguan ginjal/jantung, konsultasikan ke dokter',zh:'若有腎臟或心臟問題，請詢問醫師是否適量'},
-      ]};
-    return {icon:'💧',bg:'#e8f4fd',color:'#2980b9',
-      id:'Asupan air perlu ditingkatkan',zh:'飲水量稍嫌不足，繼續補充',
-      extra:[
+        {id:'Target harian Bapak: 1500–1800 ml total',zh:'爸爸每日目標：總飲水量1500–1800 ml'},
         {id:'Bagi menjadi beberapa kali pemberian via NGT',zh:'建議分次由鼻胃管補充，避免一次灌入過多'},
+      ]};
+    return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Jumlah cukup banyak untuk sekali minum',zh:'本次飲水量偏多，請確認是否一次灌入',
+      extra:[
+        {id:'Sebaiknya bagi ke beberapa kali agar tidak memberatkan pencernaan',zh:'建議分次灌入，避免一次大量造成消化負擔'},
+        {id:'Jika ada gangguan ginjal/jantung, konsultasikan ke dokter',zh:'若有腎臟或心臟問題，請詢問醫師是否適量'},
       ]};
   }
 
   if(type==='urine'){
     const u=parseFloat(vals.urine)||0;
-    if(u<300) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
-      id:'Volume urin sangat sedikit — darurat!',zh:'排尿量極少，緊急！',
+    if(u===0) return {icon:'💛',bg:'#fffbe0',color:'#b7950b',
+      id:'Masukkan volume urin kali ini',zh:'請輸入本次排尿量',extra:[]};
+    if(u<50) return {icon:'🚨',bg:'#ffe0e0',color:'#c0392b',
+      id:'Volume sangat sedikit — waspadai!',zh:'本次排尿量極少，需要注意！',
       extra:[
-        {id:'Kemungkinan retensi urin atau dehidrasi berat',zh:'可能是尿液滯留或嚴重脫水'},
-        {id:'Bapak tidak bisa komunikasi — periksa tanda ketidaknyamanan',zh:'爸爸無法表達，請觀察有無不舒服的表情'},
-        {id:'Hubungi keluarga, evaluasi apakah perlu kateter',zh:'通知家屬，評估是否需要導尿管'},
+        {id:'Kemungkinan retensi urin atau Bapak belum buang air',zh:'可能是尿液滯留，或爸爸尚未完全排出'},
+        {id:'Periksa tanda ketidaknyamanan pada Bapak',zh:'觀察爸爸是否有不舒服的表情或腹部脹硬'},
+        {id:'Laporkan ke keluarga jika berulang',zh:'若持續發生，請立即通知家屬'},
       ]};
-    if(u<600) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
-      id:'Volume urin kurang',zh:'排尿量不足',
+    if(u<150) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
+      id:'Volume urin sedikit kali ini',zh:'本次排尿量偏少',
       extra:[
-        {id:'Tingkatkan asupan cairan via NGT',zh:'增加鼻胃管水分補充量'},
-        {id:'Periksa apakah ada retensi — perut terasa tegang?',zh:'確認是否有尿液滯留，觀察腹部是否脹硬'},
+        {id:'Pastikan Bapak mendapat cukup cairan hari ini',zh:'確認今日水分補充是否足夠'},
+        {id:'Perhatikan warna urin — gelap berarti kurang minum',zh:'觀察尿液顏色，深色代表飲水不足'},
       ]};
-    if(u>=800&&u<=2000) return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
-      id:'Volume urin normal',zh:'排尿量正常，很好！',
+    if(u>=150&&u<=500) return {icon:'✅',bg:'#e8f8f0',color:'#27ae60',
+      id:'Volume urin normal kali ini',zh:'本次排尿量正常，很好！',
       extra:[
         {id:'Keseimbangan cairan terjaga dengan baik',zh:'水分進出平衡良好'},
       ]};
-    if(u>2000) return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
-      id:'Volume urin banyak — perhatikan',zh:'排尿量偏多，需留意',
+    return {icon:'⚠️',bg:'#e8f4fd',color:'#2980b9',
+      id:'Volume urin banyak kali ini',zh:'本次排尿量較多',
       extra:[
-        {id:'Mungkin efek diuretik atau kadar gula tinggi',zh:'可能為利尿劑作用或血糖偏高所致'},
-        {id:'Pantau tanda dehidrasi: bibir kering, kulit tidak elastis',zh:'觀察脫水症狀：嘴唇乾燥、皮膚彈性差'},
+        {id:'Mungkin efek diuretik atau asupan cairan banyak',zh:'可能是利尿劑作用或本次水分補充較多'},
+        {id:'Pantau tanda dehidrasi jika sering terjadi',zh:'若頻繁發生，注意有無脫水症狀'},
       ]};
-    return {icon:'💧',bg:'#e8f4fd',color:'#2980b9',
-      id:'Volume urin sedikit kurang',zh:'排尿量稍嫌不足',
-      extra:[{id:'Tambahkan asupan air dan pantau perkembangan',zh:'增加水分攝取並持續觀察'}]};
   }
 
   if(type==='temp'){
@@ -2679,18 +2669,23 @@ function getTodayStats(type, currentVals){
   }
   if(type==='water'){
     const count=recs.length+1;
-    const total=recs.reduce((s,r)=>s+parseInt(r.values?.water||0),0)+parseInt(currentVals.water||0);
+    const thisTime=parseInt(currentVals.water||0);
+    const total=recs.reduce((s,r)=>s+parseInt(r.values?.water||0),0)+thisTime;
+    const remaining=Math.max(0,1500-total);
     return {
       count_id:`Pencatatan ke-${count} hari ini`, count_zh:`今日第 ${count} 次記錄`,
-      stat_id:`Total minum hari ini: ${total} ml`, stat_zh:`今日飲水累計：${total} ml`
+      stat_id:`Kali ini: ${thisTime} ml  ·  Total hari ini: ${total} ml`,
+      stat_zh:`本次：${thisTime} ml　今日累計：${total} ml${remaining>0?' （還差'+remaining+'ml達標）':' ✅ 已達標！'}`
     };
   }
   if(type==='urine'){
     const count=recs.length+1;
-    const total=recs.reduce((s,r)=>s+parseInt(r.values?.urine||0),0)+parseInt(currentVals.urine||0);
+    const thisTime=parseInt(currentVals.urine||0);
+    const total=recs.reduce((s,r)=>s+parseInt(r.values?.urine||0),0)+thisTime;
     return {
       count_id:`Pencatatan ke-${count} hari ini`, count_zh:`今日第 ${count} 次記錄`,
-      stat_id:`Total urin hari ini: ${total} ml`, stat_zh:`今日排尿累計：${total} ml`
+      stat_id:`Kali ini: ${thisTime} ml  ·  Total hari ini: ${total} ml`,
+      stat_zh:`本次：${thisTime} ml　今日累計：${total} ml`
     };
   }
   if(type==='temp'){
@@ -2788,7 +2783,9 @@ function saveInput(){
       </div>`;
     });
   } else if(cfg.rollers){
-    cfg.rollers.forEach(r=>{valLines+=`<div style="font-weight:700;color:var(--ink)">${r.name_id}<br><span style="font-size:0.8em;color:var(--ink-lt);font-weight:400">${r.name_zh}</span> ： ${vals[r.key]} ${r.unit}</div>`;});
+    cfg.rollers.forEach(r=>{
+      valLines+=`<div style="font-weight:700;color:var(--ink)">${r.name_id}<br><span style="font-size:0.8em;color:var(--ink-lt);font-weight:400">${r.name_zh}</span> ： ${vals[r.key]} ${r.unit}</div>`;
+    });
   }
 
   // 統計行
@@ -3155,17 +3152,21 @@ function renderDailyReport(){
       else badge='Normal / 正常';
       valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${t}</span><span class="rpt-unit">°C</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
     } else if(key==='water'){
-      const w=parseInt(v.water||0);
-      if(w<800){badgeClass='warn';badge='Kurang / 不足';}
-      else if(w>=1500) badge='Cukup / 足夠';
+      // 加總今日所有飲水記錄
+      const totalW = today.filter(r=>r.type==='water').reduce((s,r)=>s+parseInt(r.values?.water||0),0);
+      if(totalW===0){ valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-missing">Belum dicatat / 尚未記錄</div></div>`); return; }
+      if(totalW<800){badgeClass='warn';badge='Kurang / 不足';}
+      else if(totalW>=1500) badge='Cukup / 足夠';
       else badge='OK';
-      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${w}</span><span class="rpt-unit">ml</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
+      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh} <span style="font-size:0.62rem;color:var(--ink-xlt)">（今日加總）</span></div></div><div class="rpt-val-right"><span class="rpt-num">${totalW}</span><span class="rpt-unit">ml</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
     } else if(key==='urine'){
-      const u=parseInt(v.urine||0);
-      if(u<300){badgeClass='danger';badge='Sangat sedikit / 極少';}
-      else if(u<600){badgeClass='warn';badge='Kurang / 不足';}
+      // 加總今日所有排尿記錄
+      const totalU = today.filter(r=>r.type==='urine').reduce((s,r)=>s+parseInt(r.values?.urine||0),0);
+      if(totalU===0){ valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-missing">Belum dicatat / 尚未記錄</div></div>`); return; }
+      if(totalU<300){badgeClass='danger';badge='Sangat sedikit / 極少';}
+      else if(totalU<600){badgeClass='warn';badge='Kurang / 不足';}
       else badge='Normal / 正常';
-      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${u}</span><span class="rpt-unit">ml</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
+      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh} <span style="font-size:0.62rem;color:var(--ink-xlt)">（今日加總）</span></div></div><div class="rpt-val-right"><span class="rpt-num">${totalU}</span><span class="rpt-unit">ml</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
     } else {
       // choice types: bowel, face, daily — show summary text
       let summary='', summaryZh='';
@@ -3211,10 +3212,15 @@ function renderDailyReport(){
   if(latest.temp){const t=parseFloat(latest.temp.values?.temp||0);
     if(t>=38.5) alerts.push({level:'danger',id:'Demam tinggi! Waspadai infeksi (paru, ISK, luka).',zh:'高燒！注意感染來源：肺炎、泌尿道感染、褥瘡感染，立即通知家屬。'});
     else if(t>=37.5) alerts.push({level:'warn',id:'Demam ringan, ukur ulang 1 jam lagi.',zh:'輕微發燒，1小時後再量一次，觀察是否繼續上升。'});}
-  if(latest.water){const w=parseInt(latest.water.values?.water||0);
-    if(w<800) alerts.push({level:'warn',id:'Asupan air kurang. Tambah cairan via NGT.',zh:'飲水量不足，請透過鼻胃管補充水分，目標至少1500ml。'});}
-  if(latest.urine){const u=parseInt(latest.urine.values?.urine||0);
-    if(u<300) alerts.push({level:'danger',id:'Volume urin sangat sedikit! Periksa retensi urin.',zh:'排尿量極少，可能尿液滯留，請觸摸腹部是否脹硬，通知家屬。'});}
+  if(latest.water){
+    const totalW = today.filter(r=>r.type==='water').reduce((s,r)=>s+parseInt(r.values?.water||0),0);
+    if(totalW<800) alerts.push({level:'warn',id:'Asupan air kurang. Tambah cairan via NGT.',zh:`飲水量不足（今日累計 ${totalW} ml），請透過鼻胃管補充水分，目標至少1500ml。`});
+  }
+  if(latest.urine){
+    const totalU = today.filter(r=>r.type==='urine').reduce((s,r)=>s+parseInt(r.values?.urine||0),0);
+    if(totalU<300) alerts.push({level:'danger',id:'Volume urin sangat sedikit! Periksa retensi urin.',zh:`排尿量極少（今日累計 ${totalU} ml），可能尿液滯留，請觸摸腹部是否脹硬，通知家屬。`});
+    else if(totalU<600) alerts.push({level:'warn',id:'Volume urin kurang hari ini.',zh:`今日排尿量偏少（累計 ${totalU} ml），增加水分攝取並持續觀察。`});
+  }
   if(latest.bowel&&latest.bowel.values?.bowel_yn==='yes'){
     const c=latest.bowel.values?.bowel_color||[];
     const colors=Array.isArray(c)?c:[c];
@@ -3241,9 +3247,9 @@ function renderDailyReport(){
   // 依據今日數值產生建議
   if(!latest.bp)   tips.push({id:'Jangan lupa ukur tekanan darah Bapak.',zh:'今日尚未量血壓，記得補測。',dot:'#f2a0b8'});
   if(!latest.spo2) tips.push({id:'Ukur SpO₂ Bapak minimal sekali sehari.',zh:'今日尚未測血氧，請盡快補測，爸爸有肺部病史需每日監測。',dot:'#7aaed0'});
-  const water = parseInt(latest.water?.values?.water||0);
+  const waterTotal = today.filter(r=>r.type==='water').reduce((s,r)=>s+parseInt(r.values?.water||0),0);
   const target = 1500;
-  if(water>0&&water<target) tips.push({id:`Tambah ${target-water} ml cairan lagi via NGT hari ini.`,zh:`今日還需補充約 ${target-water} ml 水分才達標，請分次由鼻胃管灌入。`,dot:'#a8d4c8'});
+  if(waterTotal>0&&waterTotal<target) tips.push({id:`Tambah ${target-waterTotal} ml cairan lagi via NGT hari ini.`,zh:`今日飲水累計 ${waterTotal} ml，還需補充約 ${target-waterTotal} ml 才達標，請分次由鼻胃管灌入。`,dot:'#a8d4c8'});
   if(latest.daily?.values?.walk==='no') tips.push({id:'Bapak belum jalan-jalan hari ini. Jika memungkinkan, dorong kursi roda keluar.',zh:'今日未外出散步，如天氣允許可推輪椅出去透氣，對血液循環和情緒都有幫助。',dot:'#f0c098'});
   tips.push({id:'Jangan lupa cek posisi tubuh Bapak setiap 2 jam untuk mencegah luka baring.',zh:'每2小時記得協助翻身換位，預防褥瘡。爸爸曾有嚴重褥瘡，需持續注意。',dot:'#c0a8d8'});
   if(latest.temp){const t=parseFloat(latest.temp.values?.temp||0);

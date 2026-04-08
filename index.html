@@ -3770,7 +3770,28 @@ function scrollToSection(key){
   }
 }
 
+function playWarningSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const t=ctx.currentTime;
+    // 兩聲短促低音，像警示「咚咚」
+    [0, 0.18].forEach(offset=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.type='square';
+      osc.frequency.setValueAtTime(220,t+offset);
+      osc.frequency.exponentialRampToValueAtTime(180,t+offset+0.12);
+      gain.gain.setValueAtTime(0,t+offset);
+      gain.gain.linearRampToValueAtTime(0.12,t+offset+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001,t+offset+0.15);
+      osc.start(t+offset);osc.stop(t+offset+0.18);
+    });
+  }catch(e){}
+}
+
 function showMissingAlert(missing_id, missing_zh, missingKeys){
+  playWarningSound();
   const list=document.getElementById('missing-list');
   list.innerHTML=missing_id.map((m,i)=>`
     <div style="margin-bottom:6px">

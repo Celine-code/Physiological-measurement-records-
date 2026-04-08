@@ -630,6 +630,128 @@ body::after{
 @keyframes spin{0%{display:inline-block;transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 .save-spin{display:inline-block;animation:spin 1s linear infinite}
 
+
+/* Daily report button */
+.btn-daily-report{width:100%;display:block;padding:clamp(9px,2.2vw,12px);
+  border:2px dashed rgba(192,168,216,0.7);border-radius:var(--r-full);
+  background:rgba(255,255,255,0.7);
+  color:#8a60b8;font-family:'Nunito',sans-serif;font-weight:800;
+  font-size:var(--fs-md);cursor:pointer;
+  transition:transform .15s;flex-shrink:0;margin-top:var(--sp-xs)}
+.btn-daily-report:active{transform:scale(0.97)}
+
+/* Daily report page */
+.report-body{flex:1;overflow-y:auto;padding:var(--sp-md) var(--sp-md) max(var(--sp-md),env(safe-area-inset-bottom,16px));
+  display:flex;flex-direction:column;gap:var(--sp-sm);-webkit-overflow-scrolling:touch}
+.report-body::-webkit-scrollbar{display:none}
+.report-section{background:var(--wh);border-radius:var(--r-md);
+  padding:var(--sp-md);box-shadow:0 3px 12px rgba(242,160,184,0.1)}
+.report-section-title{font-family:'Nunito',sans-serif;font-size:var(--fs-md);
+  font-weight:900;color:var(--blue-dk);margin-bottom:var(--sp-sm);
+  display:flex;align-items:center;gap:6px}
+.rpt-val-row{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--pink-lt)}
+.rpt-val-row:last-child{border-bottom:none}
+.rpt-val-left{display:flex;flex-direction:column;gap:1px}
+.rpt-val-id{font-size:var(--fs-sm);font-weight:700;color:var(--ink)}
+.rpt-val-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400}
+.rpt-val-right{display:flex;align-items:center;gap:6px}
+.rpt-num{font-family:'DM Mono',monospace;font-size:var(--fs-lg);font-weight:800;color:var(--ink)}
+.rpt-unit{font-size:var(--fs-xs);color:var(--ink-xlt)}
+.rpt-badge{font-size:var(--fs-xs);font-weight:800;padding:2px 8px;border-radius:var(--r-full)}
+.rpt-badge.ok{background:var(--mint-lt);color:var(--mint-dk)}
+.rpt-badge.warn{background:#fff3e0;color:#d35400}
+.rpt-badge.danger{background:#ffe0e0;color:#c0392b}
+.rpt-missing{font-size:var(--fs-xs);color:var(--ink-xlt);font-style:italic;padding:6px 0}
+.rpt-alert-item{padding:8px 0;border-bottom:1px solid var(--pink-lt)}
+.rpt-alert-item:last-child{border-bottom:none}
+.rpt-alert-id{font-size:var(--fs-sm);font-weight:700;line-height:1.4}
+.rpt-alert-zh{font-size:var(--fs-xs);color:var(--ink-lt);font-weight:400;margin-top:2px;line-height:1.4}
+.rpt-alert-item.danger .rpt-alert-id{color:#c0392b}
+.rpt-alert-item.warn   .rpt-alert-id{color:#d35400}
+.rpt-alert-item.ok     .rpt-alert-id{color:var(--mint-dk)}
+.rpt-alert-item.info   .rpt-alert-id{color:var(--blue-dk)}
+.rpt-schedule-item{display:flex;align-items:flex-start;gap:10px;
+  padding:8px 0;border-bottom:1px solid var(--pink-lt)}
+.rpt-schedule-item:last-child{border-bottom:none}
+.rpt-schedule-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.rpt-schedule-id{font-size:var(--fs-sm);font-weight:700;color:var(--ink);line-height:1.3}
+.rpt-schedule-zh{font-size:var(--fs-xs);color:var(--ink-xlt);margin-top:1px}
+.rpt-all-ok{text-align:center;padding:var(--sp-md);background:var(--mint-lt);border-radius:var(--r-md)}
+.rpt-all-ok-icon{font-size:2rem;margin-bottom:4px}
+.rpt-all-ok-id{font-family:'Nunito',sans-serif;font-size:var(--fs-md);font-weight:900;color:var(--mint-dk)}
+.rpt-all-ok-zh{font-size:var(--fs-xs);color:var(--ink-lt);margin-top:2px}
+
+
+/* ══ SCHEDULE CARD (首頁) ══ */
+.schedule-card{background:rgba(255,255,255,0.78);backdrop-filter:blur(8px);
+  border:1.5px solid rgba(192,168,216,0.5);border-radius:var(--r-lg);
+  padding:var(--sp-sm) var(--sp-md);box-shadow:0 4px 16px rgba(192,168,216,0.15)}
+.schedule-card-tag{font-family:'Nunito',sans-serif;font-size:var(--fs-xs);font-weight:800;
+  color:#8a60b8;letter-spacing:.5px;text-transform:uppercase;margin-bottom:var(--sp-xs)}
+.sch-item{display:flex;align-items:flex-start;gap:10px;padding:5px 0}
+.sch-item+.sch-item{border-top:1px dashed rgba(192,168,216,0.3)}
+.sch-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.sch-text{flex:1}
+.sch-id{font-size:var(--fs-sm);font-weight:700;color:var(--ink);line-height:1.3}
+.sch-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;margin-top:1px}
+.sch-time{font-family:'DM Mono',monospace;font-size:var(--fs-xs);
+  color:#8a60b8;font-weight:600;flex-shrink:0;margin-top:3px}
+.sch-empty{font-size:var(--fs-xs);color:var(--ink-xlt);text-align:center;padding:6px 0}
+
+/* ══ MENU SCHEDULE STRIP ══ */
+.menu-schedule-strip{background:rgba(192,168,216,0.12);border-radius:var(--r-md);
+  padding:var(--sp-xs) var(--sp-sm);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.mss-icon{font-size:1.1rem;flex-shrink:0}
+.mss-content{flex:1;min-width:0}
+.mss-id{font-size:var(--fs-xs);font-weight:700;color:#8a60b8;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mss-zh{font-size:0.62rem;color:var(--ink-xlt);font-weight:400}
+
+/* ══ SCHEDULE MANAGER (管理後台 tab) ══ */
+.sch-mgr-form{background:var(--wh);border:1.5px solid var(--pink-lt);
+  border-radius:var(--r-md);padding:var(--sp-md);margin-bottom:var(--sp-sm);
+  box-shadow:0 3px 12px rgba(242,160,184,0.1)}
+.sch-mgr-form-title{font-family:'Nunito',sans-serif;font-size:var(--fs-sm);
+  font-weight:900;color:var(--blue-dk);margin-bottom:var(--sp-sm)}
+.sch-form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:var(--sp-xs)}
+.sch-form-label{font-size:var(--fs-xs);font-weight:700;color:var(--ink-lt)}
+.sch-form-input{padding:9px 12px;border:1.5px solid var(--pink-lt);
+  border-radius:10px;font-family:inherit;font-size:var(--fs-sm);
+  color:var(--ink);background:var(--paper);width:100%}
+.sch-form-input:focus{outline:none;border-color:var(--lav)}
+.sch-form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-xs)}
+.sch-type-btns{display:flex;gap:var(--sp-xs)}
+.sch-type-btn{flex:1;padding:8px;border-radius:var(--r-full);border:1.5px solid var(--pink-lt);
+  background:var(--paper);font-family:'Nunito',sans-serif;font-size:var(--fs-xs);
+  font-weight:700;color:var(--ink-lt);cursor:pointer;text-align:center;transition:all .15s}
+.sch-type-btn.sel{background:var(--lav-lt);border-color:var(--lav);color:#6a3080}
+.sch-dow-btns{display:flex;gap:5px;flex-wrap:wrap}
+.sch-dow-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--pink-lt);
+  background:var(--paper);font-family:'Nunito',sans-serif;font-size:var(--fs-xs);
+  font-weight:800;color:var(--ink-lt);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s}
+.sch-dow-btn.sel{background:var(--lav-lt);border-color:var(--lav);color:#6a3080}
+.btn-add-sch{width:100%;padding:11px;border:none;border-radius:var(--r-full);
+  background:linear-gradient(135deg,#c8a8e8,#a880d0);color:#fff;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:var(--fs-sm);
+  cursor:pointer;margin-top:var(--sp-xs);
+  box-shadow:0 3px 12px rgba(168,128,208,0.35)}
+.btn-add-sch:active{transform:scale(0.97)}
+.sch-mgr-list{display:flex;flex-direction:column;gap:var(--sp-xs)}
+.sch-mgr-item{background:var(--wh);border:1.5px solid var(--pink-lt);
+  border-radius:var(--r-md);padding:12px var(--sp-md);
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 2px 8px rgba(242,160,184,0.1)}
+.sch-mgr-item-left{flex:1;min-width:0}
+.sch-mgr-item-id{font-size:var(--fs-sm);font-weight:800;color:var(--ink);line-height:1.3}
+.sch-mgr-item-zh{font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400;margin-top:1px}
+.sch-mgr-item-meta{font-size:var(--fs-xs);color:#8a60b8;font-weight:600;margin-top:3px}
+.sch-mgr-del{width:32px;height:32px;border-radius:50%;border:none;
+  background:var(--peach-lt);color:#9a4030;font-size:0.9rem;
+  cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.sch-mgr-empty{text-align:center;padding:24px;color:var(--ink-xlt);font-size:var(--fs-sm)}
+
 /* TOAST */
 #toast{position:fixed;bottom:max(clamp(18px,5vw,28px), env(safe-area-inset-bottom, 18px));left:50%;
   transform:translateX(-50%) translateY(80px);
@@ -740,6 +862,11 @@ body::after{
     <div id="weather-card"><div class="wx-load">⏳ Memuat cuaca… / 載入天氣…</div></div>
     <div id="outfit-card" style="display:none"></div>
 
+    <div id="home-schedule-card" style="display:none" class="schedule-card">
+      <div class="schedule-card-tag">📅 Jadwal Hari Ini · 今日行程</div>
+      <div id="home-schedule-list"></div>
+    </div>
+
     <div class="quote-card">
       <div class="quote-tag">🌙 Hikmah Islam · 今日箴言</div>
       <div class="quote-id" id="q-id"></div>
@@ -774,6 +901,17 @@ body::after{
     </div>
   </div>
   <div class="menu-body">
+    <div id="menu-schedule-strip" style="display:none" class="menu-schedule-strip">
+      <span class="mss-icon">📅</span>
+      <div class="mss-content">
+        <div class="mss-id" id="menu-schedule-text"></div>
+        <div class="mss-zh" id="menu-schedule-zh"></div>
+      </div>
+      <span class="mss-arrow" style="font-size:var(--fs-xs);color:#8a60b8;font-weight:700;flex-shrink:0">▼</span>
+    </div>
+    <div id="menu-schedule-detail" style="display:none;background:rgba(255,255,255,0.85);
+      border-radius:var(--r-md);padding:var(--sp-xs) var(--sp-sm);
+      border:1px solid rgba(192,168,216,0.3);margin-top:-4px"></div>
     <div class="measure-grid">
       <div class="mc bp"    id="card-bp"    onclick="openInput('bp')">
         <div class="mc-tick">✓</div>
@@ -837,6 +975,25 @@ body::after{
       <span class="e-id">✅ Selesai Pengukuran</span>
       <span class="e-zh">結束測量，回首頁</span>
     </button>
+    <button class="btn-daily-report" onclick="openDailyReport()">
+      <span class="e-id">📋 Laporan Harian</span>
+      <span class="e-zh">今日照護日報</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ PAGE 5: DAILY REPORT ══ -->
+<div class="page" id="page-report">
+  <div class="input-hdr">
+    <button class="back-btn" onclick="goBack()">← Kembali / 返回</button>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px">
+      <div class="ih-id">📋 Laporan Harian</div>
+    </div>
+    <div class="ih-zh">今日照護日報</div>
+    <div class="ih-sub" id="report-date"></div>
+  </div>
+  <div class="report-body" id="report-body">
+    <div style="text-align:center;padding:40px 20px;color:var(--ink-xlt)">⏳ Memuat…</div>
   </div>
 </div>
 
@@ -878,6 +1035,7 @@ body::after{
     <div class="adm-tabs">
       <button class="adm-tab active" id="tab-health" onclick="switchAdminTab('health')">📋 健康記錄</button>
       <button class="adm-tab" id="tab-gps" onclick="switchAdminTab('gps')">📍 GPS 軌跡</button>
+      <button class="adm-tab" id="tab-sch" onclick="switchAdminTab('sch')">📅 行程管理</button>
     </div>
 
     <!-- 健康記錄 tab -->
@@ -944,6 +1102,77 @@ body::after{
 
       <!-- 停留記錄列表 -->
       <div id="gps-list"></div>
+    </div>
+
+    <!-- 行程管理 tab -->
+    <div class="admin-body" id="adm-panel-sch" style="display:none">
+      <!-- 新增行程表單 -->
+      <div class="sch-mgr-form">
+        <div class="sch-mgr-form-title">➕ Tambah Jadwal · 新增行程</div>
+
+        <div class="sch-form-row">
+          <div class="sch-form-label">名稱（印尼文）Nama</div>
+          <input class="sch-form-input" id="sch-name-id" placeholder="Cth: Fisioterapi di RS">
+        </div>
+        <div class="sch-form-row">
+          <div class="sch-form-label">名稱（中文）名稱</div>
+          <input class="sch-form-input" id="sch-name-zh" placeholder="例：醫院復健">
+        </div>
+
+        <div class="sch-form-row">
+          <div class="sch-form-label">類型 Jenis</div>
+          <div class="sch-type-btns">
+            <div class="sch-type-btn sel" id="sch-type-weekly" onclick="selectSchType('weekly')">🔁 週期固定<br><span style="font-size:0.6rem;font-weight:400">Setiap minggu</span></div>
+            <div class="sch-type-btn" id="sch-type-once" onclick="selectSchType('once')">📌 單次日期<br><span style="font-size:0.6rem;font-weight:400">Tanggal tertentu</span></div>
+          </div>
+        </div>
+
+        <!-- 週期選擇 -->
+        <div id="sch-weekly-panel">
+          <div class="sch-form-row">
+            <div class="sch-form-label">每週幾 Hari</div>
+            <div class="sch-dow-btns">
+              <div class="sch-dow-btn" data-dow="0" onclick="toggleDow(this)">日</div>
+              <div class="sch-dow-btn" data-dow="1" onclick="toggleDow(this)">一</div>
+              <div class="sch-dow-btn" data-dow="2" onclick="toggleDow(this)">二</div>
+              <div class="sch-dow-btn" data-dow="3" onclick="toggleDow(this)">三</div>
+              <div class="sch-dow-btn" data-dow="4" onclick="toggleDow(this)">四</div>
+              <div class="sch-dow-btn" data-dow="5" onclick="toggleDow(this)">五</div>
+              <div class="sch-dow-btn" data-dow="6" onclick="toggleDow(this)">六</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 單次日期選擇 -->
+        <div id="sch-once-panel" style="display:none">
+          <div class="sch-form-row">
+            <div class="sch-form-label">日期 Tanggal</div>
+            <input class="sch-form-input" id="sch-date" type="date">
+          </div>
+        </div>
+
+        <div class="sch-form-row">
+          <div class="sch-form-label">時間 Waktu（可選）</div>
+          <input class="sch-form-input" id="sch-time" type="time" placeholder="例：09:00">
+        </div>
+
+        <div class="sch-form-row">
+          <div class="sch-form-label">顏色標記 Warna</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="sch-color-btn sel" data-color="#c0a8d8" onclick="selectSchColor(this)" style="width:28px;height:28px;border-radius:50%;background:#c0a8d8;cursor:pointer;border:3px solid #fff;box-shadow:0 0 0 2px #c0a8d8"></div>
+            <div class="sch-color-btn" data-color="#7aaed0" onclick="selectSchColor(this)" style="width:28px;height:28px;border-radius:50%;background:#7aaed0;cursor:pointer;border:3px solid #fff"></div>
+            <div class="sch-color-btn" data-color="#a8d4c8" onclick="selectSchColor(this)" style="width:28px;height:28px;border-radius:50%;background:#a8d4c8;cursor:pointer;border:3px solid #fff"></div>
+            <div class="sch-color-btn" data-color="#f2a0b8" onclick="selectSchColor(this)" style="width:28px;height:28px;border-radius:50%;background:#f2a0b8;cursor:pointer;border:3px solid #fff"></div>
+            <div class="sch-color-btn" data-color="#f0c098" onclick="selectSchColor(this)" style="width:28px;height:28px;border-radius:50%;background:#f0c098;cursor:pointer;border:3px solid #fff"></div>
+            <div class="sch-color-btn" data-color="#f9c74f" onclick="selectSchColor(this)" style="width:28px;height:28px;border-radius:50%;background:#f9c74f;cursor:pointer;border:3px solid #fff"></div>
+          </div>
+        </div>
+
+        <button class="btn-add-sch" onclick="addSchedule()">✅ Simpan Jadwal · 儲存行程</button>
+      </div>
+
+      <!-- 行程列表 -->
+      <div class="sch-mgr-list" id="sch-list"></div>
     </div>
   </div>
 </div>
@@ -1318,6 +1547,13 @@ function dailyPick(key, arr) {
 
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded',()=>{
+  // 清除無效行程資料（沒有 nameId 的舊測試資料）
+  try{
+    const raw = JSON.parse(localStorage.getItem('schedules')||'[]');
+    const clean = raw.filter(s=> s.nameId && typeof s.nameId === 'string' && s.nameId.trim().length > 0 && !(/^\d+$/.test(s.nameId.trim())));
+    if(clean.length !== raw.length) localStorage.setItem('schedules', JSON.stringify(clean));
+  }catch(e){}
+
   // 初始化首頁文字（背景先跑）
   const now=new Date();
   document.getElementById('home-date').textContent=
@@ -1355,11 +1591,10 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   Promise.all([minWait, weatherPromise]).then(([,wxResult])=>{
     setProgress(100,'完成！');
-    // 渲染天氣
     renderWeatherResult(wxResult);
+    refreshScheduleDisplays(); // 行程在進首頁前就準備好
     setTimeout(()=>{
       splash.classList.add('fade-out');
-      // 顯示首頁
       document.getElementById('page-home').classList.add('active');
       setTimeout(()=>{ splash.style.display='none'; }, 650);
     }, 300);
@@ -1691,6 +1926,7 @@ function startSession(){
     );
   }
   document.getElementById('session-pill').textContent=`⏰ ${sessionTime.toLocaleTimeString('zh-TW')}`;
+  refreshScheduleDisplays();
   goTo('page-menu');
 }
 
@@ -2662,9 +2898,12 @@ function doLogin(){
 function switchAdminTab(tab){
   document.getElementById('adm-panel-health').style.display = tab==='health' ? 'block' : 'none';
   document.getElementById('adm-panel-gps').style.display    = tab==='gps'    ? 'block' : 'none';
+  document.getElementById('adm-panel-sch').style.display    = tab==='sch'    ? 'block' : 'none';
   document.getElementById('tab-health').classList.toggle('active', tab==='health');
   document.getElementById('tab-gps').classList.toggle('active',    tab==='gps');
+  document.getElementById('tab-sch').classList.toggle('active',    tab==='sch');
   if(tab==='gps') renderGPS();
+  if(tab==='sch') renderSchList();
 }
 
 // ══ GPS LOG ══
@@ -2851,6 +3090,404 @@ function exportGPS(){
   a.click(); showToast('📤 GPS 記錄匯出成功！');
 }
 
+
+// ══ DAILY REPORT ══
+function openDailyReport(){
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  document.getElementById('report-date').textContent = dateStr;
+  renderDailyReport();
+  goTo('page-report');
+}
+
+function renderDailyReport(){
+  const body = document.getElementById('report-body');
+  const recs = getRecords();
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(),now.getMonth(),now.getDate(),0,0,0).getTime();
+  const todayEnd   = new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).getTime();
+  const today = recs.filter(r=>{ const t=new Date(r.time).getTime(); return t>=todayStart&&t<=todayEnd; });
+
+  // 取各項目最新一筆
+  const latest = {};
+  today.forEach(r=>{ if(!latest[r.type]) latest[r.type]=r; });
+
+  const sections = [];
+
+  // ── SECTION 1: 今日數值摘要 ──
+  const valRows = [];
+  const TYPES = [
+    {key:'bp',     id:'Tekanan Darah',     zh:'血壓'},
+    {key:'spo2',   id:'Saturasi Oksigen',  zh:'血氧'},
+    {key:'temp',   id:'Suhu Tubuh',        zh:'體溫'},
+    {key:'water',  id:'Asupan Air',        zh:'飲水量'},
+    {key:'urine',  id:'Volume Urin',       zh:'排尿量'},
+    {key:'bowel',  id:'Observasi BAB',     zh:'排便'},
+    {key:'face',   id:'Warna Wajah',       zh:'臉色'},
+    {key:'daily',  id:'Kondisi Harian',    zh:'每日狀況'},
+  ];
+
+  TYPES.forEach(({key,id,zh})=>{
+    const r = latest[key];
+    if(!r){ valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-missing">Belum dicatat / 尚未記錄</div></div>`); return; }
+    const v = r.values||{};
+    let display='', badge='', badgeClass='ok';
+    if(key==='bp'){
+      const sys=parseInt(v.sys||0),dia=parseInt(v.dia||0);
+      display=`${sys}/${dia}`;
+      const unit='mmHg';
+      if(sys>=180||dia>=120){badgeClass='danger';badge='Darurat / 緊急';}
+      else if(sys>=140||dia>=90){badgeClass='warn';badge='Tinggi / 偏高';}
+      else if(sys<90||dia<60){badgeClass='warn';badge='Rendah / 偏低';}
+      else badge='Normal / 正常';
+      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${display}</span><span class="rpt-unit">${unit}</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
+    } else if(key==='spo2'){
+      const s=parseInt(v.spo2||0);
+      if(s<90){badgeClass='danger';badge='Darurat / 緊急';}
+      else if(s<95){badgeClass='warn';badge='Rendah / 偏低';}
+      else badge='Normal / 正常';
+      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${s}</span><span class="rpt-unit">%</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
+    } else if(key==='temp'){
+      const t=parseFloat(v.temp||0);
+      if(t>=38.5){badgeClass='danger';badge='Demam / 發燒';}
+      else if(t>=37.5){badgeClass='warn';badge='Sedikit demam / 微燒';}
+      else if(t<35.5){badgeClass='danger';badge='Hipotermia / 低溫';}
+      else badge='Normal / 正常';
+      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${t}</span><span class="rpt-unit">°C</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
+    } else if(key==='water'){
+      const w=parseInt(v.water||0);
+      if(w<800){badgeClass='warn';badge='Kurang / 不足';}
+      else if(w>=1500) badge='Cukup / 足夠';
+      else badge='OK';
+      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${w}</span><span class="rpt-unit">ml</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
+    } else if(key==='urine'){
+      const u=parseInt(v.urine||0);
+      if(u<300){badgeClass='danger';badge='Sangat sedikit / 極少';}
+      else if(u<600){badgeClass='warn';badge='Kurang / 不足';}
+      else badge='Normal / 正常';
+      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${u}</span><span class="rpt-unit">ml</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
+    } else {
+      // choice types: bowel, face, daily — show summary text
+      let summary='', summaryZh='';
+      if(key==='bowel'){
+        summary = v.bowel_yn==='yes'?'Ada BAB':'Tidak BAB';
+        summaryZh = v.bowel_yn==='yes'?'有排便':'未排便';
+        if(v.bowel_yn==='yes'&&Array.isArray(v.bowel_color)){
+          const danger=['black','red','white'];
+          if(v.bowel_color.some(c=>danger.includes(c))) badgeClass='danger';
+        }
+      } else if(key==='face'){
+        const FC={normal:'Normal',pale:'Pucat',yellow:'Kuning',flush:'Merah',dark:'Gelap',blue:'Kebiruan'};
+        const FCZ={normal:'正常',pale:'蒼白',yellow:'偏黃',flush:'潮紅',dark:'暗沉',blue:'發紺'};
+        summary=FC[v.face_color]||'—'; summaryZh=FCZ[v.face_color]||'—';
+        if(v.face_color==='blue'||v.face_eye==='yellow') badgeClass='danger';
+        else if(v.face_color==='pale'||v.face_eye==='red') badgeClass='warn';
+      } else if(key==='daily'){
+        const EG={good:'Baik',ok:'Biasa',weak:'Lemah',vweak:'Sangat lemah'};
+        const EGZ={good:'有力氣',ok:'普通',weak:'沒力',vweak:'很虛弱'};
+        summary=EG[v.energy]||'—'; summaryZh=EGZ[v.energy]||'—';
+        if(v.energy==='vweak'||v.phlegm==='blood') badgeClass='danger';
+        else if(v.energy==='weak'||v.cough==='severe') badgeClass='warn';
+      }
+      const badgeText = badgeClass==='danger'?'Perhatian / 注意':badgeClass==='warn'?'Pantau / 觀察':'OK';
+      valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right" style="flex-direction:column;align-items:flex-end;gap:2px"><span style="font-size:var(--fs-sm);font-weight:700;color:var(--ink)">${summary}</span><span style="font-size:0.65rem;color:var(--ink-xlt)">${summaryZh}</span><span class="rpt-badge ${badgeClass}">${badgeText}</span></div></div>`);
+    }
+  });
+
+  sections.push(`<div class="report-section">
+    <div class="report-section-title">📊 Ringkasan Hari Ini <span style="font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400">今日數值摘要</span></div>
+    ${valRows.join('')}
+  </div>`);
+
+  // ── SECTION 2: 異常警示 ──
+  const alerts = [];
+  if(latest.bp){const s=parseInt(latest.bp.values?.sys||0),d=parseInt(latest.bp.values?.dia||0);
+    if(s>=180||d>=120) alerts.push({level:'danger',id:'Tekanan darah sangat tinggi! Hubungi dokter sekarang.',zh:'血壓極高！請立即聯絡醫師，可能有再次中風風險。'});
+    else if(s>=140||d>=90) alerts.push({level:'warn',id:'Tekanan darah tinggi, pantau lebih sering.',zh:'血壓偏高，今日請多量一次，注意爸爸的表情反應。'});
+    else if(s<90||d<60) alerts.push({level:'warn',id:'Tekanan darah rendah, hati-hati saat mengubah posisi.',zh:'血壓偏低，移位或翻身時請特別小心，避免頭暈跌倒。'});}
+  if(latest.spo2){const s=parseInt(latest.spo2.values?.spo2||0);
+    if(s<90) alerts.push({level:'danger',id:'SpO₂ sangat rendah! Periksa saluran napas segera.',zh:'血氧極低！請立即檢查呼吸道是否有阻塞或痰液。'});
+    else if(s<95) alerts.push({level:'warn',id:'SpO₂ rendah, pantau pernapasan Bapak.',zh:'血氧偏低，觀察爸爸呼吸是否費力，注意有無痰聲。'});}
+  if(latest.temp){const t=parseFloat(latest.temp.values?.temp||0);
+    if(t>=38.5) alerts.push({level:'danger',id:'Demam tinggi! Waspadai infeksi (paru, ISK, luka).',zh:'高燒！注意感染來源：肺炎、泌尿道感染、褥瘡感染，立即通知家屬。'});
+    else if(t>=37.5) alerts.push({level:'warn',id:'Demam ringan, ukur ulang 1 jam lagi.',zh:'輕微發燒，1小時後再量一次，觀察是否繼續上升。'});}
+  if(latest.water){const w=parseInt(latest.water.values?.water||0);
+    if(w<800) alerts.push({level:'warn',id:'Asupan air kurang. Tambah cairan via NGT.',zh:'飲水量不足，請透過鼻胃管補充水分，目標至少1500ml。'});}
+  if(latest.urine){const u=parseInt(latest.urine.values?.urine||0);
+    if(u<300) alerts.push({level:'danger',id:'Volume urin sangat sedikit! Periksa retensi urin.',zh:'排尿量極少，可能尿液滯留，請觸摸腹部是否脹硬，通知家屬。'});}
+  if(latest.bowel&&latest.bowel.values?.bowel_yn==='yes'){
+    const c=latest.bowel.values?.bowel_color||[];
+    const colors=Array.isArray(c)?c:[c];
+    if(colors.includes('black')||colors.includes('red')) alerts.push({level:'danger',id:'Warna tinja berbahaya! Laporkan ke dokter.',zh:'糞便顏色異常（黑色或紅色），可能有出血，請拍照並立即回報醫師。'});}
+  if(latest.face&&latest.face.values?.face_color==='blue') alerts.push({level:'danger',id:'Wajah kebiruan! Cek SpO₂ segera.',zh:'臉色發紺！立即測量血氧，可能缺氧。'});
+  if(latest.daily){const ph=latest.daily.values?.phlegm;
+    if(ph==='blood') alerts.push({level:'danger',id:'Ada dahak berdarah! Hubungi dokter.',zh:'痰液帶血！緊急通知醫師，爸爸有肺部病史需謹慎。'});
+    else if(ph==='green'||ph==='yellow') alerts.push({level:'warn',id:'Dahak berwarna, kemungkinan infeksi.',zh:'痰液有顏色，可能有感染，今日需加強觀察並量體溫。'});}
+
+  const alertsHtml = alerts.length===0
+    ? `<div class="rpt-all-ok"><div class="rpt-all-ok-icon">✅</div><div class="rpt-all-ok-id">Semua kondisi normal hari ini!</div><div class="rpt-all-ok-zh">今日所有數值均在正常範圍，很棒！</div></div>`
+    : alerts.map(a=>`<div class="rpt-alert-item ${a.level}">
+        <div class="rpt-alert-id">${a.level==='danger'?'🚨':'⚠️'} ${a.id}</div>
+        <div class="rpt-alert-zh">${a.zh}</div>
+      </div>`).join('');
+
+  sections.push(`<div class="report-section">
+    <div class="report-section-title">⚠️ Peringatan Hari Ini <span style="font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400">今日異常警示</span></div>
+    ${alertsHtml}
+  </div>`);
+
+  // ── SECTION 3: 照護建議 ──
+  const tips = [];
+  // 依據今日數值產生建議
+  if(!latest.bp)   tips.push({id:'Jangan lupa ukur tekanan darah Bapak.',zh:'今日尚未量血壓，記得補測。',dot:'#f2a0b8'});
+  if(!latest.spo2) tips.push({id:'Ukur SpO₂ Bapak minimal sekali sehari.',zh:'今日尚未測血氧，請盡快補測，爸爸有肺部病史需每日監測。',dot:'#7aaed0'});
+  const water = parseInt(latest.water?.values?.water||0);
+  const target = 1500;
+  if(water>0&&water<target) tips.push({id:`Tambah ${target-water} ml cairan lagi via NGT hari ini.`,zh:`今日還需補充約 ${target-water} ml 水分才達標，請分次由鼻胃管灌入。`,dot:'#a8d4c8'});
+  if(latest.daily?.values?.walk==='no') tips.push({id:'Bapak belum jalan-jalan hari ini. Jika memungkinkan, dorong kursi roda keluar.',zh:'今日未外出散步，如天氣允許可推輪椅出去透氣，對血液循環和情緒都有幫助。',dot:'#f0c098'});
+  tips.push({id:'Jangan lupa cek posisi tubuh Bapak setiap 2 jam untuk mencegah luka baring.',zh:'每2小時記得協助翻身換位，預防褥瘡。爸爸曾有嚴重褥瘡，需持續注意。',dot:'#c0a8d8'});
+  if(latest.temp){const t=parseFloat(latest.temp.values?.temp||0);
+    if(t>=36.0&&t<=37.4) tips.push({id:'Suhu tubuh normal. Tetap jaga kehangatan Bapak.',zh:'體溫正常。繼續保持室內溫度適當，避免著涼。',dot:'#f4c08a'});}
+  tips.push({id:'Pastikan NGT terpasang dengan benar sebelum setiap pemberian makan.',zh:'每次灌食前確認鼻胃管位置正確，注意有無嗆咳或嘔吐反應。',dot:'#a8d4c8'});
+
+  sections.push(`<div class="report-section">
+    <div class="report-section-title">🤲 Saran Perawatan <span style="font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400">今日照護建議</span></div>
+    ${tips.map(t=>`<div class="rpt-schedule-item">
+      <div class="rpt-schedule-dot" style="background:${t.dot}"></div>
+      <div class="rpt-schedule-content">
+        <div class="rpt-schedule-id">${t.id}</div>
+        <div class="rpt-schedule-zh">${t.zh}</div>
+      </div>
+    </div>`).join('')}
+  </div>`);
+
+  // ── SECTION 4: 明日行程 ──
+  const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowStr = tomorrow.toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'});
+  const DOW_ZH = ['日','一','二','三','四','五','六'];
+  const tmrSchs = getSchedulesForDate(tomorrow);
+  const schedItems = [];
+
+  if(tmrSchs.length){
+    tmrSchs.forEach(s=>{
+      schedItems.push({
+        id: s.nameId + (s.time ? ` — ${s.time}` : ''),
+        zh: (s.nameZh||'') + `（${tomorrowStr} 週${DOW_ZH[tomorrow.getDay()]}）`,
+        dot: s.color||'#c0a8d8', urgent:true
+      });
+    });
+  } else {
+    schedItems.push({id:'Tidak ada jadwal khusus besok.',zh:`明天（${tomorrowStr} 週${DOW_ZH[tomorrow.getDay()]}）沒有特別行程，可讓爸爸好好休息。`,dot:'#a8d4c8',urgent:false});
+  }
+  schedItems.push({id:'Lanjutkan pemantauan rutin: tekanan darah, SpO₂, suhu.',zh:'繼續例行測量血壓、血氧、體溫，保持每日記錄習慣。',dot:'#f2a0b8',urgent:false});
+  schedItems.push({id:'Persiapkan cairan dan nutrisi NGT sesuai jadwal.',zh:'準備好明日的鼻胃管灌食材料，確認泥狀食物份量。',dot:'#a8d4c8',urgent:false});
+
+  sections.push(`<div class="report-section">
+    <div class="report-section-title">📅 Besok <span style="font-size:var(--fs-xs);color:var(--ink-xlt);font-weight:400">明日注意事項</span></div>
+    ${schedItems.map(s=>`<div class="rpt-schedule-item">
+      <div class="rpt-schedule-dot" style="background:${s.dot}${s.urgent?';width:12px;height:12px':''};"></div>
+      <div class="rpt-schedule-content">
+        <div class="rpt-schedule-id" style="${s.urgent?'color:var(--blue-dk)':''}">${s.id}</div>
+        <div class="rpt-schedule-zh">${s.zh}</div>
+      </div>
+    </div>`).join('')}
+  </div>`);
+
+  body.innerHTML = sections.join('');
+}
+
+
+// ══ SCHEDULE SYSTEM ══
+let schType = 'weekly';
+let schColor = '#c0a8d8';
+
+function getSchedules(){
+  try{ return JSON.parse(localStorage.getItem('schedules')||'[]'); }catch{ return []; }
+}
+function saveSchedules(s){
+  localStorage.setItem('schedules', JSON.stringify(s));
+}
+
+function selectSchType(t){
+  schType = t;
+  document.getElementById('sch-type-weekly').classList.toggle('sel', t==='weekly');
+  document.getElementById('sch-type-once').classList.toggle('sel', t==='once');
+  document.getElementById('sch-weekly-panel').style.display = t==='weekly' ? 'block' : 'none';
+  document.getElementById('sch-once-panel').style.display  = t==='once'   ? 'block' : 'none';
+}
+
+function toggleDow(el){
+  el.classList.toggle('sel');
+}
+
+function selectSchColor(el){
+  document.querySelectorAll('.sch-color-btn').forEach(b=>{
+    b.style.boxShadow='none';
+  });
+  el.style.boxShadow = `0 0 0 2.5px ${el.dataset.color}`;
+  schColor = el.dataset.color;
+}
+
+function addSchedule(){
+  const nameId = document.getElementById('sch-name-id').value.trim();
+  const nameZh = document.getElementById('sch-name-zh').value.trim();
+  const time   = document.getElementById('sch-time').value;
+  if(!nameId){ showToast('請填寫行程名稱'); return; }
+
+  const sch = { id: Date.now(), nameId, nameZh, type: schType, color: schColor, time };
+
+  if(schType==='weekly'){
+    const dows = [...document.querySelectorAll('.sch-dow-btn.sel')].map(b=>parseInt(b.dataset.dow));
+    if(!dows.length){ showToast('請選擇週幾'); return; }
+    sch.dows = dows;
+  } else {
+    const date = document.getElementById('sch-date').value;
+    if(!date){ showToast('請選擇日期'); return; }
+    sch.date = date;
+  }
+
+  const list = getSchedules();
+  list.push(sch);
+  saveSchedules(list);
+
+  // 清空表單
+  document.getElementById('sch-name-id').value='';
+  document.getElementById('sch-name-zh').value='';
+  document.getElementById('sch-time').value='';
+  document.getElementById('sch-date').value='';
+  document.querySelectorAll('.sch-dow-btn').forEach(b=>b.classList.remove('sel'));
+
+  renderSchList();
+  refreshScheduleDisplays();
+  showToast('✅ 行程已新增！');
+}
+
+function deleteSchedule(id){
+  const list = getSchedules().filter(s=>s.id!==id);
+  saveSchedules(list);
+  renderSchList();
+  refreshScheduleDisplays();
+  showToast('🗑 行程已刪除');
+}
+
+function renderSchList(){
+  const list = getSchedules();
+  const el = document.getElementById('sch-list');
+  if(!el) return;
+  if(!list.length){
+    el.innerHTML='<div class="sch-mgr-empty">📭 尚無行程記錄</div>';
+    return;
+  }
+  const DOW = ['日','一','二','三','四','五','六'];
+  el.innerHTML = list.map(s=>{
+    let meta = '';
+    if(s.type==='weekly'){
+      meta = `每週 ${(s.dows||[]).map(d=>'週'+DOW[d]).join('、')}`;
+    } else {
+      meta = `${s.date}`;
+    }
+    if(s.time) meta += ` ${s.time}`;
+    return `<div class="sch-mgr-item">
+      <div class="sch-mgr-item-left">
+        <div class="sch-mgr-item-id" style="color:${s.color||'var(--ink)'}">${s.nameId}</div>
+        ${s.nameZh?`<div class="sch-mgr-item-zh">${s.nameZh}</div>`:''}
+        <div class="sch-mgr-item-meta">${meta}</div>
+      </div>
+      <button class="sch-mgr-del" onclick="deleteSchedule(${s.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// 取得某天的行程
+function getSchedulesForDate(date){
+  const list = getSchedules();
+  const dow = date.getDay();
+  const dateStr = date.toISOString().slice(0,10);
+  return list.filter(s=>{
+    if(s.type==='weekly') return (s.dows||[]).includes(dow);
+    if(s.type==='once')   return s.date===dateStr;
+    return false;
+  });
+}
+
+// 重新整理所有行程顯示
+function refreshScheduleDisplays(){
+  const today = new Date();
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+
+  const todaySchs = getSchedulesForDate(today);
+  const tmrSchs   = getSchedulesForDate(tomorrow);
+
+  // 首頁卡片 — 今日行程
+  const homeCard = document.getElementById('home-schedule-card');
+  const homeList = document.getElementById('home-schedule-list');
+  if(homeCard && homeList){
+    if(todaySchs.length){
+      homeCard.style.display = 'block';
+      homeList.innerHTML = todaySchs.map(s=>`
+        <div class="sch-item">
+          <div class="sch-dot" style="background:${s.color||'#c0a8d8'}"></div>
+          <div class="sch-text">
+            <div class="sch-id">${s.nameId}</div>
+            ${s.nameZh?`<div class="sch-zh">${s.nameZh}</div>`:''}
+          </div>
+          ${s.time?`<div class="sch-time">${s.time}</div>`:''}
+        </div>`).join('');
+    } else {
+      homeCard.style.display = 'none';
+    }
+  }
+
+  // 選單頁條狀 — 今日行程，可點擊展開
+  const strip = document.getElementById('menu-schedule-strip');
+  const stripId = document.getElementById('menu-schedule-text');
+  const stripZh = document.getElementById('menu-schedule-zh');
+  if(strip && stripId){
+    if(todaySchs.length){
+      strip.style.display = 'flex';
+      const first = todaySchs[0];
+      // 顯示格式：第一筆名稱 + 若有更多則顯示數量
+      stripId.textContent = todaySchs.length > 1
+        ? `${first.nameId}  +${todaySchs.length-1} lagi`
+        : first.nameId;
+      stripZh.textContent = todaySchs.length > 1
+        ? `今日共 ${todaySchs.length} 個行程，點擊查看`
+        : (first.nameZh || '點擊查看詳情');
+      strip.querySelector('.mss-icon').style.color = first.color||'#8a60b8';
+
+      // 點擊展開/收合今日行程清單
+      strip.onclick = () => {
+        const detail = document.getElementById('menu-schedule-detail');
+        if(detail.style.display === 'none'){
+          detail.style.display = 'block';
+          strip.querySelector('.mss-arrow').textContent = '▲';
+        } else {
+          detail.style.display = 'none';
+          strip.querySelector('.mss-arrow').textContent = '▼';
+        }
+      };
+      strip.style.cursor = 'pointer';
+
+      // 更新展開區內容
+      const detail = document.getElementById('menu-schedule-detail');
+      detail.innerHTML = todaySchs.map(s=>`
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px dashed rgba(192,168,216,0.3)">
+          <div style="width:8px;height:8px;border-radius:50%;background:${s.color||'#c0a8d8'};flex-shrink:0;margin-top:5px"></div>
+          <div style="flex:1">
+            <div style="font-size:var(--fs-sm);font-weight:700;color:var(--ink)">${s.nameId}</div>
+            ${s.nameZh?`<div style="font-size:var(--fs-xs);color:var(--ink-xlt)">${s.nameZh}</div>`:''}
+            ${s.note?`<div style="font-size:var(--fs-xs);color:var(--ink-lt);margin-top:2px">📝 ${s.note}</div>`:''}
+          </div>
+          ${s.time?`<div style="font-family:'DM Mono',monospace;font-size:var(--fs-xs);color:#8a60b8;flex-shrink:0">${s.time}</div>`:''}
+        </div>`).join('');
+    } else {
+      strip.style.display = 'none';
+      strip.onclick = null;
+    }
+  }
+}
+
+// switchAdminTab 要加 sch 支援
 function doLogout(){
   document.getElementById('adm-login').style.display='block';
   document.getElementById('adm-main').style.display='none';

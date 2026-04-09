@@ -424,9 +424,19 @@ body::after{
 .ok-box-scroll::-webkit-scrollbar{display:none}
 .ok-box-foot{padding:var(--sp-sm) clamp(16px,4vw,24px) max(clamp(14px,3vw,20px), env(safe-area-inset-bottom,14px));
   border-top:1.5px solid var(--pink-lt);flex-shrink:0;background:var(--wh)}
-.btn-ok-back-hidden{opacity:0;transform:translateY(20px);pointer-events:none;
-  transition:opacity .35s, transform .35s cubic-bezier(.175,.885,.32,1.275)}
-.btn-ok-back-visible{opacity:1;transform:translateY(0);pointer-events:all}
+/* 按鈕滾動解鎖狀態 */
+.btn-ok-back-hidden{
+  opacity:.38;pointer-events:none;
+  transition:opacity .35s,background .35s,box-shadow .35s}
+.btn-ok-back-hidden.btn-ok-back{
+  background:linear-gradient(160deg,#e0d0d8 0%,#c8b8c0 100%);
+  box-shadow:none;cursor:not-allowed}
+.btn-ok-back-visible{opacity:1;pointer-events:all;
+  transition:opacity .35s,background .35s,box-shadow .35s}
+/* 滾動提示文字 */
+.scroll-hint{font-size:var(--fs-xs);color:var(--ink-xlt);text-align:center;
+  margin-bottom:6px;font-weight:600;transition:opacity .3s}
+.scroll-hint.hidden{opacity:0;pointer-events:none}
 .ok-icon{font-size:clamp(2.4rem,8vw,3.2rem);display:block;margin-bottom:var(--sp-sm)}
 .ok-tid{font-family:'Nunito',sans-serif;font-size:var(--fs-xl);font-weight:900;
   color:var(--blue-dk);margin-bottom:2px;line-height:1.3}
@@ -451,6 +461,7 @@ body::after{
    PAGE 4 — ADMIN
 ══════════════════════════════════════ */
 #page-admin{background:var(--paper)}
+#page-report{background:var(--paper);display:flex;flex-direction:column}
 .al-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:var(--sp-md)}
 .al-icon{font-size:clamp(2rem,7vw,2.8rem);text-align:center;margin-bottom:var(--sp-xs)}
 .al-title{font-family:'Nunito',sans-serif;font-size:var(--fs-xl);font-weight:900;
@@ -644,7 +655,8 @@ body::after{
 .btn-daily-report:active{transform:scale(0.97)}
 
 /* Daily report page */
-.report-body{flex:1;overflow-y:auto;padding:var(--sp-md) var(--sp-md) max(var(--sp-md),env(safe-area-inset-bottom,16px));
+.report-body{flex:1;overflow-y:auto;
+  padding:var(--sp-md) var(--sp-md) max(var(--sp-md),env(safe-area-inset-bottom,16px));
   display:flex;flex-direction:column;gap:var(--sp-sm);-webkit-overflow-scrolling:touch}
 .report-body::-webkit-scrollbar{display:none}
 .report-section{background:var(--wh);border-radius:var(--r-md);
@@ -888,6 +900,21 @@ body::after{
       <div id="home-schedule-list"></div>
     </div>
 
+    <div id="home-report-link" style="display:none">
+      <div onclick="openDailyReport()" style="background:rgba(255,255,255,0.78);backdrop-filter:blur(8px);
+        border:1.5px solid rgba(192,168,216,0.5);border-radius:var(--r-lg);
+        padding:var(--sp-sm) var(--sp-md);cursor:pointer;
+        display:flex;align-items:center;gap:10px;
+        box-shadow:0 4px 16px rgba(192,168,216,0.15)">
+        <span style="font-size:1.5rem">📋</span>
+        <div style="flex:1">
+          <div style="font-family:'Nunito',sans-serif;font-size:var(--fs-sm);font-weight:800;color:var(--lav-dk)">Lihat Laporan Harian</div>
+          <div style="font-size:var(--fs-xs);color:var(--ink-xlt);margin-top:1px">查看今日照護日報</div>
+        </div>
+        <span style="font-size:var(--fs-xs);color:var(--lav-dk)">›</span>
+      </div>
+    </div>
+
     <div class="quote-card">
       <div class="quote-tag">🌙 Hikmah Islam · 今日箴言</div>
       <div class="quote-id" id="q-id"></div>
@@ -982,13 +1009,9 @@ body::after{
         <div class="mc-zh">每日狀況</div>
       </div>
     </div>
-    <button class="btn-end" onclick="endSession()">
+    <button class="btn-end" onclick="endAndShowReport()">
       <span class="e-id">✅ Selesai Pengukuran</span>
-      <span class="e-zh">結束測量，回首頁</span>
-    </button>
-    <button class="btn-daily-report" onclick="openDailyReport()">
-      <span class="e-id">📋 Laporan Harian</span>
-      <span class="e-zh">今日照護日報</span>
+      <span class="e-zh">結束測量</span>
     </button>
   </div>
 </div>
@@ -996,7 +1019,7 @@ body::after{
 <!-- ══ PAGE 5: DAILY REPORT ══ -->
 <div class="page" id="page-report">
   <div class="input-hdr">
-    <button class="back-btn" onclick="goBack()">← Kembali / 返回</button>
+    <button class="back-btn" id="report-back-btn" onclick="goBack()">← Kembali / 返回</button>
     <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px">
       <div class="ih-id">📋 Laporan Harian</div>
     </div>
@@ -1005,6 +1028,15 @@ body::after{
   </div>
   <div class="report-body" id="report-body">
     <div style="text-align:center;padding:40px 20px;color:var(--ink-xlt)">⏳ Memuat…</div>
+  </div>
+  <!-- 底部按鈕：從結束測量進入時顯示 -->
+  <div id="report-footer" style="display:none;padding:var(--sp-xs) var(--sp-lg) max(clamp(10px,2vh,16px),env(safe-area-inset-bottom,10px));
+    flex-shrink:0;background:linear-gradient(to top,rgba(250,245,243,0.97) 70%,transparent 100%);z-index:2">
+    <div class="scroll-hint" id="report-scroll-hint">👆 Geser ke bawah untuk lanjut · 請滑到底部才能確認</div>
+    <button class="btn-end" onclick="finishToHome()" style="background:linear-gradient(160deg,#f9c0d4 0%,#f07098 45%,#d9507a 100%)">
+      <span class="e-id">🏠 Selesai · Kembali ke Beranda</span>
+      <span class="e-zh">完成，回首頁</span>
+    </button>
   </div>
 </div>
 
@@ -1235,6 +1267,7 @@ body::after{
       <div class="ok-thx-zh" id="ok-thx-zh"></div>
     </div>
     <div class="ok-box-foot">
+      <div class="scroll-hint" id="ok-scroll-hint">👆 Geser ke bawah untuk lanjut · 請滑到底部才能確認</div>
       <button class="btn-ok-back" onclick="dismissOkAndGoBack()">✔ OK · 返回</button>
     </div>
   </div>
@@ -1554,7 +1587,8 @@ const CFGS = {
               {v:'green',i:'🟢',id:'Hijau',zh:'綠色⚠'},{v:'blood',i:'🔴',id:'Berdarah',zh:'帶血⚠'}]},
       {key:'energy',lbl_id:'Tenaga hari ini?',lbl_zh:'身體有沒有力氣？',cols:3,
         opts:[{v:'good',i:'💪',id:'Baik',zh:'有力氣'},{v:'ok',i:'🙂',id:'Biasa',zh:'普通'},
-              {v:'weak',i:'😞',id:'Lemah',zh:'沒力氣'},{v:'vweak',i:'🥺',id:'Sangat Lemah',zh:'非常虛弱⚠'}]},
+              {v:'weak',i:'😞',id:'Lemah',zh:'沒力氣'},{v:'sleepy',i:'😴',id:'Mengantuk',zh:'嗜睡'},
+              {v:'vweak',i:'🥺',id:'Sangat Lemah',zh:'非常虛弱⚠'}]},
     ],
     hints:[
       {type:'warn',title_id:'⚠️ Perhatikan / 注意',rows:[
@@ -1895,7 +1929,7 @@ function playEndSound(){
 
 // ══ PAGE STACK NAVIGATION ══
 // 純 stack 管理，完全不碰 History API，零雙跳風險
-const pageStack = ['page-home'];
+let pageStack = ['page-home'];
 
 function _doSwitch(fromId, toId, isBack){
   const p=document.getElementById(fromId), n=document.getElementById(toId);
@@ -1944,6 +1978,15 @@ function goBack(){
   const sb=document.getElementById('save-btn');
   if(sb){sb.disabled=false;sb.style.opacity='1';
     sb.innerHTML='<span class="btn-save-id">Simpan Catatan ✓</span><span class="btn-save-zh">儲存此項記錄</span>';}
+
+  // 日報頁：向右滑出，回到前一頁
+  if(curPage==='page-report'){
+    if(pageStack.length>1) pageStack.pop();
+    const prevPage = pageStack[pageStack.length-1];
+    _hideReport(prevPage);
+    return;
+  }
+
   if(pageStack.length>1) pageStack.pop();
   _doSwitch(curPage, pageStack[pageStack.length-1], true);
 }
@@ -2511,6 +2554,13 @@ function getRollerStatus(type, vals){
         {id:'Ukur tekanan darah, suhu, dan SpO₂ segera',zh:'立即測量血壓、體溫和血氧'},
         {id:'Hubungi keluarga dan laporkan kondisi',zh:'通知家屬並回報狀況'},
       ]};
+    if(energy==='sleepy') return {icon:'⚠️',bg:'#f0e8ff',color:'#7a50b8',
+      id:'Bapak tampak mengantuk hari ini',zh:'爸爸今天嗜睡',
+      extra:[
+        {id:'Kantuk berlebihan pada pasien stroke bisa tanda masalah serius',zh:'腦中風患者過度嗜睡可能是嚴重問題的信號'},
+        {id:'Perhatikan apakah sulit dibangunkan atau tidak responsif',zh:'觀察是否難以叫醒或對刺激無反應'},
+        {id:'Ukur tekanan darah dan SpO₂, laporkan ke keluarga',zh:'量血壓和血氧，回報給家屬'},
+      ]};
     if(cough==='often'||energy==='weak') return {icon:'⚠️',bg:'#fff3e0',color:'#d35400',
       id:'Ada kondisi yang perlu diperhatikan',zh:'今日有需要留意的狀況',
       extra:[
@@ -2812,7 +2862,7 @@ function saveInput(){
       walk:{yes:'Sudah jalan / 有去散步',no:'Belum jalan / 沒有散步'},
       cough:{none:'Tidak batuk / 沒有咳嗽',mild:'Sedikit / 輕微咳嗽',often:'Sering / 頻繁咳嗽',severe:'Parah / 嚴重咳嗽'},
       phlegm:{none:'Tidak ada / 沒有痰',clear:'Bening / 透明痰',white:'Putih / 白色痰',yellow:'Kuning / 黃色痰',green:'Hijau / 綠色痰',blood:'Berdarah / 帶血痰'},
-      energy:{good:'Baik / 有力氣',ok:'Biasa / 普通',weak:'Lemah / 沒力氣',vweak:'Sangat lemah / 非常虛弱'},
+      energy:{good:'Baik / 有力氣',ok:'Biasa / 普通',weak:'Lemah / 沒力氣',sleepy:'Mengantuk / 嗜睡',vweak:'Sangat lemah / 非常虛弱'},
     };
     cfg.sections.forEach(sec=>{
       const v=vals[sec.key];
@@ -2869,28 +2919,28 @@ function saveInput(){
   }
   const ov=document.getElementById('overlay-ok');ov.classList.add('show');
   playSuccessSound();
-  // 強制捲回最頂端，隱藏 OK 按鈕，滑到底才顯示
+  // 捲回頂端，按鈕先禁用，滑到底才解鎖
   const okBtn=document.querySelector('.btn-ok-back');
   const scroll=document.querySelector('.ok-box-scroll');
+  const hint=document.getElementById('ok-scroll-hint');
   if(scroll) scroll.scrollTop=0;
   if(okBtn){
     okBtn.classList.add('btn-ok-back-hidden');
     okBtn.classList.remove('btn-ok-back-visible');
+    if(hint) hint.classList.remove('hidden');
     if(scroll){
       setTimeout(()=>{
-        const checkBottom=()=>{
-          if(scroll.scrollHeight-scroll.scrollTop-scroll.clientHeight < 40){
-            okBtn.classList.remove('btn-ok-back-hidden');
-            okBtn.classList.add('btn-ok-back-visible');
-            scroll.removeEventListener('scroll',checkBottom);
-          }
-        };
-        if(scroll.scrollHeight<=scroll.clientHeight+10){
+        const unlock=()=>{
           okBtn.classList.remove('btn-ok-back-hidden');
           okBtn.classList.add('btn-ok-back-visible');
-        } else {
-          scroll.addEventListener('scroll',checkBottom,{passive:true});
-        }
+          if(hint) hint.classList.add('hidden');
+          scroll.removeEventListener('scroll',checkScroll);
+        };
+        const checkScroll=()=>{
+          if(scroll.scrollHeight-scroll.scrollTop-scroll.clientHeight < 40) unlock();
+        };
+        if(scroll.scrollHeight<=scroll.clientHeight+10){ unlock(); }
+        else { scroll.addEventListener('scroll',checkScroll,{passive:true}); }
       },150);
     }
   }
@@ -2913,8 +2963,14 @@ function dismissOkAndGoBack(){
   playOkSound();
   document.getElementById('overlay-ok').classList.remove('show');
   document.querySelectorAll('.hint-panel,.hint-bd').forEach(e=>e.remove());
-  if(pageStack.length>1) pageStack.pop();
-  _doSwitch(curPage, pageStack[pageStack.length-1], true);
+  // 彈窗消失後回到選單頁（不觸發頁面滑動動畫）
+  const menuEl = document.getElementById('page-menu');
+  const inputEl = document.getElementById('page-input');
+  if(inputEl){ inputEl.classList.remove('active','out'); inputEl.style.transition=''; inputEl.style.transform=''; }
+  if(menuEl){ menuEl.classList.add('active'); menuEl.style.transition=''; menuEl.style.transform=''; }
+  pageStack = pageStack.filter(p=>p!=='page-input');
+  if(!pageStack.includes('page-menu')) pageStack.push('page-menu');
+  curPage = 'page-menu';
 }
 
 // ══ END SESSION ══
@@ -2924,257 +2980,110 @@ function endSession(){
   goBack();
 }
 
-// ══ ADMIN ══
-function openAdmin(){
-  goTo('page-admin');
-}
-function doLogin(){
-  if(document.getElementById('pwd-input').value===getAdminPwd()){
-    document.getElementById('adm-login').style.display='none';
-    document.getElementById('adm-main').style.display='flex';
-    renderAdmin();
-  }else{showToast('❌ 密碼錯誤');document.getElementById('pwd-input').value='';}
-}
-// ══ ADMIN TAB SWITCH ══
-function switchAdminTab(tab){
-  document.getElementById('adm-panel-health').style.display   = tab==='health'   ? 'block' : 'none';
-  document.getElementById('adm-panel-gps').style.display      = tab==='gps'      ? 'block' : 'none';
-  document.getElementById('adm-panel-sch').style.display      = tab==='sch'      ? 'block' : 'none';
-  document.getElementById('adm-panel-settings').style.display = tab==='settings' ? 'block' : 'none';
-  document.getElementById('tab-health').classList.toggle('active',   tab==='health');
-  document.getElementById('tab-gps').classList.toggle('active',      tab==='gps');
-  document.getElementById('tab-sch').classList.toggle('active',      tab==='sch');
-  document.getElementById('tab-settings').classList.toggle('active', tab==='settings');
-  if(tab==='gps') renderGPS();
-  if(tab==='sch') renderSchList();
-  if(tab==='settings') renderPwdInfo();
+// 結束測量 → 顯示日報 → 回首頁
+let reportFromEnd = false;
+
+
+
+
+
+
+// ══ 日報頁統一切換（完全不動來源頁）══
+function _showReport(){
+  const rp = document.getElementById('page-report');
+  // 1. 先把日報頁移到右邊，不帶動畫
+  rp.style.transition = 'none';
+  rp.style.transform  = 'translateX(100%)';
+  rp.style.zIndex     = '5';
+  rp.classList.add('active');
+  rp.getBoundingClientRect(); // force reflow
+  // 2. 滑入
+  rp.style.transition = 'transform .38s cubic-bezier(.4,0,.2,1)';
+  rp.style.transform  = 'translateX(0)';
 }
 
-function renderPwdInfo(){
-  const isCustom = !!localStorage.getItem('admin_pwd');
-  const el = document.getElementById('pwd-info-text');
-  if(el) el.innerHTML = isCustom
-    ? `✅ 目前使用<strong>自訂密碼</strong><br>上次變更時間：${localStorage.getItem('admin_pwd_time')||'不明'}`
-    : `⚠️ 目前使用<strong>預設密碼（721126）</strong><br>建議盡快變更為自訂密碼`;
-}
-
-function changePassword(){
-  const cur = document.getElementById('pwd-current').value;
-  const nw  = document.getElementById('pwd-new').value;
-  const cfm = document.getElementById('pwd-confirm').value;
-  if(cur !== getAdminPwd()){ showToast('❌ 目前密碼錯誤'); return; }
-  if(nw.length < 4){ showToast('❌ 新密碼至少需要4位'); return; }
-  if(nw !== cfm){ showToast('❌ 兩次輸入的密碼不一致'); return; }
-  if(nw === getAdminPwd()){ showToast('⚠️ 新密碼與目前密碼相同'); return; }
-  localStorage.setItem('admin_pwd', nw);
-  localStorage.setItem('admin_pwd_time', new Date().toLocaleString('zh-TW'));
-  document.getElementById('pwd-current').value='';
-  document.getElementById('pwd-new').value='';
-  document.getElementById('pwd-confirm').value='';
-  renderPwdInfo();
-  showToast('✅ 密碼已成功變更！');
-}
-
-function resetPassword(){
-  if(!confirm('確定要重設為預設密碼 721126 嗎？')) return;
-  localStorage.removeItem('admin_pwd');
-  localStorage.removeItem('admin_pwd_time');
-  renderPwdInfo();
-  showToast('↩️ 已重設為預設密碼');
-}
-
-// ══ GPS LOG ══
-let gpsFilterPeriod = 'today';
-
-function getGPSLogs(){
-  try{ return JSON.parse(localStorage.getItem('gps_logs')||'[]'); }catch{ return []; }
-}
-function saveGPSLogs(logs){
-  localStorage.setItem('gps_logs', JSON.stringify(logs));
-}
-
-// 記錄一筆 GPS raw point（每5分鐘由追蹤器呼叫）
-function logGPSPoint(lat, lng, addr){
-  const logs = getGPSLogs();
-  logs.push({t: Date.now(), lat, lng, addr: addr||''});
-  // 只保留最近 30 天
-  const cutoff = Date.now() - 30*86400000;
-  const trimmed = logs.filter(l=>l.t>cutoff);
-  saveGPSLogs(trimmed);
-  // 同時嘗試計算停留
-  computeStays();
-}
-
-// 停留判斷：位移 < 100m 且持續 >= 10 分鐘才算停留
-function distMeters(la1,lo1,la2,lo2){
-  const R=6371000, p=Math.PI/180;
-  const dLat=(la2-la1)*p, dLon=(lo2-lo1)*p;
-  const a=Math.sin(dLat/2)**2+Math.cos(la1*p)*Math.cos(la2*p)*Math.sin(dLon/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-
-function computeStays(){
-  const raw = getGPSLogs();
-  if(raw.length < 2) return [];
-
-  const stays = [];
-  let segStart = 0;
-
-  for(let i=1; i<=raw.length; i++){
-    const prev = raw[i-1];
-    const curr = raw[i];
-    const moved = curr ? distMeters(
-      parseFloat(prev.lat), parseFloat(prev.lng),
-      parseFloat(curr.lat), parseFloat(curr.lng)
-    ) : Infinity;
-
-    if(moved > 100 || i === raw.length){
-      // 這一段結束
-      const seg = raw.slice(segStart, i);
-      const duration = (seg[seg.length-1].t - seg[0].t) / 60000; // 分鐘
-      if(duration >= 10){
-        // 停留：用最常出現的地址
-        const addrCounts = {};
-        seg.forEach(p=>{ if(p.addr) addrCounts[p.addr]=(addrCounts[p.addr]||0)+1; });
-        const bestAddr = Object.entries(addrCounts).sort((a,b)=>b[1]-a[1])[0]?.[0]
-          || `${seg[0].lat}, ${seg[0].lng}`;
-        stays.push({
-          type:'stay',
-          start: seg[0].t, end: seg[seg.length-1].t,
-          duration: Math.round(duration),
-          addr: bestAddr,
-          lat: seg[0].lat, lng: seg[0].lng
-        });
-      } else if(segStart > 0){
-        // 移動段
-        stays.push({
-          type:'move',
-          start: raw[segStart].t,
-          end: prev.t,
-          duration: Math.round((prev.t - raw[segStart].t)/60000)
-        });
+function _hideReport(toPage){
+  const rp = document.getElementById('page-report');
+  rp.style.transition = 'transform .38s cubic-bezier(.4,0,.2,1)';
+  rp.style.transform  = 'translateX(100%)';
+  setTimeout(()=>{
+    rp.classList.remove('active');
+    rp.style.transition = '';
+    rp.style.transform  = '';
+    rp.style.zIndex     = '';
+  }, 400);
+  if(toPage){
+    // 先把所有頁面清掉，再啟動目標頁
+    document.querySelectorAll('.page').forEach(p=>{
+      if(p.id !== 'page-report'){
+        p.classList.remove('active','out');
+        p.style.transition = '';
+        p.style.transform  = '';
       }
-      segStart = i;
-    }
+    });
+    const tp = document.getElementById(toPage);
+    if(tp) tp.classList.add('active');
+    curPage = toPage;
   }
-  localStorage.setItem('gps_stays', JSON.stringify(stays));
-  return stays;
 }
 
-function setGPSPeriod(p){
-  gpsFilterPeriod = p;
-  document.querySelectorAll('.gps-ftag').forEach(el=>
-    el.classList.toggle('active', el.dataset.gperiod===p));
-  renderGPS();
-}
-
-function formatDur(min){
-  if(min < 60) return `${min} 分鐘`;
-  const h=Math.floor(min/60), m=min%60;
-  return m>0 ? `${h} 小時 ${m} 分` : `${h} 小時`;
-}
-
-function renderGPS(){
-  let stays;
-  try{ stays=JSON.parse(localStorage.getItem('gps_stays')||'[]'); }catch{ stays=[]; }
-  if(!stays.length) stays = computeStays();
-
-  // 篩選
-  const now=Date.now();
-  let filtered = stays;
-  if(gpsFilterPeriod==='today'){
-    const d=new Date(); d.setHours(0,0,0,0);
-    filtered=stays.filter(s=>s.start>=d.getTime());
-  } else if(gpsFilterPeriod==='7'){
-    filtered=stays.filter(s=>s.start>=now-7*86400000);
-  }
-
-  const list=document.getElementById('gps-list');
-  const summary=document.getElementById('gps-summary');
-
-  if(!filtered.length){
-    list.innerHTML='<div class="no-result">📍 尚無 GPS 軌跡記錄</div>';
-    summary.style.display='none';
-    return;
-  }
-
-  // 統計
-  const stayOnly=filtered.filter(s=>s.type==='stay');
-  const totalStay=stayOnly.reduce((s,r)=>s+r.duration,0);
-  summary.style.display='block';
-  summary.innerHTML=`
-    <div style="display:flex;gap:var(--sp-md);flex-wrap:wrap">
-      <div><div style="font-family:'DM Mono',monospace;font-size:var(--fs-lg);font-weight:800;color:var(--mint-dk)">${stayOnly.length}</div><div style="font-size:var(--fs-xs);color:var(--ink-lt);font-weight:600">停留點</div></div>
-      <div><div style="font-family:'DM Mono',monospace;font-size:var(--fs-lg);font-weight:800;color:var(--mint-dk)">${formatDur(totalStay)}</div><div style="font-size:var(--fs-xs);color:var(--ink-lt);font-weight:600">總停留</div></div>
-    </div>`;
-
-  // 渲染
-  list.innerHTML = filtered.map(s=>{
-    const start=new Date(s.start);
-    const end=new Date(s.end||s.start);
-    const ds=start.toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'});
-    const ts=start.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
-    const te=end.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
-
-    if(s.type==='stay') return `
-      <div class="gps-card stay">
-        <div class="gps-type stay-badge">📍 停留</div>
-        <div class="gps-addr">${s.addr||'位置未知'}</div>
-        <div class="gps-time-row">
-          <div class="gps-time">📅 ${ds} &nbsp; ${ts} – ${te}</div>
-          <div class="gps-dur">${formatDur(s.duration)}</div>
-        </div>
-        ${s.lat?`<div class="gps-coord">${s.lat}, ${s.lng}</div>`:''}
-      </div>`;
-    return `
-      <div class="gps-card move">
-        <div class="gps-type move-badge">🚗 移動中</div>
-        <div class="gps-time-row">
-          <div class="gps-time">${ts} – ${te}</div>
-          <div class="gps-dur" style="color:var(--ink-lt)">${formatDur(s.duration)}</div>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-function clearGPS(){
-  if(!confirm('確定清除所有 GPS 記錄？')) return;
-  localStorage.removeItem('gps_logs');
-  localStorage.removeItem('gps_stays');
-  renderGPS();
-  showToast('🗑 GPS 記錄已清除');
-}
-
-function exportGPS(){
-  const stays = JSON.parse(localStorage.getItem('gps_stays')||'[]');
-  if(!stays.length){ showToast('沒有 GPS 記錄可匯出'); return; }
-  let csv='類型,日期,開始時間,結束時間,停留分鐘,地址,緯度,經度\n';
-  stays.forEach(s=>{
-    const st=new Date(s.start), en=new Date(s.end||s.start);
-    csv+=[
-      s.type==='stay'?'停留':'移動',
-      st.toLocaleDateString('zh-TW'),
-      st.toLocaleTimeString('zh-TW'),
-      en.toLocaleTimeString('zh-TW'),
-      s.duration||0,
-      '"'+(s.addr||'')+'"',
-      s.lat||'', s.lng||''
-    ].join(',')+'\n';
-  });
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
-  a.download=`GPS記錄_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`;
-  a.click(); showToast('📤 GPS 記錄匯出成功！');
-}
-
-
-// ══ DAILY REPORT ══
 function openDailyReport(){
   const now = new Date();
-  const dateStr = now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
-  document.getElementById('report-date').textContent = dateStr;
+  document.getElementById('report-date').textContent =
+    now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
   renderDailyReport();
-  goTo('page-report');
+  document.getElementById('report-footer').style.display = 'none';
+  document.getElementById('report-back-btn').style.display = '';
+  pageStack.push('page-report');
+  curPage = 'page-report';
+  _showReport();
+}
+
+function endAndShowReport(){
+  playEndSound();
+  ['bp','spo2','water','urine','temp','bowel','face','daily'].forEach(t=>{
+    const el=document.getElementById('card-'+t); if(el) el.classList.remove('done');
+  });
+  const now = new Date();
+  document.getElementById('report-date').textContent =
+    now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+  renderDailyReport();
+  document.getElementById('report-footer').style.display = 'block';
+  document.getElementById('report-back-btn').style.display = 'none';
+  const footerBtn = document.querySelector('#report-footer .btn-end');
+  const hint = document.getElementById('report-scroll-hint');
+  if(footerBtn){ footerBtn.classList.add('btn-ok-back-hidden'); footerBtn.classList.remove('btn-ok-back-visible'); }
+  if(hint) hint.classList.remove('hidden');
+  setTimeout(()=>{
+    const rb = document.getElementById('report-body');
+    if(!rb) return;
+    rb.scrollTop = 0;
+    const unlock = ()=>{
+      if(footerBtn){ footerBtn.classList.remove('btn-ok-back-hidden'); footerBtn.classList.add('btn-ok-back-visible'); }
+      if(hint) hint.classList.add('hidden');
+      rb.removeEventListener('scroll', checkScroll);
+    };
+    const checkScroll = ()=>{ if(rb.scrollHeight-rb.scrollTop-rb.clientHeight < 60) unlock(); };
+    if(rb.scrollHeight <= rb.clientHeight+60){ unlock(); }
+    else { rb.addEventListener('scroll', checkScroll, {passive:true}); }
+  }, 400);
+  pageStack = ['page-home', 'page-report'];
+  curPage = 'page-report';
+  _showReport();
+}
+
+function finishToHome(){
+  // 先把選單頁清掉，確保回到首頁不會顯示選單
+  document.querySelectorAll('.page').forEach(p=>{
+    if(p.id !== 'page-report' && p.id !== 'page-home'){
+      p.classList.remove('active','out');
+      p.style.transition=''; p.style.transform='';
+    }
+  });
+  document.getElementById('page-home').classList.add('active');
+  document.getElementById('home-report-link').style.display = 'block';
+  pageStack = ['page-home'];
+  _hideReport('page-home');
 }
 
 function renderDailyReport(){
@@ -3232,16 +3141,14 @@ function renderDailyReport(){
       else badge='Normal / 正常';
       valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-val-right"><span class="rpt-num">${t}</span><span class="rpt-unit">°C</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
     } else if(key==='water'){
-      // 加總今日所有飲水記錄
-      const totalW = today.filter(r=>r.type==='water').reduce((s,r)=>s+parseInt(r.values?.water||0),0);
+      const totalW = today.filter(rec=>rec.type==='water').reduce((sum,rec)=>sum+parseInt(rec.values?.water||0),0);
       if(totalW===0){ valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-missing">Belum dicatat / 尚未記錄</div></div>`); return; }
       if(totalW<800){badgeClass='warn';badge='Kurang / 不足';}
       else if(totalW>=1500) badge='Cukup / 足夠';
       else badge='OK';
       valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh} <span style="font-size:0.62rem;color:var(--ink-xlt)">（今日加總）</span></div></div><div class="rpt-val-right"><span class="rpt-num">${totalW}</span><span class="rpt-unit">ml</span><span class="rpt-badge ${badgeClass}">${badge}</span></div></div>`);
     } else if(key==='urine'){
-      // 加總今日所有排尿記錄
-      const totalU = today.filter(r=>r.type==='urine').reduce((s,r)=>s+parseInt(r.values?.urine||0),0);
+      const totalU = today.filter(rec=>rec.type==='urine').reduce((sum,rec)=>sum+parseInt(rec.values?.urine||0),0);
       if(totalU===0){ valRows.push(`<div class="rpt-val-row"><div class="rpt-val-left"><div class="rpt-val-id">${id}</div><div class="rpt-val-zh">${zh}</div></div><div class="rpt-missing">Belum dicatat / 尚未記錄</div></div>`); return; }
       if(totalU<300){badgeClass='danger';badge='Sangat sedikit / 極少';}
       else if(totalU<600){badgeClass='warn';badge='Kurang / 不足';}
@@ -3264,7 +3171,7 @@ function renderDailyReport(){
         if(v.face_color==='blue'||v.face_eye==='yellow') badgeClass='danger';
         else if(v.face_color==='pale'||v.face_eye==='red') badgeClass='warn';
       } else if(key==='daily'){
-        const EG={good:'Baik',ok:'Biasa',weak:'Lemah',vweak:'Sangat lemah'};
+        const EG={good:'Baik',ok:'Biasa',weak:'Lemah',sleepy:'Mengantuk',vweak:'Sangat lemah'};
         const EGZ={good:'有力氣',ok:'普通',weak:'沒力',vweak:'很虛弱'};
         summary=EG[v.energy]||'—'; summaryZh=EGZ[v.energy]||'—';
         if(v.energy==='vweak'||v.phlegm==='blood') badgeClass='danger';
@@ -3293,11 +3200,11 @@ function renderDailyReport(){
     if(t>=38.5) alerts.push({level:'danger',id:'Demam tinggi! Waspadai infeksi (paru, ISK, luka).',zh:'高燒！注意感染來源：肺炎、泌尿道感染、褥瘡感染，立即通知家屬。'});
     else if(t>=37.5) alerts.push({level:'warn',id:'Demam ringan, ukur ulang 1 jam lagi.',zh:'輕微發燒，1小時後再量一次，觀察是否繼續上升。'});}
   if(latest.water){
-    const totalW = today.filter(r=>r.type==='water').reduce((s,r)=>s+parseInt(r.values?.water||0),0);
+    const totalW = today.filter(rec=>rec.type==='water').reduce((sum,rec)=>sum+parseInt(rec.values?.water||0),0);
     if(totalW<800) alerts.push({level:'warn',id:'Asupan air kurang. Tambah cairan via NGT.',zh:`飲水量不足（今日累計 ${totalW} ml），請透過鼻胃管補充水分，目標至少1500ml。`});
   }
   if(latest.urine){
-    const totalU = today.filter(r=>r.type==='urine').reduce((s,r)=>s+parseInt(r.values?.urine||0),0);
+    const totalU = today.filter(rec=>rec.type==='urine').reduce((sum,rec)=>sum+parseInt(rec.values?.urine||0),0);
     if(totalU<300) alerts.push({level:'danger',id:'Volume urin sangat sedikit! Periksa retensi urin.',zh:`排尿量極少（今日累計 ${totalU} ml），可能尿液滯留，請觸摸腹部是否脹硬，通知家屬。`});
     else if(totalU<600) alerts.push({level:'warn',id:'Volume urin kurang hari ini.',zh:`今日排尿量偏少（累計 ${totalU} ml），增加水分攝取並持續觀察。`});
   }
@@ -3327,7 +3234,7 @@ function renderDailyReport(){
   // 依據今日數值產生建議
   if(!latest.bp)   tips.push({id:'Jangan lupa ukur tekanan darah Bapak.',zh:'今日尚未量血壓，記得補測。',dot:'#f2a0b8'});
   if(!latest.spo2) tips.push({id:'Ukur SpO₂ Bapak minimal sekali sehari.',zh:'今日尚未測血氧，請盡快補測，爸爸有肺部病史需每日監測。',dot:'#7aaed0'});
-  const waterTotal = today.filter(r=>r.type==='water').reduce((s,r)=>s+parseInt(r.values?.water||0),0);
+  const waterTotal = today.filter(rec=>rec.type==='water').reduce((sum,rec)=>sum+parseInt(rec.values?.water||0),0);
   const target = 1500;
   if(waterTotal>0&&waterTotal<target) tips.push({id:`Tambah ${target-waterTotal} ml cairan lagi via NGT hari ini.`,zh:`今日飲水累計 ${waterTotal} ml，還需補充約 ${target-waterTotal} ml 才達標，請分次由鼻胃管灌入。`,dot:'#a8d4c8'});
   if(latest.daily?.values?.walk==='no') tips.push({id:'Bapak belum jalan-jalan hari ini. Jika memungkinkan, dorong kursi roda keluar.',zh:'今日未外出散步，如天氣允許可推輪椅出去透氣，對血液循環和情緒都有幫助。',dot:'#f0c098'});
@@ -3573,7 +3480,180 @@ function refreshScheduleDisplays(){
   }
 }
 
-// switchAdminTab 要加 sch 支援
+
+// ══ ADMIN LOGIN ══
+function doLogin(){
+  if(document.getElementById('pwd-input').value===getAdminPwd()){
+    document.getElementById('adm-login').style.display='none';
+    document.getElementById('adm-main').style.display='flex';
+    renderAdmin();
+  }else{showToast('❌ 密碼錯誤');document.getElementById('pwd-input').value='';}
+}
+
+// ══ ADMIN TAB SWITCH ══
+function switchAdminTab(tab){
+  document.getElementById('adm-panel-health').style.display   = tab==='health'   ? 'block' : 'none';
+  document.getElementById('adm-panel-gps').style.display      = tab==='gps'      ? 'block' : 'none';
+  document.getElementById('adm-panel-sch').style.display      = tab==='sch'      ? 'block' : 'none';
+  document.getElementById('adm-panel-settings').style.display = tab==='settings' ? 'block' : 'none';
+  document.getElementById('tab-health').classList.toggle('active',   tab==='health');
+  document.getElementById('tab-gps').classList.toggle('active',      tab==='gps');
+  document.getElementById('tab-sch').classList.toggle('active',      tab==='sch');
+  document.getElementById('tab-settings').classList.toggle('active', tab==='settings');
+  if(tab==='gps') renderGPS();
+  if(tab==='sch') renderSchList();
+  if(tab==='settings') renderPwdInfo();
+}
+
+// ══ PASSWORD ══
+function renderPwdInfo(){
+  const isCustom = !!localStorage.getItem('admin_pwd');
+  const el = document.getElementById('pwd-info-text');
+  if(el) el.innerHTML = isCustom
+    ? '✅ 目前使用<strong>自訂密碼</strong><br>上次變更時間：'+(localStorage.getItem('admin_pwd_time')||'不明')
+    : '⚠️ 目前使用<strong>預設密碼（721126）</strong><br>建議盡快變更為自訂密碼';
+}
+
+function changePassword(){
+  const cur = document.getElementById('pwd-current').value;
+  const nw  = document.getElementById('pwd-new').value;
+  const cfm = document.getElementById('pwd-confirm').value;
+  if(cur !== getAdminPwd()){ showToast('❌ 目前密碼錯誤'); return; }
+  if(nw.length < 4){ showToast('❌ 新密碼至少需要4位'); return; }
+  if(nw !== cfm){ showToast('❌ 兩次輸入的密碼不一致'); return; }
+  if(nw === getAdminPwd()){ showToast('⚠️ 新密碼與目前密碼相同'); return; }
+  localStorage.setItem('admin_pwd', nw);
+  localStorage.setItem('admin_pwd_time', new Date().toLocaleString('zh-TW'));
+  document.getElementById('pwd-current').value='';
+  document.getElementById('pwd-new').value='';
+  document.getElementById('pwd-confirm').value='';
+  renderPwdInfo();
+  showToast('✅ 密碼已成功變更！');
+}
+
+function resetPassword(){
+  if(!confirm('確定要重設為預設密碼 721126 嗎？')) return;
+  localStorage.removeItem('admin_pwd');
+  localStorage.removeItem('admin_pwd_time');
+  renderPwdInfo();
+  showToast('↩️ 已重設為預設密碼');
+}
+
+// ══ GPS LOG ══
+let gpsFilterPeriod = 'today';
+
+function getGPSLogs(){
+  try{ return JSON.parse(localStorage.getItem('gps_logs')||'[]'); }catch{ return []; }
+}
+function saveGPSLogs(logs){ localStorage.setItem('gps_logs', JSON.stringify(logs)); }
+
+function logGPSPoint(lat, lng, addr){
+  const logs = getGPSLogs();
+  logs.push({t: Date.now(), lat, lng, addr: addr||''});
+  const cutoff = Date.now() - 30*86400000;
+  saveGPSLogs(logs.filter(l=>l.t>cutoff));
+  computeStays();
+}
+
+function distMeters(la1,lo1,la2,lo2){
+  const R=6371000, p=Math.PI/180;
+  const dLat=(la2-la1)*p, dLon=(lo2-lo1)*p;
+  const a=Math.sin(dLat/2)**2+Math.cos(la1*p)*Math.cos(la2*p)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function computeStays(){
+  const raw = getGPSLogs();
+  if(raw.length < 2) return [];
+  const stays = [];
+  let segStart = 0;
+  for(let i=1; i<=raw.length; i++){
+    const prev = raw[i-1], curr = raw[i];
+    const moved = curr ? distMeters(parseFloat(prev.lat),parseFloat(prev.lng),parseFloat(curr.lat),parseFloat(curr.lng)) : Infinity;
+    if(moved > 100 || i === raw.length){
+      const seg = raw.slice(segStart, i);
+      const duration = (seg[seg.length-1].t - seg[0].t) / 60000;
+      if(duration >= 10){
+        const addrCounts = {};
+        seg.forEach(p=>{ if(p.addr) addrCounts[p.addr]=(addrCounts[p.addr]||0)+1; });
+        const bestAddr = Object.entries(addrCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || seg[0].lat+', '+seg[0].lng;
+        stays.push({type:'stay',start:seg[0].t,end:seg[seg.length-1].t,duration:Math.round(duration),addr:bestAddr,lat:seg[0].lat,lng:seg[0].lng});
+      } else if(segStart > 0){
+        stays.push({type:'move',start:raw[segStart].t,end:prev.t,duration:Math.round((prev.t-raw[segStart].t)/60000)});
+      }
+      segStart = i;
+    }
+  }
+  localStorage.setItem('gps_stays', JSON.stringify(stays));
+  return stays;
+}
+
+function setGPSPeriod(p){
+  gpsFilterPeriod = p;
+  document.querySelectorAll('.gps-ftag').forEach(el=>el.classList.toggle('active',el.dataset.gperiod===p));
+  renderGPS();
+}
+
+function formatDur(min){
+  if(min < 60) return min+' 分鐘';
+  const h=Math.floor(min/60), m=min%60;
+  return m>0 ? h+' 小時 '+m+' 分' : h+' 小時';
+}
+
+function renderGPS(){
+  let stays;
+  try{ stays=JSON.parse(localStorage.getItem('gps_stays')||'[]'); }catch{ stays=[]; }
+  if(!stays.length) stays = computeStays();
+  const now=Date.now();
+  let filtered = stays;
+  if(gpsFilterPeriod==='today'){
+    const d=new Date(); d.setHours(0,0,0,0);
+    filtered=stays.filter(s=>s.start>=d.getTime());
+  } else if(gpsFilterPeriod==='7'){
+    filtered=stays.filter(s=>s.start>=now-7*86400000);
+  }
+  const list=document.getElementById('gps-list');
+  const summary=document.getElementById('gps-summary');
+  if(!filtered.length){
+    list.innerHTML='<div class="no-result">📍 尚無 GPS 軌跡記錄</div>';
+    summary.style.display='none'; return;
+  }
+  const stayOnly=filtered.filter(s=>s.type==='stay');
+  const totalStay=stayOnly.reduce((s,r)=>s+r.duration,0);
+  summary.style.display='block';
+  summary.innerHTML=`<div style="display:flex;gap:var(--sp-md);flex-wrap:wrap"><div><div style="font-family:'DM Mono',monospace;font-size:var(--fs-lg);font-weight:800;color:var(--mint-dk)">${stayOnly.length}</div><div style="font-size:var(--fs-xs);color:var(--ink-lt);font-weight:600">停留點</div></div><div><div style="font-family:'DM Mono',monospace;font-size:var(--fs-lg);font-weight:800;color:var(--mint-dk)">${formatDur(totalStay)}</div><div style="font-size:var(--fs-xs);color:var(--ink-lt);font-weight:600">總停留</div></div></div>`;
+  list.innerHTML = filtered.map(s=>{
+    const start=new Date(s.start),end=new Date(s.end||s.start);
+    const ds=start.toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'});
+    const ts=start.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+    const te=end.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+    if(s.type==='stay') return '<div class="gps-card stay"><div class="gps-type stay-badge">📍 停留</div><div class="gps-addr">'+(s.addr||'位置未知')+'</div><div class="gps-time-row"><div class="gps-time">📅 '+ds+'  '+ts+' – '+te+'</div><div class="gps-dur">'+formatDur(s.duration)+'</div></div>'+(s.lat?'<div class="gps-coord">'+s.lat+', '+s.lng+'</div>':'')+'</div>';
+    return '<div class="gps-card move"><div class="gps-type move-badge">🚗 移動中</div><div class="gps-time-row"><div class="gps-time">'+ts+' – '+te+'</div><div class="gps-dur" style="color:var(--ink-lt)">'+formatDur(s.duration)+'</div></div></div>';
+  }).join('');
+}
+
+function clearGPS(){
+  if(!confirm('確定清除所有 GPS 記錄？')) return;
+  localStorage.removeItem('gps_logs');
+  localStorage.removeItem('gps_stays');
+  renderGPS();
+  showToast('🗑 GPS 記錄已清除');
+}
+
+function exportGPS(){
+  const stays = JSON.parse(localStorage.getItem('gps_stays')||'[]');
+  if(!stays.length){ showToast('沒有 GPS 記錄可匯出'); return; }
+  let csv='類型,日期,開始時間,結束時間,停留分鐘,地址,緯度,經度\n';
+  stays.forEach(s=>{
+    const st=new Date(s.start), en=new Date(s.end||s.start);
+    csv+=[s.type==='stay'?'停留':'移動',st.toLocaleDateString('zh-TW'),st.toLocaleTimeString('zh-TW'),en.toLocaleTimeString('zh-TW'),s.duration||0,'"'+(s.addr||'')+'"',s.lat||'',s.lng||''].join(',')+'\n';
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='GPS記錄_'+new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')+'.csv';
+  a.click(); showToast('📤 GPS 記錄匯出成功！');
+}
+
 function doLogout(){
   document.getElementById('adm-login').style.display='block';
   document.getElementById('adm-main').style.display='none';
@@ -3720,7 +3800,7 @@ function renderAdmin(){
       const wk=v.walk==='yes'?'✅ 有散步':'❌ 沒散步';
       const cg={none:'沒有',mild:'輕微',often:'頻繁',severe:'嚴重⚠'}[v.cough]||'—';
       const pg={none:'沒有',clear:'透明',white:'白色',yellow:'黃色⚠',green:'綠色⚠',blood:'帶血⚠'}[v.phlegm]||'—';
-      const eg={good:'有力氣',ok:'普通',weak:'沒力',vweak:'非常虛弱⚠'}[v.energy]||'—';
+      const eg={good:'有力氣',ok:'普通',weak:'沒力',sleepy:'嗜睡😴',vweak:'非常虛弱⚠'}[v.energy]||'—';
       vh=`<div><div class="rc-lbl">散步</div><div class="rc-val" style="font-size:var(--fs-sm)">${wk}</div></div>
           <div><div class="rc-lbl">咳嗽</div><div class="rc-val" style="font-size:var(--fs-sm)">${cg}</div></div>
           <div><div class="rc-lbl">痰</div><div class="rc-val" style="font-size:var(--fs-sm)">${pg}</div></div>
